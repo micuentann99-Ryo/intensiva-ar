@@ -801,6 +801,7 @@ export default function Home() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="matematica">Matemática</SelectItem>
+                        <SelectItem value="historia">Historia</SelectItem>
                         <SelectItem value="ingles">Inglés</SelectItem>
                         <SelectItem value="fisica">Física</SelectItem>
                         <SelectItem value="quimica">Química</SelectItem>
