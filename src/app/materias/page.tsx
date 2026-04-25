@@ -78,12 +78,12 @@ export default function MateriasPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
+    <div className="min-h-screen flex flex-col bg-background">
       <SiteNavbar />
 
       <main className="flex-1">
         {/* Breadcrumb */}
-        <div className="bg-muted/40 border-b border-border">
+        <div className="bg-muted/40 dark:bg-gray-900/60 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <nav className="flex items-center gap-1.5 text-sm">
               <Link
@@ -93,7 +93,7 @@ export default function MateriasPage() {
                 Inicio
               </Link>
               <ChevronRight className="size-3.5 text-muted-foreground" />
-              <span className="text-emerald-700 font-medium">Materias</span>
+              <span className="text-emerald-700 dark:text-emerald-400 font-medium">Materias</span>
             </nav>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function MateriasPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: idx * 0.06 }}
                     className={`border border-border rounded-lg overflow-hidden transition-all ${
-                      isExpandable && isExpanded ? 'bg-emerald-50/60 border-emerald-200 shadow-sm' : 'bg-card hover:shadow-sm'
+                      isExpandable && isExpanded ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800 shadow-sm' : 'bg-card hover:shadow-sm'
                     }`}
                   >
                     <div
@@ -195,7 +195,7 @@ export default function MateriasPage() {
                           <div className="px-5 pb-4 pt-1">
                             <Link
                               href="/materias/historia"
-                              className="flex items-center justify-between py-3 px-4 rounded-lg bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors group"
+                              className="flex items-center justify-between py-3 px-4 rounded-lg bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors group"
                             >
                               <div className="flex items-center gap-3">
                                 <Landmark className="size-4 text-emerald-600" />

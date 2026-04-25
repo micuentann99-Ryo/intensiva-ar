@@ -70,12 +70,12 @@ const categories = [
 
 export default function ExplorarPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
+    <div className="min-h-screen flex flex-col bg-background">
       <SiteNavbar />
 
       <main className="flex-1">
         {/* Breadcrumb */}
-        <div className="bg-muted/40 border-b border-border">
+        <div className="bg-muted/40 dark:bg-gray-900/60 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <nav className="flex items-center gap-1.5 text-sm">
               <Link
@@ -85,7 +85,7 @@ export default function ExplorarPage() {
                 Inicio
               </Link>
               <ChevronRight className="size-3.5 text-muted-foreground" />
-              <span className="text-emerald-700 font-medium">Explorar</span>
+              <span className="text-emerald-700 dark:text-emerald-400 font-medium">Explorar</span>
             </nav>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function ExplorarPage() {
                             <Link
                               key={sub.name}
                               href={sub.href}
-                              className="flex items-center justify-between px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-emerald-700 hover:bg-emerald-50 transition-colors group"
+                              className="flex items-center justify-between px-4 py-3 rounded-lg text-sm text-muted-foreground hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors group"
                             >
                               <div className="flex items-center gap-3">
                                 <sub.icon className="size-4 text-muted-foreground group-hover:text-emerald-600 transition-colors" />

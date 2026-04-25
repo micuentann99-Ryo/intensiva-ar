@@ -208,12 +208,12 @@ function DifficultyBadge({ level }: { level: string }) {
 
 export default function HistoriaPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
+    <div className="min-h-screen flex flex-col bg-background">
       <SiteNavbar />
 
       <main className="flex-1">
         {/* Breadcrumb */}
-        <div className="bg-muted/40 border-b border-border">
+        <div className="bg-muted/40 dark:bg-gray-900/60 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <nav className="flex items-center gap-1.5 text-sm">
               <Link
@@ -230,7 +230,7 @@ export default function HistoriaPage() {
                 Materias
               </Link>
               <ChevronRight className="size-3.5 text-muted-foreground" />
-              <span className="text-emerald-700 font-medium">Historia</span>
+              <span className="text-emerald-700 dark:text-emerald-400 font-medium">Historia</span>
             </nav>
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function HistoriaPage() {
               </h1>
               <p className="mt-3 text-muted-foreground text-base md:text-lg leading-relaxed">
                 Basado en{' '}
-                <span className="font-semibold text-emerald-700">
+                <span className="font-semibold text-emerald-700 dark:text-emerald-400">
                   &apos;Toda la Historia del mundo&apos;
                 </span>{' '}
                 de Jean-Claude Barreau y Guillaume Bigot
@@ -307,10 +307,10 @@ export default function HistoriaPage() {
                           </div>
 
                           {/* Activity */}
-                          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-4 border border-emerald-200/60">
+                          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/60 dark:to-teal-950/60 rounded-lg p-4 border border-emerald-200/60 dark:border-emerald-800/40">
                             <div className="flex items-center gap-2 mb-2">
                               <Lightbulb className="size-4 text-emerald-600" />
-                              <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wide">
+                              <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 uppercase tracking-wide">
                                 Actividad: {period.activityType}
                               </span>
                             </div>

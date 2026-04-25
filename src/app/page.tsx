@@ -714,8 +714,8 @@ function SubjectDetailView({
       </div>
 
       {/* Subject Header */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-950 dark:to-emerald-950 py-12 md:py-16">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-950 dark:to-emerald-950 py-10 md:py-16">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/40 dark:bg-emerald-800/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto">
             <button
@@ -736,7 +736,7 @@ function SubjectDetailView({
             </h1>
             <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
               {info.subtitle} — Basado en{' '}
-              <span className="font-semibold text-emerald-700">'Toda la Historia del mundo'</span> de
+              <span className="font-semibold text-emerald-700 dark:text-emerald-400">'Toda la Historia del mundo'</span> de
               Barreau y Bigot
             </p>
 
@@ -782,7 +782,7 @@ function SubjectDetailView({
                   <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full cursor-pointer">
                     <CardContent className="p-5 flex flex-col gap-3">
                       <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 text-emerald-600 shrink-0 group-hover:bg-emerald-100 group-hover:scale-110 transition-all">
+                        <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 group-hover:scale-110 transition-all">
                           <sub.icon className="size-5" />
                         </div>
                         <Badge variant="secondary" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-100 shrink-0">
@@ -809,7 +809,7 @@ function SubjectDetailView({
       )}
 
       {/* Region Accordion Detail */}
-      <section className="py-12 md:py-16 bg-muted/30">
+      <section className="py-12 md:py-16 bg-muted/30 dark:bg-gray-900/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="max-w-4xl mx-auto">
@@ -826,7 +826,7 @@ function SubjectDetailView({
                     >
                       <AccordionTrigger className="hover:no-underline py-4">
                         <div className="flex items-center gap-3 text-left">
-                          <div className="flex items-center justify-center size-10 rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
+                          <div className="flex items-center justify-center size-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0">
                             <RegionIcon icon={region.icon} className="size-5" />
                           </div>
                           <div>
@@ -852,14 +852,14 @@ function SubjectDetailView({
                               ))}
                             </ul>
                           ) : (
-                            <p className="text-sm text-foreground leading-relaxed bg-muted/50 rounded-lg p-4 border border-border/50">
+                            <p className="text-sm text-foreground leading-relaxed bg-muted/50 dark:bg-gray-800/50 rounded-lg p-4 border border-border/50">
                               {region.content as string}
                             </p>
                           )}
-                          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-4 border border-emerald-200/60">
+                          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/60 dark:to-teal-950/60 rounded-lg p-4 border border-emerald-200/60 dark:border-emerald-800/40">
                             <div className="flex items-center gap-2 mb-2">
                               <Lightbulb className="size-4 text-emerald-600" />
-                              <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wide">
+                              <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 uppercase tracking-wide">
                                 Actividad: {region.activityType}
                               </span>
                             </div>
@@ -1395,7 +1395,7 @@ export default function Home() {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="px-8 text-base border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                    className="px-8 text-base border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/50"
                   >
                     Soy profesor
                   </Button>
@@ -1407,7 +1407,7 @@ export default function Home() {
                         document.querySelector('#search')?.scrollIntoView({ behavior: 'smooth' });
                       }, 100);
                     }}
-                    className="lg:hidden flex items-center justify-center size-12 rounded-full border border-emerald-300 dark:border-emerald-600 bg-white dark:bg-gray-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/50 transition-colors"
+                    className="lg:hidden flex items-center justify-center size-12 rounded-full border border-emerald-300 dark:border-emerald-600 bg-white dark:bg-gray-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/50 transition-colors shadow-md"
                     aria-label="Buscar cursos"
                   >
                     <Search className="size-5" />
@@ -1571,7 +1571,7 @@ export default function Home() {
                 <Card className="group h-full hover:shadow-lg hover:border-emerald-200 transition-all">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className="flex items-center justify-center size-12 rounded-xl bg-emerald-50 text-emerald-700 shrink-0 group-hover:bg-emerald-100 transition-colors">
+                      <div className="flex items-center justify-center size-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
                         {n.icon}
                       </div>
                       <div>
@@ -1621,7 +1621,7 @@ export default function Home() {
                 <Card
                   className={`group cursor-pointer hover:shadow-lg transition-all text-center h-full ${
                     cat.slug === 'historia'
-                      ? 'hover:border-emerald-300 border-emerald-100 bg-emerald-50/30'
+                      ? 'hover:border-emerald-300 dark:hover:border-emerald-700 border-emerald-100 dark:border-emerald-900 bg-emerald-50/30 dark:bg-emerald-950/20'
                       : 'hover:border-emerald-200'
                   }`}
                   onClick={() => {
@@ -1636,8 +1636,8 @@ export default function Home() {
                     <div
                       className={`flex items-center justify-center size-12 rounded-xl shrink-0 group-hover:scale-110 transition-all ${
                         cat.slug === 'historia'
-                          ? 'bg-emerald-100 text-emerald-700'
-                          : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'
+                          ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400'
+                          : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50'
                       }`}
                     >
                       {cat.icon}
@@ -1660,7 +1660,7 @@ export default function Home() {
             {steps.map((step, i) => (
               <FadeIn key={step.title} delay={i * 0.15} className="text-center">
                 <div className="relative mx-auto mb-6">
-                  <div className="flex items-center justify-center size-20 rounded-2xl bg-emerald-50 text-emerald-600 mx-auto">
+                  <div className="flex items-center justify-center size-20 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 mx-auto">
                     {step.icon}
                   </div>
                   <div className="absolute -top-2 -right-2 flex items-center justify-center size-8 rounded-full bg-emerald-600 text-white text-sm font-bold">
@@ -1700,8 +1700,8 @@ export default function Home() {
               <FadeIn key={prof.name} delay={i * 0.08}>
                 <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full">
                   <CardContent className="p-5 text-center">
-                    <Avatar className="size-16 mx-auto mb-3 ring-2 ring-emerald-100">
-                      <AvatarFallback className="bg-emerald-50 text-emerald-700 text-lg font-bold">
+                    <Avatar className="size-16 mx-auto mb-3 ring-2 ring-emerald-100 dark:ring-emerald-900">
+                      <AvatarFallback className="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 text-lg font-bold">
                         {prof.initials}
                       </AvatarFallback>
                     </Avatar>
@@ -1742,7 +1742,7 @@ export default function Home() {
                 <div className="flex items-center justify-center size-10 rounded-xl bg-emerald-600 text-white">
                   <Library className="size-5" />
                 </div>
-                <span className="text-lg font-bold text-emerald-700">IntensivaAR</span>
+                <span className="text-lg font-bold text-emerald-700 dark:text-emerald-400">IntensivaAR</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
                 Catálogo Digital
@@ -1769,7 +1769,7 @@ export default function Home() {
                   <CardContent className="p-5 flex flex-col gap-3">
                     {/* Book icon + subject badge */}
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 text-emerald-600 shrink-0 group-hover:bg-emerald-100 group-hover:scale-110 transition-all">
+                      <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 group-hover:scale-110 transition-all">
                         {book.icon}
                       </div>
                       <Badge
@@ -1819,7 +1819,7 @@ export default function Home() {
                     <div className="flex items-center gap-2 mb-3">
                       <Badge
                         variant="secondary"
-                        className="bg-emerald-50 text-emerald-700 border-emerald-100"
+                        className="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900"
                       >
                         {article.icon}
                         {article.tag}
@@ -1840,7 +1840,7 @@ export default function Home() {
           </div>
           <FadeIn delay={0.3}>
             <div className="text-center mt-10">
-              <Button variant="outline" className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 px-8">
+              <Button variant="outline" className="border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 px-8">
                 <Newspaper className="size-4 mr-2" />
                 Ir al blog
               </Button>
