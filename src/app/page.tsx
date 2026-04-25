@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -176,8 +177,9 @@ const navLinks = [
   { label: 'Cursos', href: '#cursos', action: null },
   { label: 'Verano', href: '#search', action: null },
   { label: 'Invierno', href: '#search', action: null },
-  { label: 'Materias', href: '#categorias', action: null },
-  { label: 'Historia', href: '#', action: 'historia' },
+  { label: 'Explorar', href: '/explorar', action: 'navigate' },
+  { label: 'Materias', href: '/materias', action: 'navigate' },
+  { label: 'Historia', href: '/materias/historia', action: 'navigate' },
   { label: 'Catálogo', href: '#catalogo', action: null },
   { label: 'Profesores', href: '#profesores', action: null },
   { label: 'Cómo funciona', href: '#como-funciona', action: null },
@@ -959,6 +961,7 @@ function SubjectDetailView({
    ═══════════════════════════════════════════════════ */
 
 export default function Home() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'home' | 'subject' | 'catalog'>('home');
@@ -991,6 +994,9 @@ export default function Home() {
     (link: (typeof navLinks)[number]) => {
       if (link.action === 'historia') {
         navigateToSubject('historia');
+      } else if (link.action === 'navigate') {
+        router.push(link.href);
+        setMobileOpen(false);
       } else {
         goHome();
         setTimeout(() => {
@@ -1001,7 +1007,7 @@ export default function Home() {
         }, 100);
       }
     },
-    [navigateToSubject, goHome]
+    [navigateToSubject, goHome, router]
   );
 
   const handleSearch = useCallback(() => {

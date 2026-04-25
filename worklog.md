@@ -168,3 +168,102 @@ Made the IntensivaAR website fully interactive with client-side routing, breadcr
 - File reduced from ~1513 lines to ~1100 lines (cleaner architecture)
 - Uses `AnimatePresence` ready for future page transitions
 - `FooterSection` component avoids code duplication
+
+---
+
+## Task 4 - Fullstack Developer: 3 New Route Pages for IntensivaAR
+
+**Date**: 2024
+**Status**: ✅ Completed
+
+### Summary
+Created 3 new route pages following the visual style of Fundación Carlos Slim's educational portal, adapted to IntensivaAR's emerald green branding. Extracted shared navbar and footer components for reuse across all pages. Updated home page navigation to link to new routes.
+
+### Files Created
+
+1. **`src/components/site-navbar.tsx`** — Shared navbar component
+   - Sticky header with blur effect on scroll
+   - IntensivaAR logo (green square with Sparkles icon)
+   - Navigation links: Cursos (/), Explorar (/explorar), Materias (/materias), Historia (/materias/historia), Profesores (/#profesores), Catálogo (/#catalogo)
+   - Active link highlighting with emerald green color
+   - Mobile responsive with Sheet hamburger menu
+   - Uses `next/link` for client-side navigation
+   - Uses `usePathname` for active state detection
+
+2. **`src/components/site-footer.tsx`** — Shared footer component
+   - Brand section with logo and description
+   - 3 navigation columns (Navegación, Categorías, Información)
+   - Categorías links point to /materias and /materias/historia
+   - Social media icons (Instagram, Facebook, Twitter, Youtube)
+   - Copyright notice with Argentina branding
+
+3. **`src/app/explorar/page.tsx`** — Category Browsing Page
+   - Breadcrumb: Inicio > Explorar
+   - Page title "Explorar" with description
+   - 3-column responsive layout (stacks on mobile)
+   - Each column uses Accordion component with:
+     - Colored circular icon (emerald/teal tones)
+     - Category title (Ciencias Exactas, Ciencias Sociales, Idiomas y Humanidades)
+     - Expandable subcategories with ChevronRight icons
+     - Each sub-item is a clickable Link
+   - 12 total subcategory items across 3 columns
+   - Framer Motion staggered entrance animations
+
+4. **`src/app/materias/page.tsx`** — Subjects Listing Page
+   - Breadcrumb: Inicio > Materias
+   - Emerald green gradient banner with "Materias" title and BookOpen icon
+   - List of 6 subject cards with:
+     - Colored left border (purple, amber, teal, emerald, sky, rose)
+     - Subject icon in colored background
+     - Subject name with right-pointing arrow
+   - "Historia" card is expandable (useState) showing sub-item "Historia del Mundo" → /materias/historia
+   - Historia card gets light green background when expanded
+   - AnimatePresence for smooth expand/collapse animation
+   - Framer Motion staggered entrance animations
+
+5. **`src/app/materias/historia/page.tsx`** — History Timeline Page
+   - Breadcrumb: Inicio > Materias > Historia
+   - Title: "Línea del tiempo — Historia del Mundo"
+   - Subtitle crediting Barreau & Bigot
+   - 10 expandable timeline periods using Accordion:
+     1. Prehistoria y Orígenes
+     2. Pangea y Primeras Civilizaciones
+     3. Mundo Antiguo
+     4. Edad Media
+     5. Renacimiento y Reformas
+     6. América Precolombina
+     7. Conquista y Colonia
+     8. Independencia de América
+     9. Siglo XIX
+     10. Historia Contemporánea
+   - Each expanded period shows:
+     - Historical description paragraph
+     - Key topics as bullet points with ChevronRight icons
+     - Activity suggestion with type, difficulty badge, and time estimate
+   - Clean divide-y separated timeline aesthetic
+   - Emerald green activity cards matching existing theme
+
+### Files Modified
+
+6. **`src/app/page.tsx`** — Updated navigation only
+   - Added `import { useRouter } from 'next/navigation'`
+   - Added `const router = useRouter()` in Home component
+   - Updated `navLinks` array:
+     - Added "Explorar" → `/explorar` (action: 'navigate')
+     - Changed "Materias" from `#categorias` to `/materias` (action: 'navigate')
+     - Changed "Historia" from `action: 'historia'` to `/materias/historia` (action: 'navigate')
+   - Updated `handleNavClick` function:
+     - Added `action === 'navigate'` branch that calls `router.push(link.href)`
+   - All existing sections (hero, search, nichos, profesores, blog, catalog, etc.) remain untouched
+
+### Technical Details
+- ESLint passes with zero errors
+- `npx next build` succeeds with all 3 new routes generated as static pages
+- Dev server compiles successfully (200 OK)
+- No external libraries added
+- All new pages use `'use client'` directive
+- Consistent emerald green theme across all pages
+- All text in Spanish
+- Responsive design (mobile-first)
+- shadcn/ui Accordion, Badge, Sheet, Button components used throughout
+- lucide-react icons for all visual elements
