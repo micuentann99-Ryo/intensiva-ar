@@ -22,6 +22,14 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Progress } from '@/components/ui/progress';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import {
   Menu,
   Search,
   Flame,
@@ -56,6 +64,23 @@ import {
   Beaker,
   PenTool,
   Sparkles,
+  Landmark,
+  Mountain,
+  Globe,
+  Compass,
+  ScrollText,
+  Ship,
+  TreePine,
+  Palmtree,
+  Clock,
+  Zap,
+  FileText,
+  MessageSquare,
+  Map,
+  Trophy,
+  ChevronDown,
+  BookMarked,
+  History,
 } from 'lucide-react';
 
 /* ─── Fade-in animation wrapper ─── */
@@ -146,6 +171,7 @@ const navLinks = [
   { label: 'Verano', href: '#search' },
   { label: 'Invierno', href: '#search' },
   { label: 'Materias', href: '#categorias' },
+  { label: 'Historia', href: '#historia' },
   { label: 'Profesores', href: '#profesores' },
   { label: 'Cómo funciona', href: '#como-funciona' },
 ];
@@ -299,6 +325,247 @@ const footerNav = {
     'Preguntas frecuentes',
   ],
 };
+
+/* ─── History region data ─── */
+type LucideIcon = React.ComponentType<{ className?: string }>;
+
+const historyRegions = [
+  {
+    id: 'mexico',
+    name: 'México y Civilización Azteca/Mexica',
+    icon: 'landmark' as const,
+    color: 'amber',
+    intro: 'El Imperio azteca, una de las civilizaciones más poderosas de Mesoamérica, fue conquistado por los españoles bajo el mando de Hernán Cortés en el siglo XVI.',
+    content: 'Los aztecas, en plena expansión en el siglo XV, crearon en México un Estado guerrero que se parecía a la Asiria de Sargón. En 1519, Cortés llegó a la capital azteca de Tenochtitlán. Fue recibido por Moctezuma. La "Noche Triste" (30 de junio de 1520). Tenochtitlán fue tomada el 13 de agosto de 1521. Los españoles continuaron hasta California por el norte. En el siglo XIX, México enfrentó la intervención francesa de Napoleón III, quien envió a Maximiliano como emperador. Los mexicanos no querían invasores y las guerrillas obligaron a los franceses a retirarse. Maximiliano acabó fusilado. Chiapas fue una sedición étnica contemporánea.',
+    activity: 'Investigá: Compará la organización del Imperio azteca con el Imperio inca. ¿Qué similitudes y diferencias encontrás en su forma de gobierno, religión y arquitectura?',
+    activityType: 'Investigación',
+    difficulty: 'Medio',
+    time: '45 min',
+  },
+  {
+    id: 'peru',
+    name: 'Perú y el Imperio Inca',
+    icon: 'mountain' as const,
+    color: 'emerald',
+    intro: 'El Tahuantinsuyo, el vasto imperio incaico, se extendía desde Ecuador hasta Chile. Fue conquistado por Francisco Pizarro con un reducido grupo de soldados.',
+    content: 'Los incas construyeron un inmenso Imperio desde Ecuador hasta Chile, pasando por Bolivia y Perú. El Inca era una especie de faraón, un Rey sol. Se adoraba al Sol. Existían clases de escribas, soldados y campesinos. En 1531, Pizarro dirigió una expedición hacia Perú. El 16 de noviembre de 1532, en Cajamarca, Pizarro secuestró al Inca Atahualpa con solo 163 hombres frente a miles de soldados incas. El Imperio se derrumbó. El "desfase temporal" entre españoles e incas era de unos seis mil años. En 1824, las tropas españolas fueron aniquiladas en Ayacucho, logrando la independencia. Sendero Luminoso fue una sedición étnica contemporánea en Perú.',
+    activity: 'Reflexioná: ¿Por qué creés que un grupo de 163 españoles pudo derrotar al Imperio inca de 10-15 millones de personas? Enumerá al menos 3 factores que explica el libro.',
+    activityType: 'Reflexión',
+    difficulty: 'Difícil',
+    time: '30 min',
+  },
+  {
+    id: 'argentina',
+    name: 'Argentina y Sudamérica',
+    icon: 'globe' as const,
+    color: 'sky',
+    intro: 'Las revoluciones de independencia sudamericanas fragmentaron el Imperio español en múltiples repúblicas, dejando desafíos que persisten hasta hoy.',
+    content: 'Las revoluciones de independencia sudamericanas fueron lideradas por figuras como Miranda y San Martín. Bolívar no consiguió mantener la unidad del Imperio español, que se fraccionó en repúblicas independientes: México, Perú, Colombia, Venezuela, Chile, Argentina, Bolivia. El libro señala dos problemas graves: la falta de unión y el apartheid (las insurrecciones fueron revueltas de colonos, los indios participaron poco). Latinoamérica permanece dividida en una veintena de Estados. Los indígenas siguen participando muy poco en los gobiernos. En Argentina, los mapuches y otras etnias originarias tuvieron un papel menos documentado en este libro.',
+    activity: 'Debate: ¿Por qué América Latina se dividió en tantos países mientras América del Norte (EE.UU.) se unificó? ¿Qué factores mencionados en el libro explican esta diferencia?',
+    activityType: 'Debate',
+    difficulty: 'Difícil',
+    time: '60 min',
+  },
+  {
+    id: 'norteamerica',
+    name: 'América del Norte',
+    icon: 'mapPin' as const,
+    color: 'rose',
+    intro: 'Los Estados Unidos se expandió hacia el oeste tras la guerra de Secesión, con consecuencias devastadoras para los pueblos indígenas norteamericanos.',
+    content: 'Los amerindios al norte de Río Grande eran cazadores nómadas, no campesinos como aztecas o incas. Tras la guerra de Secesión (1861-1865), Estados Unidos reanudó su expansión. Los pieles rojas fueron casi aniquilados. En 1815 podía haber veinte millones de bisontes, frente a menos de un millón en 1880. Tocqueville escribió sobre la conducta americana hacia los indios. En 1867, EE.UU. compró Alaska al Imperio del zar. En 1898 declaró la guerra a España y ganó Cuba, Puerto Rico y Filipinas. El primer ferrocarril continental unió Nueva York con San Francisco en 1869. El petróleo salió a flote en Texas creando la fortuna de los Rockefeller.',
+    activity: 'Análisis de texto: Leé la cita de Tocqueville sobre el comportamiento de los americanos hacia los indígenas (página 126 del libro). ¿Qué diferencia establece entre la colonización española y la americana?',
+    activityType: 'Análisis de texto',
+    difficulty: 'Medio',
+    time: '40 min',
+  },
+  {
+    id: 'centroamerica',
+    name: 'Centroamérica y Civilización Maya',
+    icon: 'treePine' as const,
+    color: 'lime',
+    intro: 'Los mayas, ya en decadencia al llegar los españoles, habían logrado avances notables como la escritura, las matemáticas y la agricultura.',
+    content: 'Los mayas, ya en decadencia cuando llegaron los españoles, vivían en Guatemala, en pequeñas ciudades-estado comparables a las de los griegos de los tiempos de Homero. Sabían contar y acababan de inventar la escritura. Salían de la prehistoria y entraban en un triunfante neolítico. Los mayas inventaron plantas que hoy nos resultan familiares: la patata, el chocolate (cacao), el maíz y el tomate. Se comunicaban entre sí y con los nómadas de las praderas norteamericanas, pero ignoraban la existencia del mundo exterior.',
+    activity: 'Investigación: Los mayas inventaron el cacao, el maíz y el tomate. Elegí uno de estos productos y trazá su historia desde la civilización maya hasta nuestra mesa actual.',
+    activityType: 'Investigación',
+    difficulty: 'Fácil',
+    time: '50 min',
+  },
+  {
+    id: 'europa',
+    name: 'Europa',
+    icon: 'landmark2' as const,
+    color: 'violet',
+    intro: 'Europa es el tema principal del libro, cubriendo desde la prehistoria hasta la globalización actual. Un recorrido completo por la historia del mundo occidental.',
+    content: [
+      'La prehistoria en África oriental',
+      'Cretenses, griegos, fenicios y judíos (Mediterráneo)',
+      'El Imperio persa y el mundo griego',
+      'Alejandro Magno (primera globalización)',
+      'Cartago y Roma (Aníbal y César)',
+      'El Imperio romano',
+      'El judeo-cristianismo',
+      'La época del islam',
+      'La Edad Media y las cruzadas',
+      'El Renacimiento (Miguel Ángel, Leonardo, Maquiavelo)',
+      'Las Reformas y guerras de religión (Lutero, Calvino)',
+      'El gran siglo XVII (Richelieu, Luis XIV)',
+      'El Siglo de las Luces (Voltaire, Rousseau)',
+      'La Revolución Francesa',
+      'Napoleón',
+      'Las repúblicas del siglo XIX',
+      'La unificación de Italia y Alemania',
+      'La Belle Époque',
+      'Las dos Guerras Mundiales',
+      'La caída de la URSS y la globalización',
+    ],
+    activity: 'Línea de tiempo: Armá una línea de tiempo con los 10 eventos más importantes de la historia de Europa según el libro. Justificá tu selección.',
+    activityType: 'Línea de tiempo',
+    difficulty: 'Difícil',
+    time: '90 min',
+  },
+  {
+    id: 'africa',
+    name: 'África',
+    icon: 'compass' as const,
+    color: 'orange',
+    intro: 'Cuna de la humanidad, África fue colonizada por potencias europeas en el siglo XIX, dejando un legado de fronteras artificiales y conflictos.',
+    content: 'La prehistoria humana se origina en África oriental, donde hace 200-300 mil años grupos de primates inventaron el lenguaje. En la época colonial, los europeos conquistaron el continente. Los boers/afrikaners (holandeses) abandonaron Ciudad del Cabo entre 1834-1838 para fundar estados libres. La guerra de los Boers (1899-1902) enfrentó a holandeses e ingleses. Francia colonizó desde Argelia hasta el Congo. El rey Leopoldo de Bélgica explotó brutalmente el Congo. Alemania anexionó Camerún, Togo, Namibia y Tanzania. Italia fue derrotada por Etiopía en Adúa (1896). Egipto fue controlado por Inglaterra desde 1882 para proteger el canal de Suez.',
+    activity: 'Mapa histórico: Ubicá en un mapa de África las principales colonias europeas mencionadas en el libro. ¿Qué patrones geográficos observás en la colonización?',
+    activityType: 'Mapa histórico',
+    difficulty: 'Medio',
+    time: '55 min',
+  },
+  {
+    id: 'asia',
+    name: 'Asia',
+    icon: 'scrollText' as const,
+    color: 'red',
+    intro: 'Asia abarca civilizaciones milenarias como China e India, y la notable modernización de Japón durante la era Meiji.',
+    content: 'China aparece desde los primeros capítulos con sus ríos nutricios. Los jesuitas como Mateo Ricci llegaron a Pekín y adoptaron costumbres confucianas. El Imperio otomano se extendió desde el Adriático hasta el golfo Pérsico ("el hombre enfermo de Europa"). Japón es el único país del Tercer Mundo que se modernizó: en 1868 el emperador Mutsuhito proclamó la era Meiji. En 20 años recuperaron su retraso técnico. En 1905, Japón hundió la flota rusa en Tsushima. En 1894 anexó Taiwán y en 1910, Corea. India fue colonia británica: la reina Victoria fue proclamada emperatriz en 1877. Indonesia quedó bajo control holandés.',
+    activity: 'Ensayo comparativo: Japón logró modernizarse resistiendo a la colonización europea, mientras que India y China fueron colonizadas o sometidas. ¿Qué factores explica el libro que hicieron posible la modernización japonesa?',
+    activityType: 'Ensayo',
+    difficulty: 'Difícil',
+    time: '75 min',
+  },
+  {
+    id: 'paisesbajos',
+    name: 'Países Bajos y el Mundo Colonial',
+    icon: 'ship' as const,
+    color: 'cyan',
+    intro: 'Los holandeses fueron competidores coloniales clave, con presencia en Sudáfrica, Indonesia y el sudeste asiático.',
+    content: 'Los holandeses fueron competidores coloniales. Después de Waterloo, Holanda había anexionado Bélgica, pero los belgas se declararon independientes el 4 de octubre de 1830. Los boers/afrikaners, colonos holandeses en Sudáfrica, abandonaron Ciudad del Cabo y fundaron estados libres en Orange y Transvaal. En la guerra de los Boers (1899-1902), los "comandos" boers aterrorizaron al ejército inglés. Holanda pudo conservar Indonesia como colonia. El término "comandos" viene de esta guerra.',
+    activity: 'Investigá: El término "comando" se originó en la guerra de los Boers. Investigá qué otros términos militares o de uso cotidiano tienen origen en conflictos históricos.',
+    activityType: 'Investigación',
+    difficulty: 'Medio',
+    time: '40 min',
+  },
+  {
+    id: 'oceania',
+    name: 'Australia y Oceanía',
+    icon: 'palmtree' as const,
+    color: 'teal',
+    intro: 'Australia y Nueva Zelanda se convirtieron en dominios del Imperio británico, con una historia ligada a la colonización y la participación en las guerras mundiales.',
+    content: 'El libro menciona a Australia en el contexto del Imperio británico. Australia y Nueva Zelanda se convirtieron en "dominios" o "Estados asociados" del Imperio británico con sus propias libertades. También se menciona que los primeros humanos llegaron a Australia desde el sudeste asiático en la prehistoria. La contribución de Australia a la Primera Guerra Mundial es mencionada en el contexto de la guerra de Gallípoli. Francia también tenía posesiones en el Pacífico sur: Nueva Caledonia y Oceanía (Tahití).',
+    activity: 'Punto de extensión: Este apartado tiene menos desarrollo en el libro. Elegí un aspecto de la historia de Australia (colonización, pueblos aborígenes, o participación en guerras mundiales) e investigá más allá del libro para ampliar este apartado.',
+    activityType: 'Investigación',
+    difficulty: 'Fácil',
+    time: '60 min',
+  },
+];
+
+const activityCategories = [
+  { label: 'Investigación', color: 'bg-amber-100 text-amber-800 border-amber-200', count: 3 },
+  { label: 'Análisis de texto', color: 'bg-rose-100 text-rose-800 border-rose-200', count: 1 },
+  { label: 'Debate', color: 'bg-sky-100 text-sky-800 border-sky-200', count: 1 },
+  { label: 'Ensayo', color: 'bg-violet-100 text-violet-800 border-violet-200', count: 1 },
+  { label: 'Línea de tiempo', color: 'bg-emerald-100 text-emerald-800 border-emerald-200', count: 1 },
+  { label: 'Mapa histórico', color: 'bg-orange-100 text-orange-800 border-orange-200', count: 1 },
+  { label: 'Reflexión', color: 'bg-teal-100 text-teal-800 border-teal-200', count: 1 },
+  { label: 'Punto de extensión', color: 'bg-lime-100 text-lime-800 border-lime-200', count: 1 },
+];
+
+const progressEras = [
+  {
+    name: 'Prehistoria',
+    color: 'bg-stone-500',
+    chapters: ['Cap. 1-3'],
+    range: [0, 8],
+  },
+  {
+    name: 'Antigüedad',
+    color: 'bg-amber-600',
+    chapters: ['Cap. 4-12'],
+    range: [8, 35],
+  },
+  {
+    name: 'Edad Media',
+    color: 'bg-rose-600',
+    chapters: ['Cap. 13-18'],
+    range: [35, 54],
+  },
+  {
+    name: 'Renacimiento',
+    color: 'bg-violet-600',
+    chapters: ['Cap. 19-24'],
+    range: [54, 70],
+  },
+  {
+    name: 'Época Moderna',
+    color: 'bg-sky-600',
+    chapters: ['Cap. 25-30'],
+    range: [70, 86],
+  },
+  {
+    name: 'Contemporánea',
+    color: 'bg-emerald-600',
+    chapters: ['Cap. 31-37'],
+    range: [86, 100],
+  },
+];
+
+/* ─── Icon helper ─── */
+function RegionIcon({ icon, className }: { icon: string; className?: string }) {
+  const props = { className };
+  switch (icon) {
+    case 'landmark':
+      return <Landmark {...props} />;
+    case 'mountain':
+      return <Mountain {...props} />;
+    case 'globe':
+      return <Globe {...props} />;
+    case 'mapPin':
+      return <MapPin {...props} />;
+    case 'treePine':
+      return <TreePine {...props} />;
+    case 'landmark2':
+      return <Landmark {...props} />;
+    case 'compass':
+      return <Compass {...props} />;
+    case 'scrollText':
+      return <ScrollText {...props} />;
+    case 'ship':
+      return <Ship {...props} />;
+    case 'palmtree':
+      return <Palmtree {...props} />;
+    default:
+      return <Globe {...props} />;
+  }
+}
+
+function DifficultyBadge({ level }: { level: string }) {
+  const map: Record<string, { color: string; icon: LucideIcon }> = {
+    Fácil: { color: 'bg-emerald-100 text-emerald-800 border-emerald-200', icon: CheckCircle2 },
+    Medio: { color: 'bg-amber-100 text-amber-800 border-amber-200', icon: Zap },
+    Difícil: { color: 'bg-rose-100 text-rose-800 border-rose-200', icon: Trophy },
+  };
+  const { color, icon: Icon } = map[level] ?? map.Medio;
+  return (
+    <Badge variant="outline" className={`${color} text-xs gap-1`}>
+      <Icon className="size-3" />
+      {level}
+    </Badge>
+  );
+}
 
 /* ═══════════════════════════════════════════════════
    MAIN PAGE
@@ -844,6 +1111,280 @@ export default function Home() {
             </div>
           </FadeIn>
         </Section>
+
+        {/* ─── HISTORIA UNIVERSAL ─── */}
+        <section id="historia" className="relative overflow-hidden bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30 py-16 md:py-24">
+          <div className="absolute top-20 right-10 w-72 h-72 bg-amber-100/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-64 h-64 bg-orange-100/20 rounded-full blur-3xl" />
+
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            {/* Course Header */}
+            <FadeIn>
+              <div className="max-w-3xl mx-auto text-center mb-12 md:mb-16">
+                <Badge className="mb-4 px-4 py-1.5 text-sm font-medium bg-amber-100 text-amber-800 border-amber-200 gap-1.5">
+                  <History className="size-3.5" />
+                  Curso intensivo
+                </Badge>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
+                  Historia Universal
+                </h2>
+                <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                  De la prehistoria a la actualidad — Basado en{' '}
+                  <span className="font-semibold text-amber-700">'Toda la Historia del mundo'</span> de
+                  Barreau y Bigot
+                </p>
+
+                {/* Decorative progress bar */}
+                <div className="mt-6 max-w-lg mx-auto">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                    <span>Cap. 1 — Prehistoria</span>
+                    <span>Cap. 37 — Globalización</span>
+                  </div>
+                  <Progress value={100} className="h-3 bg-amber-100" />
+                  <div className="flex gap-1 mt-3 justify-center flex-wrap">
+                    {progressEras.map((era) => (
+                      <span
+                        key={era.name}
+                        className="flex items-center gap-1.5 text-xs text-muted-foreground"
+                      >
+                        <span className={`inline-block size-2 rounded-full ${era.color}`} />
+                        {era.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Region Cards — Accordion */}
+            <FadeIn delay={0.1}>
+              <div className="max-w-4xl mx-auto">
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                  <BookMarked className="size-5 text-amber-600" />
+                  Regiones del mundo
+                </h3>
+                <Accordion type="multiple" className="space-y-3">
+                  {historyRegions.map((region, idx) => (
+                    <FadeIn key={region.id} delay={idx * 0.04}>
+                      <AccordionItem
+                        value={region.id}
+                        className="bg-card border-2 border-amber-100 rounded-xl px-4 data-[state=open]:border-amber-300 data-[state=open]:shadow-md transition-all"
+                      >
+                        <AccordionTrigger className="hover:no-underline py-4">
+                          <div className="flex items-center gap-3 text-left">
+                            <div className="flex items-center justify-center size-10 rounded-lg bg-amber-50 text-amber-600 shrink-0">
+                              <RegionIcon icon={region.icon} className="size-5" />
+                            </div>
+                            <div>
+                              <span className="font-semibold text-base text-foreground block">
+                                {region.name}
+                              </span>
+                              <span className="text-xs text-muted-foreground block mt-0.5 line-clamp-1">
+                                {region.intro}
+                              </span>
+                            </div>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="pb-4">
+                          <div className="space-y-4 pt-1">
+                            {/* Full intro */}
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {region.intro}
+                            </p>
+
+                            {/* Content */}
+                            {Array.isArray(region.content) ? (
+                              <ul className="space-y-1.5 text-sm text-foreground">
+                                {region.content.map((item, i) => (
+                                  <li key={i} className="flex items-start gap-2">
+                                    <ChevronRight className="size-3.5 text-amber-500 mt-0.5 shrink-0" />
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="text-sm text-foreground leading-relaxed bg-muted/50 rounded-lg p-4 border border-border/50">
+                                {region.content as string}
+                              </p>
+                            )}
+
+                            {/* Activity card */}
+                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200/60">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Lightbulb className="size-4 text-amber-600" />
+                                <span className="text-xs font-semibold text-amber-800 uppercase tracking-wide">
+                                  Actividad: {region.activityType}
+                                </span>
+                              </div>
+                              <p className="text-sm text-foreground leading-relaxed">
+                                {region.activity}
+                              </p>
+                              <div className="flex items-center gap-3 mt-3 flex-wrap">
+                                <DifficultyBadge level={region.difficulty} />
+                                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <Clock className="size-3" />
+                                  {region.time}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </FadeIn>
+                  ))}
+                </Accordion>
+              </div>
+            </FadeIn>
+
+            {/* Activities Section */}
+            <FadeIn delay={0.15}>
+              <div className="max-w-4xl mx-auto mt-16">
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+                  <PenTool className="size-5 text-amber-600" />
+                  Actividades del curso
+                </h3>
+                <p className="text-muted-foreground mb-8 text-sm">
+                  10 actividades prácticas para profundizar en cada región del mundo
+                </p>
+
+                {/* Category badges */}
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {activityCategories.map((cat) => (
+                    <Badge
+                      key={cat.label}
+                      variant="outline"
+                      className={`${cat.color} text-xs gap-1`}
+                    >
+                      <FileText className="size-3" />
+                      {cat.label}
+                      <span className="ml-1 opacity-60">({cat.count})</span>
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Activity cards grid */}
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {historyRegions.map((region, idx) => (
+                    <FadeIn key={region.id} delay={idx * 0.05}>
+                      <Card className="group hover:shadow-lg hover:border-amber-200 transition-all h-full cursor-pointer">
+                        <CardContent className="p-5 flex flex-col gap-3">
+                          {/* Header */}
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center justify-center size-8 rounded-lg bg-amber-50 text-amber-600 shrink-0">
+                                <RegionIcon icon={region.icon} className="size-4" />
+                              </div>
+                              <Avatar className="size-6">
+                                <AvatarFallback className="bg-amber-100 text-amber-700 text-[10px] font-bold">
+                                  {region.id.slice(0, 2).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                            </div>
+                            <DifficultyBadge level={region.difficulty} />
+                          </div>
+
+                          {/* Activity type */}
+                          <Badge
+                            variant="outline"
+                            className="w-fit text-xs bg-amber-50 text-amber-700 border-amber-200"
+                          >
+                            {region.activityType}
+                          </Badge>
+
+                          {/* Title */}
+                          <h4 className="font-semibold text-sm text-foreground leading-snug line-clamp-3">
+                            {region.activity}
+                          </h4>
+
+                          {/* Region tag + time */}
+                          <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
+                            <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+                              <Globe className="size-2.5 mr-0.5" />
+                              {region.name.split(' y ')[0]}
+                            </Badge>
+                            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                              <Clock className="size-2.5" />
+                              {region.time}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </FadeIn>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Course Progress Tracker — Horizontal scrollable */}
+            <FadeIn delay={0.2}>
+              <div className="max-w-4xl mx-auto mt-16">
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+                  <BarChart3 className="size-5 text-amber-600" />
+                  Progreso del curso
+                </h3>
+                <p className="text-muted-foreground mb-6 text-sm">
+                  Los 37 capítulos del libro, agrupados por era histórica
+                </p>
+
+                <ScrollArea className="w-full">
+                  <div className="flex gap-4 pb-4 min-w-max">
+                    {progressEras.map((era) => (
+                      <div
+                        key={era.name}
+                        className="flex flex-col items-center gap-2 min-w-[140px]"
+                      >
+                        <div className={`w-full h-2 rounded-full ${era.color}`} />
+                        <span className="text-sm font-semibold text-foreground">{era.name}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {era.chapters.join(', ')}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <Progress
+                            value={era.range[1] - era.range[0]}
+                            className="h-1.5 w-24 bg-muted"
+                          />
+                          <span className="text-[10px] text-muted-foreground">
+                            {era.range[1] - era.range[0]}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+
+                {/* Era color legend */}
+                <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                  {progressEras.map((era) => (
+                    <div
+                      key={era.name}
+                      className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 rounded-lg px-3 py-2"
+                    >
+                      <span className={`inline-block size-3 rounded-full ${era.color} shrink-0`} />
+                      <span className="font-medium text-foreground">{era.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Book reference */}
+            <FadeIn delay={0.25}>
+              <div className="max-w-2xl mx-auto mt-16 text-center">
+                <div className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-5 py-2.5 shadow-sm">
+                  <BookOpen className="size-4 text-amber-600" />
+                  <span className="text-sm text-muted-foreground">
+                    Contenido basado en{' '}
+                    <span className="font-semibold text-foreground">
+                      'Toda la Historia del mundo'
+                    </span>{' '}
+                    de Jean-Claude Barreau y Guillaume Bigot
+                  </span>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </section>
 
         {/* ─── NEWSLETTER ─── */}
         <section className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 py-16 md:py-20">
