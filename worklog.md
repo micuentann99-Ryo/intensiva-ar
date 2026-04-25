@@ -153,18 +153,42 @@ Cada período tiene: descripción (200+ palabras), 8-9 temas clave, actividad pr
 
 ---
 
+## PRÓXIMA TAREA — Botón de cambio de idioma (ES ↔ EN) ⏳
+
+**Estado**: Confirmado por el usuario. Listo para implementar cuando vuelva.
+
+### Plan de implementación
+- **Librería recomendada**: `next-intl` (la mejor para Next.js 16 App Router)
+- **Idiomas**: Español (por defecto) ↔ Inglés
+- **Estructura**: Crear archivos `es.json` y `en.json` con todas las traducciones
+- **Funcionamiento**: Botón en navbar que alterna locale, URLs tipo `/en/explorar`, `/en/materias/historia`
+- **Componentes afectados**: TODAS las páginas y componentes con texto estático
+- **No implementar hasta que el usuario lo pida explícitamente**
+
+### Pasos concretos cuando se implemente
+1. Instalar `next-intl`
+2. Crear `messages/es.json` y `messages/en.json` con todo el texto del sitio
+3. Configurar middleware para redirección de locales
+4. Crear layout con `NextIntlClientProvider`
+5. Reemplazar todos los strings hardcodeados por `t('clave')`
+6. Agregar botón ES/EN en navbar
+7. Probar todas las rutas en ambos idiomas
+
+---
+
 ## Pendientes / Mejoras Futuras
 
-1. **Landing page**: Incorporar tipografías Poppins/Manrope (solo se usa Inter actualmente)
-2. **Pricing real**: Las secciones de pricing y testimonios tienen contenido placeholder
-3. **Páginas de detalle**: Crear páginas individuales para cada materia (no solo Historia)
-4. **Blog**: Crear páginas de blog reales
-5. **Auth**: Implementar login/registro (botones "Ingresa"/"Regístrate" son placeholder)
-6. **Perfil de profesor**: Crear página para "¿Sos profesor?"
-7. **Idiomas**: Implementar selector de idioma funcional
-8. **Contenido de materias**: Agregar más materias con contenido detallado (Matemática, Inglés, etc.)
-9. **FAQ**: Contenido real de preguntas frecuentes
-10. **Newsletter**: Formulario funcional de newsletter
+1. ⏳ **Botón de idioma ES ↔ EN** ← PRÓXIMA TAREA (plan confirmado, pendiente implementación)
+2. **Landing page**: Incorporar tipografías Poppins/Manrope (solo se usa Inter actualmente)
+3. **Pricing real**: Las secciones de pricing y testimonios tienen contenido placeholder
+4. **Páginas de detalle**: Crear páginas individuales para cada materia (no solo Historia)
+5. **Blog**: Crear páginas de blog reales
+6. **Auth**: Implementar login/registro (botones "Ingresa"/"Regístrate" son placeholder)
+7. **Perfil de profesor**: Crear página para "¿Sos profesor?"
+8. **Logo personalizado**: El usuario mencionó un logo "P10 文/日" pero aún no lo describió
+9. **Contenido de materias**: Agregar más materias con contenido detallado (Matemática, Inglés, etc.)
+10. **FAQ**: Contenido real de preguntas frecuentes
+11. **Newsletter**: Formulario funcional de newsletter
 
 ---
 
