@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useTheme } from '@/hooks/use-theme';
@@ -10,12 +10,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import {
   Sheet,
   SheetContent,
@@ -23,14 +22,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Progress } from '@/components/ui/progress';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   Menu,
   Search,
@@ -40,11 +31,8 @@ import {
   Snowflake,
   GraduationCap,
   MapPin,
-  Monitor,
-  Calendar,
   Star,
   ChevronRight,
-  ChevronLeft,
   BookOpen,
   Calculator,
   FlaskConical,
@@ -53,47 +41,34 @@ import {
   Wrench,
   ArrowRight,
   Mail,
-  Instagram,
-  Facebook,
-  Twitter,
-  Youtube,
-  Users,
-  Lightbulb,
-  CheckCircle2,
-  BarChart3,
-  BookOpenCheck,
-  Newspaper,
-  Heart,
-  Target,
-  Brain,
-  Beaker,
-  PenTool,
   Sparkles,
   Landmark,
-  Mountain,
   Globe,
-  Compass,
-  ScrollText,
-  Ship,
-  TreePine,
-  Palmtree,
-  Clock,
-  Zap,
+  CheckCircle2,
+  BarChart3,
   FileText,
-  MessageSquare,
-  Map,
-  Trophy,
   ChevronDown,
-  BookMarked,
-  History,
-  Dna,
   Castle,
-  Palette,
   Flag,
+  Heart,
+  Clock,
+  Users,
+  BookMarked,
   Library,
+  Monitor,
+  Globe2,
+  PenTool,
+  Trophy,
+  Zap,
+  Shield,
+  Phone,
+  X,
 } from 'lucide-react';
 
-/* ─── Fade-in animation wrapper ─── */
+/* ═══════════════════════════════════════════════════════════
+   UTILITY COMPONENTS
+   ═══════════════════════════════════════════════════════════ */
+
 function FadeIn({
   children,
   delay = 0,
@@ -106,12 +81,12 @@ function FadeIn({
   direction?: 'up' | 'down' | 'left' | 'right';
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
   const dirMap = {
-    up: { y: 30, x: 0 },
-    down: { y: -30, x: 0 },
-    left: { y: 0, x: 30 },
-    right: { y: 0, x: -30 },
+    up: { y: 24, x: 0 },
+    down: { y: -24, x: 0 },
+    left: { y: 0, x: 24 },
+    right: { y: 0, x: -24 },
   };
   const { x, y } = dirMap[direction];
 
@@ -120,7 +95,7 @@ function FadeIn({
       ref={ref}
       initial={{ opacity: 0, x, y }}
       animate={isInView ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x, y }}
-      transition={{ duration: 0.6, delay, ease: 'easeOut' }}
+      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -128,223 +103,66 @@ function FadeIn({
   );
 }
 
-/* ─── Section wrapper ─── */
-function Section({
+function SectionWrap({
   id,
   children,
   className = '',
-  bg = false,
+  dark = false,
 }: {
   id?: string;
   children: ReactNode;
   className?: string;
-  bg?: boolean;
+  dark?: boolean;
 }) {
   return (
     <section
       id={id}
-      className={`py-16 md:py-24 ${bg ? 'bg-muted/50' : ''} ${className}`}
+      className={`py-20 md:py-28 ${dark ? 'bg-muted/40 dark:bg-gray-900/40' : ''} ${className}`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
     </section>
   );
 }
 
-/* ─── Section heading ─── */
 function SectionHeading({
   title,
   subtitle,
+  badge,
   className = '',
 }: {
   title: string;
   subtitle?: string;
+  badge?: string;
   className?: string;
 }) {
   return (
-    <FadeIn className={`text-center mb-12 md:mb-16 ${className}`}>
-      <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
+    <FadeIn className={`text-center mb-14 md:mb-20 ${className}`}>
+      {badge && (
+        <Badge
+          variant="secondary"
+          className="mb-4 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0"
+        >
+          {badge}
+        </Badge>
+      )}
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
         {title}
       </h2>
       {subtitle && (
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">{subtitle}</p>
+        <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+          {subtitle}
+        </p>
       )}
     </FadeIn>
   );
 }
 
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    DATA
-   ═══════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════ */
 
-const navLinks = [
-  { label: 'Cursos', href: '#cursos', action: null },
-  { label: 'Verano', href: '#search', action: null },
-  { label: 'Invierno', href: '#search', action: null },
-  { label: 'Explorar', href: '/explorar', action: 'navigate' },
-  { label: 'Materias', href: '/materias', action: 'navigate' },
-  { label: 'Historia', href: '/materias/historia', action: 'navigate' },
-  { label: 'Catálogo', href: '#catalogo', action: null },
-  { label: 'Profesores', href: '#profesores', action: null },
-  { label: 'Cómo funciona', href: '#como-funciona', action: null },
-];
-
-const popularSearches = [
-  'Matemática',
-  'Inglés',
-  'Historia',
-  'Ingreso Universitario',
-  'Química',
-  'Física',
-  'Programación',
-];
-
-const nichos = [
-  {
-    icon: <Target className="size-6 text-emerald-600" />,
-    title: 'Clases intensivas para finales de ingeniería en Argentina',
-    desc: 'Preparate con cursos enfocados en las materias más difíciles de la carrera.',
-  },
-  {
-    icon: <Heart className="size-6 text-rose-500" />,
-    title: 'Preparación intensiva para ingreso a Medicina',
-    desc: 'Accedé a programas diseñados específicamente para el ingreso a Medicina.',
-  },
-  {
-    icon: <GraduationCap className="size-6 text-amber-600" />,
-    title: 'Recuperación de materias de primer año de CBC/UBA',
-    desc: 'Cursos de recuperación para aprobación rápida de materias del CBC.',
-  },
-  {
-    icon: <Calculator className="size-6 text-sky-600" />,
-    title: 'Clases intensivas de matemática para ingresantes',
-    desc: 'Fortalecé tus bases de matemática antes de empezar la universidad.',
-  },
-];
-
-const categorias = [
-  { icon: <Calculator className="size-7" />, name: 'Matemáticas', count: 245, slug: 'matematica' },
-  {
-    icon: <GraduationCap className="size-7" />,
-    name: 'Ingreso Universitario',
-    count: 189,
-    slug: 'ingreso',
-  },
-  { icon: <BookOpen className="size-7" />, name: 'Inglés', count: 167, slug: 'ingles' },
-  { icon: <Landmark className="size-7" />, name: 'Historia', count: 48, slug: 'historia' },
-  { icon: <FlaskConical className="size-7" />, name: 'Ciencias', count: 134, slug: 'ciencias' },
-  { icon: <Code className="size-7" />, name: 'Informática y Programación', count: 98, slug: 'programacion' },
-  { icon: <Wrench className="size-7" />, name: 'Talleres y Cursos cortos', count: 76, slug: 'talleres' },
-];
-
-const steps = [
-  {
-    icon: <Search className="size-8" />,
-    title: 'Buscá tu curso',
-    desc: 'Filtá por materia, modalidad, ubicación y fecha.',
-  },
-  {
-    icon: <BarChart3 className="size-8" />,
-    title: 'Compará opciones',
-    desc: 'Revisá profesores, opiniones, programas y precios.',
-  },
-  {
-    icon: <CheckCircle2 className="size-8" />,
-    title: 'Inscribite y empezá',
-    desc: 'Elegí tu curso e inscríbite de forma rápida y segura.',
-  },
-];
-
-const profesores = [
-  {
-    name: 'Martin T.',
-    subject: 'Matemáticas',
-    location: 'Buenos Aires',
-    rating: 4.9,
-    reviews: 320,
-    modality: 'Presencial',
-    initials: 'MT',
-  },
-  {
-    name: 'Sofia R.',
-    subject: 'Inglés',
-    location: 'Córdoba',
-    rating: 4.9,
-    reviews: 280,
-    modality: 'Online',
-    initials: 'SR',
-  },
-  {
-    name: 'Facundo L.',
-    subject: 'Física',
-    location: 'Rosario',
-    rating: 4.8,
-    reviews: 210,
-    modality: 'Presencial',
-    initials: 'FL',
-  },
-  {
-    name: 'Camila P.',
-    subject: 'Química',
-    location: 'Buenos Aires',
-    rating: 4.9,
-    reviews: 185,
-    modality: 'Online',
-    initials: 'CP',
-  },
-  {
-    name: 'Nicolás G.',
-    subject: 'Programación',
-    location: 'Mendoza',
-    rating: 4.8,
-    reviews: 150,
-    modality: 'Online',
-    initials: 'NG',
-  },
-];
-
-const blogArticles = [
-  {
-    tag: 'Matemáticas',
-    icon: <Calculator className="size-4" />,
-    title: 'Cómo aprobar matemáticas en 15 días',
-    desc: 'Estrategias probadas para rendir tu examen final de matemáticas con éxito.',
-  },
-  {
-    tag: 'Estudio',
-    icon: <Lightbulb className="size-4" />,
-    title: 'Técnicas de estudio que realmente funcionan',
-    desc: 'Descubrí los métodos más efectivos para retener información y rendir mejor.',
-  },
-  {
-    tag: 'Universidad',
-    icon: <GraduationCap className="size-4" />,
-    title: 'Todo sobre los ingresos universitarios 2024',
-    desc: 'Fechas, requisitos y consejos para los procesos de ingreso más competitivos.',
-  },
-];
-
-const footerNav = {
-  Navegación: ['Inicio', 'Cursos', 'Profesores', 'Cómo funciona', 'Blog'],
-  Categorías: [
-    'Matemáticas',
-    'Historia',
-    'Ingreso Universitario',
-    'Inglés',
-    'Ciencias',
-    'Programación',
-  ],
-  Información: [
-    'Sobre nosotros',
-    'Contacto',
-    'Términos y condiciones',
-    'Política de privacidad',
-    'Preguntas frecuentes',
-  ],
-};
-
-/* ─── Catalog Books ─── */
 const catalogBooks = [
-  { title: 'Toda la Historia del mundo', subject: 'Historia', author: 'Barreau & Bigot', desc: 'De la prehistoria a la actualidad en 37 capítulos', icon: <Globe className="size-5 text-emerald-600" />, navigateTo: 'historia' },
+  { title: 'Toda la Historia del mundo', subject: 'Historia', author: 'Barreau & Bigot', desc: 'De la prehistoria a la actualidad en 37 capítulos', icon: <Globe className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
   { title: 'Curso Intensivo de Matemática', subject: 'Matemática', author: 'IntensivaAR', desc: 'Álgebra, geometría, trigonometría y cálculo', icon: <Calculator className="size-5 text-emerald-600" />, navigateTo: null },
   { title: 'Inglés para Profesionales', subject: 'Inglés', author: 'IntensivaAR', desc: 'Gramática avanzada y conversación', icon: <BookOpen className="size-5 text-emerald-600" />, navigateTo: null },
   { title: 'Física Universitaria', subject: 'Física', author: 'IntensivaAR', desc: 'Mecánica, termodinámica y electromagnetismo', icon: <Atom className="size-5 text-emerald-600" />, navigateTo: null },
@@ -352,1600 +170,1182 @@ const catalogBooks = [
   { title: 'Programación desde Cero', subject: 'Programación', author: 'IntensivaAR', desc: 'Python, JavaScript y algoritmos', icon: <Code className="size-5 text-emerald-600" />, navigateTo: null },
   { title: 'Preparación Ingreso UBA/CBC', subject: 'Ingreso Universitario', author: 'IntensivaAR', desc: 'Matemática, lengua y ciencias', icon: <GraduationCap className="size-5 text-emerald-600" />, navigateTo: null },
   { title: 'Ingreso a Medicina', subject: 'Ingreso Universitario', author: 'IntensivaAR', desc: 'Biología, química y razonamiento', icon: <Heart className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Historia Argentina Contemporánea', subject: 'Historia', author: 'IntensivaAR', desc: 'Desde la independencia hasta la actualidad', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' },
-  { title: 'Historia de las Civilizaciones', subject: 'Historia', author: 'IntensivaAR', desc: 'Egipto, Grecia, Roma y el mundo antiguo', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' },
-  { title: 'El Mundo en la Edad Media', subject: 'Historia', author: 'IntensivaAR', desc: 'Imperios, cruzadas y nacimiento de naciones', icon: <Castle className="size-5 text-emerald-600" />, navigateTo: 'historia' },
-  { title: 'Guerras del Siglo XX', subject: 'Historia', author: 'IntensivaAR', desc: 'Primera y Segunda Guerra Mundial', icon: <Flag className="size-5 text-emerald-600" />, navigateTo: 'historia' },
+  { title: 'Historia Argentina Contemporánea', subject: 'Historia', author: 'IntensivaAR', desc: 'Desde la independencia hasta la actualidad', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+  { title: 'Historia de las Civilizaciones', subject: 'Historia', author: 'IntensivaAR', desc: 'Egipto, Grecia, Roma y el mundo antiguo', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+  { title: 'El Mundo en la Edad Media', subject: 'Historia', author: 'IntensivaAR', desc: 'Imperios, cruzadas y nacimiento de naciones', icon: <Castle className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+  { title: 'Guerras del Siglo XX', subject: 'Historia', author: 'IntensivaAR', desc: 'Primera y Segunda Guerra Mundial', icon: <Flag className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
 ];
 
-/* ─── History Subdivisions ─── */
-type LucideIcon = React.ComponentType<{ className?: string }>;
+const profesores = [
+  { name: 'Martin T.', subject: 'Matemáticas', location: 'Buenos Aires', rating: 4.9, reviews: 320, modality: 'Presencial', initials: 'MT' },
+  { name: 'Sofia R.', subject: 'Inglés', location: 'Córdoba', rating: 4.9, reviews: 280, modality: 'Online', initials: 'SR' },
+  { name: 'Facundo L.', subject: 'Física', location: 'Rosario', rating: 4.8, reviews: 210, modality: 'Presencial', initials: 'FL' },
+  { name: 'Camila P.', subject: 'Química', location: 'Buenos Aires', rating: 4.9, reviews: 185, modality: 'Online', initials: 'CP' },
+  { name: 'Nicolás G.', subject: 'Programación', location: 'Mendoza', rating: 4.8, reviews: 150, modality: 'Online', initials: 'NG' },
+  { name: 'Lucía M.', subject: 'Historia', location: 'La Plata', rating: 4.9, reviews: 195, modality: 'Presencial', initials: 'LM' },
+];
 
-const historiaSubdivisions = [
+const testimonials = [
   {
-    id: 'prehistoria',
-    name: 'Prehistoria y Orígenes',
-    icon: Dna,
-    desc: 'El origen del ser humano en África oriental, la invención del lenguaje, mutaciones genéticas, Lucy, el paso del Estrecho de Bering hacia América.',
-    topics: 6,
+    quote: 'Las clases intensivas de verano me salvaron. Aprobé Análisis Matemático con 9 y sin estrés. Los profesores son increíbles.',
+    name: 'Valentina S.',
+    course: 'Matemática – Ingreso Ingeniería',
+    rating: 5,
+    initials: 'VS',
   },
   {
-    id: 'pangea',
-    name: 'Pangea y Primeras Civilizaciones',
-    icon: Globe,
-    desc: 'Los ríos nutricios (Nilo, Éufrates, Indo), los primeros Estados, las religiones antiguas, Sumeria, Egipto faraónico, la aparición de la escritura.',
-    topics: 5,
+    quote: 'La mejor plataforma para prepararse para el CBC. El material de estudio es completo y las clases en vivo son muy interactivas.',
+    name: 'Tomás R.',
+    course: 'Ingreso UBA/CBC',
+    rating: 5,
+    initials: 'TR',
   },
   {
-    id: 'mundo-antiguo',
-    name: 'Mundo Antiguo (Grecia y Roma)',
-    icon: Landmark,
-    desc: 'Cretenses, fenicios, judíos. El Imperio persa. Alejandro Magno. Cartago y Roma. El Imperio romano. El judeo-cristianismo.',
-    topics: 7,
-  },
-  {
-    id: 'edad-media',
-    name: 'Edad Media',
-    icon: Castle,
-    desc: 'La caída de Roma. Los tiempos bárbaros. La época del islam. Las cruzadas. El nacimiento de las naciones. La guerra de los Cien Años. Juana de Arco.',
-    topics: 8,
-  },
-  {
-    id: 'renacimiento',
-    name: 'Renacimiento y Reformas',
-    icon: Palette,
-    desc: 'Los grandes descubrimientos. La muerte de las civilizaciones precolombinas. Carlos V. Francisco I. Las reformas religiosas. Miguel Ángel, Leonardo, Maquiavelo.',
-    topics: 6,
-  },
-  {
-    id: 'mexico-aztecas',
-    name: 'Historia de México y Aztecas',
-    icon: Mountain,
-    desc: 'El Imperio azteca/mexica. Moctezuma. Cortés y la conquista. La Noche Triste. Tenochtitlán. Maximiliano. Chiapas.',
-    topics: 5,
-  },
-  {
-    id: 'peru-incas',
-    name: 'Historia del Perú e Incas',
-    icon: Mountain,
-    desc: 'El Imperio inca. Atahualpa y Pizarro. Cajamarca. El desfase temporal. La independencia. Ayacucho.',
-    topics: 4,
-  },
-  {
-    id: 'argentina-sudamerica',
-    name: 'Historia de Argentina y Sudamérica',
-    icon: MapPin,
-    desc: 'Las revoluciones de independencia. San Martín. Bolívar. La fragmentación latinoamericana. El apartheid indígena.',
-    topics: 6,
-  },
-  {
-    id: 'brasil-centroamerica',
-    name: 'Historia de Brasil y Centroamérica',
-    icon: TreePine,
-    desc: 'Brasil portugués. Dom Pedro. La monarquía brasileña. Los mayas en Guatemala. Las civilizaciones precolombinas menores.',
-    topics: 4,
-  },
-  {
-    id: 'america-norte',
-    name: 'Historia de América del Norte',
-    icon: Flag,
-    desc: 'Los pieles rojas. La guerra de Secesión. La expansión hacia el oeste. El ferrocarril continental. Tocqueville.',
-    topics: 5,
-  },
-  {
-    id: 'africa',
-    name: 'Historia de África',
-    icon: Compass,
-    desc: 'Los orígenes humanos. La colonización. La guerra de los Boers. El Congo. Sudáfrica. Egipto y el canal de Suez.',
-    topics: 5,
-  },
-  {
-    id: 'asia',
-    name: 'Historia de Asia',
-    icon: ScrollText,
-    desc: 'China y los ríos nutricios. Japón y la era Meiji. La India británica. El Imperio otomano. Indonesia.',
-    topics: 6,
-  },
-  {
-    id: 'europa-moderna',
-    name: 'Historia de Europa Moderna',
-    icon: Landmark,
-    desc: 'Las guerras de religión. Richelieu y Luis XIV. El Siglo de las Luces. La Revolución Francesa. Napoleón.',
-    topics: 8,
-  },
-  {
-    id: 'contemporanea',
-    name: 'Historia Contemporánea',
-    icon: Newspaper,
-    desc: 'La Belle Époque. La Gran Guerra. La Revolución rusa. Hitler. La Segunda Guerra Mundial. La Guerra Fría. La descolonización. La globalización.',
-    topics: 9,
-  },
-  {
-    id: 'paises-bajos-oceania',
-    name: 'Países Bajos y Oceanía',
-    icon: Ship,
-    desc: 'Los boers. Bélgica. Australia y Nueva Zelanda como dominios británicos. Las posesiones francesas en el Pacífico.',
-    topics: 4,
+    quote: 'Empecé el curso de inglés desde cero y en 6 semanas ya podía mantener una conversación básica. 100% recomendado.',
+    name: 'Camila A.',
+    course: 'Inglés para Profesionales',
+    rating: 5,
+    initials: 'CA',
   },
 ];
 
-/* ─── History region data ─── */
-const historyRegions = [
+const faqItems = [
   {
-    id: 'mexico',
-    name: 'México y Civilización Azteca/Mexica',
-    icon: 'landmark' as const,
-    color: 'amber',
-    intro: 'El Imperio azteca, una de las civilizaciones más poderosas de Mesoamérica, fue conquistado por los españoles bajo el mando de Hernán Cortés en el siglo XVI.',
-    content: 'Los aztecas, en plena expansión en el siglo XV, crearon en México un Estado guerrero que se parecía a la Asiria de Sargón. En 1519, Cortés llegó a la capital azteca de Tenochtitlán. Fue recibido por Moctezuma. La "Noche Triste" (30 de junio de 1520). Tenochtitlán fue tomada el 13 de agosto de 1521. Los españoles continuaron hasta California por el norte. En el siglo XIX, México enfrentó la intervención francesa de Napoleón III, quien envió a Maximiliano como emperador. Los mexicanos no querían invasores y las guerrillas obligaron a los franceses a retirarse. Maximiliano acabó fusilado. Chiapas fue una sedición étnica contemporánea.',
-    activity: 'Investigá: Compará la organización del Imperio azteca con el Imperio inca. ¿Qué similitudes y diferencias encontrás en su forma de gobierno, religión y arquitectura?',
-    activityType: 'Investigación',
-    difficulty: 'Medio',
-    time: '45 min',
+    q: '¿Qué es un curso intensivo?',
+    a: 'Un curso intensivo es un programa académico concentrado que te permite aprender una materia en un período corto (generalmente 2 a 6 semanas). Las clases tienen mayor carga horaria diaria y están diseñadas para un aprendizaje rápido y efectivo.',
   },
   {
-    id: 'peru',
-    name: 'Perú y el Imperio Inca',
-    icon: 'mountain' as const,
-    color: 'emerald',
-    intro: 'El Tahuantinsuyo, el vasto imperio incaico, se extendía desde Ecuador hasta Chile. Fue conquistado por Francisco Pizarro con un reducido grupo de soldados.',
-    content: 'Los incas construyeron un inmenso Imperio desde Ecuador hasta Chile, pasando por Bolivia y Perú. El Inca era una especie de faraón, un Rey sol. Se adoraba al Sol. Existían clases de escribas, soldados y campesinos. En 1531, Pizarro dirigió una expedición hacia Perú. El 16 de noviembre de 1532, en Cajamarca, Pizarro secuestró al Inca Atahualpa con solo 163 hombres frente a miles de soldados incas. El Imperio se derrumbó. El "desfase temporal" entre españoles e incas era de unos seis mil años. En 1824, las tropas españolas fueron aniquiladas en Ayacucho, logrando la independencia. Sendero Luminoso fue una sedición étnica contemporánea en Perú.',
-    activity: 'Reflexioná: ¿Por qué creés que un grupo de 163 españoles pudo derrotar al Imperio inca de 10-15 millones de personas? Enumerá al menos 3 factores que explica el libro.',
-    activityType: 'Reflexión',
-    difficulty: 'Difícil',
-    time: '30 min',
+    q: '¿Las clases son en vivo o grabadas?',
+    a: 'Ambas modalidades están disponibles. Las clases en vivo se dictan por Zoom con profesores expertos, y quedan grabadas para que puedas verlas cuando quieras. También ofrecemos cursos 100% asincrónicos.',
   },
   {
-    id: 'argentina',
-    name: 'Argentina y Sudamérica',
-    icon: 'globe' as const,
-    color: 'sky',
-    intro: 'Las revoluciones de independencia sudamericanas fragmentaron el Imperio español en múltiples repúblicas, dejando desafíos que persisten hasta hoy.',
-    content: 'Las revoluciones de independencia sudamericanas fueron lideradas por figuras como Miranda y San Martín. Bolívar no consiguió mantener la unidad del Imperio español, que se fraccionó en repúblicas independientes: México, Perú, Colombia, Venezuela, Chile, Argentina, Bolivia. El libro señala dos problemas graves: la falta de unión y el apartheid (las insurrecciones fueron revueltas de colonos, los indios participaron poco). Latinoamérica permanece dividida en una veintena de Estados. Los indígenas siguen participando muy poco en los gobiernos. En Argentina, los mapuches y otras etnias originarias tuvieron un papel menos documentado en este libro.',
-    activity: 'Debate: ¿Por qué América Latina se dividió en tantos países mientras América del Norte (EE.UU.) se unificó? ¿Qué factores mencionados en el libro explican esta diferencia?',
-    activityType: 'Debate',
-    difficulty: 'Difícil',
-    time: '60 min',
+    q: '¿Necesito conocimientos previos?',
+    a: 'No. La mayoría de nuestros cursos están diseñados para empezar desde cero. Cada curso indica el nivel requerido en su descripción. Para cursos avanzados, se especifican los prerrequisitos.',
   },
   {
-    id: 'norteamerica',
-    name: 'América del Norte',
-    icon: 'mapPin' as const,
-    color: 'rose',
-    intro: 'Los Estados Unidos se expandió hacia el oeste tras la guerra de Secesión, con consecuencias devastadoras para los pueblos indígenas norteamericanos.',
-    content: 'Los amerindios al norte de Río Grande eran cazadores nómadas, no campesinos como aztecas o incas. Tras la guerra de Secesión (1861-1865), Estados Unidos reanudó su expansión. Los pieles rojas fueron casi aniquilados. En 1815 podía haber veinte millones de bisontes, frente a menos de un millón en 1880. Tocqueville escribió sobre la conducta americana hacia los indios. En 1867, EE.UU. compró Alaska al Imperio del zar. En 1898 declaró la guerra a España y ganó Cuba, Puerto Rico y Filipinas. El primer ferrocarril continental unió Nueva York con San Francisco en 1869. El petróleo salió a flote en Texas creando la fortuna de los Rockefeller.',
-    activity: 'Análisis de texto: Leé la cita de Tocqueville sobre el comportamiento de los americanos hacia los indígenas (página 126 del libro). ¿Qué diferencia establece entre la colonización española y la americana?',
-    activityType: 'Análisis de texto',
-    difficulty: 'Medio',
-    time: '40 min',
+    q: '¿Cómo funciona la certificación?',
+    a: 'Al completar un curso y aprobar la evaluación final, recibís un certificado digital verificado de IntensivaAR. Los cursos Premium incluyen certificación incluida en el precio.',
   },
   {
-    id: 'centroamerica',
-    name: 'Centroamérica y Civilización Maya',
-    icon: 'treePine' as const,
-    color: 'lime',
-    intro: 'Los mayas, ya en decadencia al llegar los españoles, habían logrado avances notables como la escritura, las matemáticas y la agricultura.',
-    content: 'Los mayas, ya en decadencia cuando llegaron los españoles, vivían en Guatemala, en pequeñas ciudades-estado comparables a las de los griegos de los tiempos de Homero. Sabían contar y acababan de inventar la escritura. Salían de la prehistoria y entraban en un triunfante neolítico. Los mayas inventaron plantas que hoy nos resultan familiares: la patata, el chocolate (cacao), el maíz y el tomate. Se comunicaban entre sí y con los nómadas de las praderas norteamericanas, pero ignoraban la existencia del mundo exterior.',
-    activity: 'Investigación: Los mayas inventaron el cacao, el maíz y el tomate. Elegí uno de estos productos y trazá su historia desde la civilización maya hasta nuestra mesa actual.',
-    activityType: 'Investigación',
-    difficulty: 'Fácil',
-    time: '50 min',
+    q: '¿Puedo cancelar mi suscripción?',
+    a: 'Sí, podés cancelar tu suscripción Premium en cualquier momento desde tu perfil. No hay penalías ni costos de cancelación. Seguirás teniendo acceso hasta el fin del período facturado.',
   },
   {
-    id: 'europa',
-    name: 'Europa',
-    icon: 'landmark2' as const,
-    color: 'violet',
-    intro: 'Europa es el tema principal del libro, cubriendo desde la prehistoria hasta la globalización actual. Un recorrido completo por la historia del mundo occidental.',
-    content: [
-      'La prehistoria en África oriental',
-      'Cretenses, griegos, fenicios y judíos (Mediterráneo)',
-      'El Imperio persa y el mundo griego',
-      'Alejandro Magno (primera globalización)',
-      'Cartago y Roma (Aníbal y César)',
-      'El Imperio romano',
-      'El judeo-cristianismo',
-      'La época del islam',
-      'La Edad Media y las cruzadas',
-      'El Renacimiento (Miguel Ángel, Leonardo, Maquiavelo)',
-      'Las Reformas y guerras de religión (Lutero, Calvino)',
-      'El gran siglo XVII (Richelieu, Luis XIV)',
-      'El Siglo de las Luces (Voltaire, Rousseau)',
-      'La Revolución Francesa',
-      'Napoleón',
-      'Las repúblicas del siglo XIX',
-      'La unificación de Italia y Alemania',
-      'La Belle Époque',
-      'Las dos Guerras Mundiales',
-      'La caída de la URSS y la globalización',
+    q: '¿Hay descuentos para grupos?',
+    a: 'Sí, ofrecemos descuentos especiales para grupos de 3 o más estudiantes, y para instituciones educativas. Contactanos por email para obtener una cotización personalizada.',
+  },
+];
+
+const megaMenuData = [
+  {
+    title: 'Ciencias Exactas',
+    items: [
+      { icon: <Calculator className="size-5" />, title: 'Matemática', desc: 'Álgebra, cálculo, geometría' },
+      { icon: <Atom className="size-5" />, title: 'Física', desc: 'Mecánica, termodinámica, electromagnetismo' },
+      { icon: <FlaskConical className="size-5" />, title: 'Química', desc: 'Orgánica, inorgánica, analítica' },
+      { icon: <Code className="size-5" />, title: 'Programación', desc: 'Python, JavaScript, algoritmos' },
     ],
-    activity: 'Línea de tiempo: Armá una línea de tiempo con los 10 eventos más importantes de la historia de Europa según el libro. Justificá tu selección.',
-    activityType: 'Línea de tiempo',
-    difficulty: 'Difícil',
-    time: '90 min',
   },
   {
-    id: 'africa',
-    name: 'África',
-    icon: 'compass' as const,
-    color: 'orange',
-    intro: 'Cuna de la humanidad, África fue colonizada por potencias europeas en el siglo XIX, dejando un legado de fronteras artificiales y conflictos.',
-    content: 'La prehistoria humana se origina en África oriental, donde hace 200-300 mil años grupos de primates inventaron el lenguaje. En la época colonial, los europeos conquistaron el continente. Los boers/afrikaners (holandeses) abandonaron Ciudad del Cabo entre 1834-1838 para fundar estados libres. La guerra de los Boers (1899-1902) enfrentó a holandeses e ingleses. Francia colonizó desde Argelia hasta el Congo. El rey Leopoldo de Bélgica explotó brutalmente el Congo. Alemania anexionó Camerún, Togo, Namibia y Tanzania. Italia fue derrotada por Etiopía en Adúa (1896). Egipto fue controlado por Inglaterra desde 1882 para proteger el canal de Suez.',
-    activity: 'Mapa histórico: Ubicá en un mapa de África las principales colonias europeas mencionadas en el libro. ¿Qué patrones geográficos observás en la colonización?',
-    activityType: 'Mapa histórico',
-    difficulty: 'Medio',
-    time: '55 min',
+    title: 'Ciencias Sociales',
+    items: [
+      { icon: <Landmark className="size-5" />, title: 'Historia', desc: 'Universal, Argentina, contemporánea' },
+      { icon: <Globe2 className="size-5" />, title: 'Geografía', desc: 'Física, humana, argentina' },
+      { icon: <BarChart3 className="size-5" />, title: 'Economía', desc: 'Micro, macro, finanzas' },
+    ],
   },
   {
-    id: 'asia',
-    name: 'Asia',
-    icon: 'scrollText' as const,
-    color: 'red',
-    intro: 'Asia abarca civilizaciones milenarias como China e India, y la notable modernización de Japón durante la era Meiji.',
-    content: 'China aparece desde los primeros capítulos con sus ríos nutricios. Los jesuitas como Mateo Ricci llegaron a Pekín y adoptaron costumbres confucianas. El Imperio otomano se extendió desde el Adriático hasta el golfo Pérsico ("el hombre enfermo de Europa"). Japón es el único país del Tercer Mundo que se modernizó: en 1868 el emperador Mutsuhito proclamó la era Meiji. En 20 años recuperaron su retraso técnico. En 1905, Japón hundió la flota rusa en Tsushima. En 1894 anexó Taiwán y en 1910, Corea. India fue colonia británica: la reina Victoria fue proclamada emperatriz en 1877. Indonesia quedó bajo control holandés.',
-    activity: 'Ensayo comparativo: Japón logró modernizarse resistiendo a la colonización europea, mientras que India y China fueron colonizadas o sometidas. ¿Qué factores explica el libro que hicieron posible la modernización japonesa?',
-    activityType: 'Ensayo',
-    difficulty: 'Difícil',
-    time: '75 min',
+    title: 'Idiomas',
+    items: [
+      { icon: <Globe className="size-5" />, title: 'Inglés', desc: 'Todos los niveles, conversación' },
+      { icon: <BookOpen className="size-5" />, title: 'Literatura', desc: 'Análisis literario, escritura' },
+      { icon: <PenTool className="size-5" />, title: 'Filosofía', desc: 'Ética, lógica, estética' },
+    ],
   },
   {
-    id: 'paisesbajos',
-    name: 'Países Bajos y el Mundo Colonial',
-    icon: 'ship' as const,
-    color: 'cyan',
-    intro: 'Los holandeses fueron competidores coloniales clave, con presencia en Sudáfrica, Indonesia y el sudeste asiático.',
-    content: 'Los holandeses fueron competidores coloniales. Después de Waterloo, Holanda había anexionado Bélgica, pero los belgas se declararon independientes el 4 de octubre de 1830. Los boers/afrikaners, colonos holandeses en Sudáfrica, abandonaron Ciudad del Cabo y fundaron estados libres en Orange y Transvaal. En la guerra de los Boers (1899-1902), los "comandos" boers aterrorizaron al ejército inglés. Holanda pudo conservar Indonesia como colonia. El término "comandos" viene de esta guerra.',
-    activity: 'Investigá: El término "comando" se originó en la guerra de los Boers. Investigá qué otros términos militares o de uso cotidiano tienen origen en conflictos históricos.',
-    activityType: 'Investigación',
-    difficulty: 'Medio',
-    time: '40 min',
-  },
-  {
-    id: 'oceania',
-    name: 'Australia y Oceanía',
-    icon: 'palmtree' as const,
-    color: 'teal',
-    intro: 'Australia y Nueva Zelanda se convirtieron en dominios del Imperio británico, con una historia ligada a la colonización y la participación en las guerras mundiales.',
-    content: 'El libro menciona a Australia en el contexto del Imperio británico. Australia y Nueva Zelanda se convirtieron en "dominios" o "Estados asociados" del Imperio británico con sus propias libertades. También se menciona que los primeros humanos llegaron a Australia desde el sudeste asiático en la prehistoria. La contribución de Australia a la Primera Guerra Mundial es mencionada en el contexto de la guerra de Gallípoli. Francia también tenía posesiones en el Pacífico sur: Nueva Caledonia y Oceanía (Tahití).',
-    activity: 'Punto de extensión: Este apartado tiene menos desarrollo en el libro. Elegí un aspecto de la historia de Australia (colonización, pueblos aborígenes, o participación en guerras mundiales) e investigá más allá del libro para ampliar este apartado.',
-    activityType: 'Investigación',
-    difficulty: 'Fácil',
-    time: '60 min',
+    title: 'Ingreso',
+    items: [
+      { icon: <GraduationCap className="size-5" />, title: 'UBA / CBC', desc: 'Preparación completa' },
+      { icon: <Heart className="size-5" />, title: 'Medicina', desc: 'Biología, química, razonamiento' },
+      { icon: <Monitor className="size-5" />, title: 'Ingeniería', desc: 'Matemática, física, dibujo' },
+    ],
   },
 ];
 
-const activityCategories = [
-  { label: 'Investigación', color: 'bg-amber-100 text-amber-800 border-amber-200', count: 3 },
-  { label: 'Análisis de texto', color: 'bg-rose-100 text-rose-800 border-rose-200', count: 1 },
-  { label: 'Debate', color: 'bg-sky-100 text-sky-800 border-sky-200', count: 1 },
-  { label: 'Ensayo', color: 'bg-violet-100 text-violet-800 border-violet-200', count: 1 },
-  { label: 'Línea de tiempo', color: 'bg-emerald-100 text-emerald-800 border-emerald-200', count: 1 },
-  { label: 'Mapa histórico', color: 'bg-orange-100 text-orange-800 border-orange-200', count: 1 },
-  { label: 'Reflexión', color: 'bg-teal-100 text-teal-800 border-teal-200', count: 1 },
-  { label: 'Punto de extensión', color: 'bg-lime-100 text-lime-800 border-lime-200', count: 1 },
+const categorias = [
+  { icon: <Calculator className="size-7" />, name: 'Matemáticas', count: 245, color: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400' },
+  { icon: <BookOpen className="size-7" />, name: 'Inglés', count: 167, color: 'bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400' },
+  { icon: <Landmark className="size-7" />, name: 'Historia', count: 48, color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400' },
+  { icon: <GraduationCap className="size-7" />, name: 'Ingreso Universitario', count: 189, color: 'bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400' },
+  { icon: <FlaskConical className="size-7" />, name: 'Ciencias', count: 134, color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' },
+  { icon: <Code className="size-7" />, name: 'Programación', count: 98, color: 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400' },
+  { icon: <Wrench className="size-7" />, name: 'Talleres', count: 76, color: 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400' },
 ];
 
-const progressEras = [
-  { name: 'Prehistoria', color: 'bg-stone-500', chapters: ['Cap. 1-3'], range: [0, 8] },
-  { name: 'Antigüedad', color: 'bg-amber-600', chapters: ['Cap. 4-12'], range: [8, 35] },
-  { name: 'Edad Media', color: 'bg-rose-600', chapters: ['Cap. 13-18'], range: [35, 54] },
-  { name: 'Renacimiento', color: 'bg-violet-600', chapters: ['Cap. 19-24'], range: [54, 70] },
-  { name: 'Época Moderna', color: 'bg-sky-600', chapters: ['Cap. 25-30'], range: [70, 86] },
-  { name: 'Contemporánea', color: 'bg-emerald-600', chapters: ['Cap. 31-37'], range: [86, 100] },
+const benefits = [
+  { icon: <Monitor className="size-6" />, title: 'Clases en vivo con profesores expertos', desc: 'Aprendé en tiempo real con los mejores profesores de Argentina. Preguntá, participá y resolvé dudas al instante.' },
+  { icon: <BookMarked className="size-6" />, title: 'Material de estudio incluido', desc: 'Accedé a PDFs, guías de estudio, ejercicios prácticos y exámenes modelo para cada curso.' },
+  { icon: <Clock className="size-6" />, title: 'Horarios flexibles (verano/invierno)', desc: 'Elegí entre cursos de verano o invierno, con horarios que se adaptan a tu agenda.' },
+  { icon: <Trophy className="size-6" />, title: 'Certificación al finalizar', desc: 'Obtené un certificado digital verificado al completar cada curso y aprobar la evaluación.' },
 ];
 
-/* ─── Icon helper ─── */
-function RegionIcon({ icon, className }: { icon: string; className?: string }) {
-  const props = { className };
-  switch (icon) {
-    case 'landmark': return <Landmark {...props} />;
-    case 'mountain': return <Mountain {...props} />;
-    case 'globe': return <Globe {...props} />;
-    case 'mapPin': return <MapPin {...props} />;
-    case 'treePine': return <TreePine {...props} />;
-    case 'landmark2': return <Landmark {...props} />;
-    case 'compass': return <Compass {...props} />;
-    case 'scrollText': return <ScrollText {...props} />;
-    case 'ship': return <Ship {...props} />;
-    case 'palmtree': return <Palmtree {...props} />;
-    default: return <Globe {...props} />;
-  }
-}
+const navItems = [
+  { label: 'Inicio', href: '#' },
+  { label: 'Cursos', href: '#cursos', hasMega: true },
+  { label: 'Explorar', href: '/explorar', navigate: true },
+  { label: 'Materias', href: '/materias', navigate: true },
+  { label: 'Catálogo', href: '#catalogo' },
+  { label: 'Profesores', href: '#profesores' },
+];
 
-function DifficultyBadge({ level }: { level: string }) {
-  const map: Record<string, { color: string; icon: LucideIcon }> = {
-    Fácil: { color: 'bg-emerald-100 text-emerald-800 border-emerald-200', icon: CheckCircle2 },
-    Medio: { color: 'bg-amber-100 text-amber-800 border-amber-200', icon: Zap },
-    Difícil: { color: 'bg-rose-100 text-rose-800 border-rose-200', icon: Trophy },
-  };
-  const { color, icon: Icon } = map[level] ?? map.Medio;
-  return (
-    <Badge variant="outline" className={`${color} text-xs gap-1`}>
-      <Icon className="size-3" />
-      {level}
-    </Badge>
-  );
-}
+const universities = [
+  'Universidad de Buenos Aires (UBA)',
+  'Universidad Nacional de Córdoba',
+  'Universidad Tecnológica Nacional',
+  'UBA – Facultad de Derecho',
+  'Universidad Nacional de La Plata',
+  'Universidad de Rosario',
+];
 
-/* ═══════════════════════════════════════════════════
-   SUBJECT DETAIL VIEW
-   ═══════════════════════════════════════════════════ */
-
-function SubjectDetailView({
-  subject,
-  onBack,
-}: {
-  subject: string;
-  onBack: () => void;
-}) {
-  const subjectInfo: Record<string, { title: string; subtitle: string }> = {
-    historia: {
-      title: 'Historia Universal',
-      subtitle: 'De la prehistoria a la actualidad',
-    },
-  };
-
-  const info = subjectInfo[subject] ?? { title: subject, subtitle: '' };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4 }}
-      className="min-h-screen"
-    >
-      {/* Breadcrumb */}
-      <div className="bg-muted/40 dark:bg-gray-900/60 border-b border-border">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <nav className="flex items-center gap-1.5 text-sm">
-            <button
-              onClick={onBack}
-              className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-            >
-              Inicio
-            </button>
-            <ChevronRight className="size-3.5 text-muted-foreground" />
-            <span className="text-muted-foreground">Cursos</span>
-            <ChevronRight className="size-3.5 text-muted-foreground" />
-            <span className="text-emerald-700 font-medium">{info.title}</span>
-          </nav>
-        </div>
-      </div>
-
-      {/* Subject Header */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-950 dark:to-emerald-950 py-10 md:py-16">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/40 dark:bg-emerald-800/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl mx-auto">
-            <button
-              onClick={onBack}
-              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 group"
-            >
-              <ChevronLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
-              Volver al inicio
-            </button>
-
-            <Badge className="mb-4 px-4 py-1.5 text-sm font-medium bg-emerald-100 text-emerald-800 border-emerald-200 gap-1.5">
-              <History className="size-3.5" />
-              Curso intensivo
-            </Badge>
-
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
-              {info.title}
-            </h1>
-            <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
-              {info.subtitle} — Basado en{' '}
-              <span className="font-semibold text-emerald-700 dark:text-emerald-400">'Toda la Historia del mundo'</span> de
-              Barreau y Bigot
-            </p>
-
-            {/* Progress bar */}
-            <div className="mt-6 max-w-lg">
-              <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                <span>Cap. 1 — Prehistoria</span>
-                <span>Cap. 37 — Globalización</span>
-              </div>
-              <Progress value={100} className="h-2.5 bg-emerald-100" />
-              <div className="flex gap-3 mt-3 flex-wrap">
-                {progressEras.map((era) => (
-                  <span key={era.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className={`inline-block size-2 rounded-full ${era.color}`} />
-                    {era.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Subdivisions Grid */}
-      {subject === 'historia' && (
-        <section className="py-12 md:py-16">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <FadeIn>
-              <div className="max-w-5xl mx-auto mb-10">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
-                  <BookMarked className="size-6 text-emerald-600" />
-                  Subdivisiones del curso
-                </h2>
-                <p className="text-muted-foreground mt-2">
-                  Explorá las distintas épocas y regiones que abarca el curso
-                </p>
-              </div>
-            </FadeIn>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
-              {historiaSubdivisions.map((sub, i) => (
-                <FadeIn key={sub.id} delay={i * 0.05}>
-                  <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full cursor-pointer">
-                    <CardContent className="p-5 flex flex-col gap-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 group-hover:scale-110 transition-all">
-                          <sub.icon className="size-5" />
-                        </div>
-                        <Badge variant="secondary" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-100 shrink-0">
-                          {sub.topics} temas
-                        </Badge>
-                      </div>
-                      <h3 className="font-semibold text-base text-foreground group-hover:text-emerald-700 transition-colors">
-                        {sub.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1">
-                        {sub.desc}
-                      </p>
-                      <div className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium mt-auto pt-2 border-t border-border/50">
-                        Explorar
-                        <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Region Accordion Detail */}
-      <section className="py-12 md:py-16 bg-muted/30 dark:bg-gray-900/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="max-w-4xl mx-auto">
-              <h3 className="text-xl md:text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Globe className="size-5 text-emerald-600" />
-                Regiones del mundo — Contenido detallado
-              </h3>
-              <Accordion type="multiple" className="space-y-3">
-                {historyRegions.map((region, idx) => (
-                  <FadeIn key={region.id} delay={idx * 0.03}>
-                    <AccordionItem
-                      value={region.id}
-                      className="bg-card border border-border rounded-xl px-4 data-[state=open]:border-emerald-300 data-[state=open]:shadow-md transition-all"
-                    >
-                      <AccordionTrigger className="hover:no-underline py-4">
-                        <div className="flex items-center gap-3 text-left">
-                          <div className="flex items-center justify-center size-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0">
-                            <RegionIcon icon={region.icon} className="size-5" />
-                          </div>
-                          <div>
-                            <span className="font-semibold text-base text-foreground block">
-                              {region.name}
-                            </span>
-                            <span className="text-xs text-muted-foreground block mt-0.5 line-clamp-1">
-                              {region.intro}
-                            </span>
-                          </div>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="pb-4">
-                        <div className="space-y-4 pt-1">
-                          <p className="text-sm text-muted-foreground leading-relaxed">{region.intro}</p>
-                          {Array.isArray(region.content) ? (
-                            <ul className="space-y-1.5 text-sm text-foreground">
-                              {region.content.map((item, i) => (
-                                <li key={i} className="flex items-start gap-2">
-                                  <ChevronRight className="size-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                                  <span>{item}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p className="text-sm text-foreground leading-relaxed bg-muted/50 dark:bg-gray-800/50 rounded-lg p-4 border border-border/50">
-                              {region.content as string}
-                            </p>
-                          )}
-                          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/60 dark:to-teal-950/60 rounded-lg p-4 border border-emerald-200/60 dark:border-emerald-800/40">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Lightbulb className="size-4 text-emerald-600" />
-                              <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 uppercase tracking-wide">
-                                Actividad: {region.activityType}
-                              </span>
-                            </div>
-                            <p className="text-sm text-foreground leading-relaxed">{region.activity}</p>
-                            <div className="flex items-center gap-3 mt-3 flex-wrap">
-                              <DifficultyBadge level={region.difficulty} />
-                              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Clock className="size-3" />
-                                {region.time}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </FadeIn>
-                ))}
-              </Accordion>
-            </div>
-          </FadeIn>
-
-          {/* Activities Section */}
-          <FadeIn delay={0.1}>
-            <div className="max-w-4xl mx-auto mt-16">
-              <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                <PenTool className="size-5 text-emerald-600" />
-                Actividades del curso
-              </h3>
-              <p className="text-muted-foreground mb-8 text-sm">
-                10 actividades prácticas para profundizar en cada región del mundo
-              </p>
-              <div className="flex flex-wrap gap-2 mb-8">
-                {activityCategories.map((cat) => (
-                  <Badge key={cat.label} variant="outline" className={`${cat.color} text-xs gap-1`}>
-                    <FileText className="size-3" />
-                    {cat.label}
-                    <span className="ml-1 opacity-60">({cat.count})</span>
-                  </Badge>
-                ))}
-              </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {historyRegions.map((region, idx) => (
-                  <FadeIn key={region.id} delay={idx * 0.04}>
-                    <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full cursor-pointer">
-                      <CardContent className="p-5 flex flex-col gap-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
-                              <RegionIcon icon={region.icon} className="size-4" />
-                            </div>
-                            <Avatar className="size-6">
-                              <AvatarFallback className="bg-emerald-100 text-emerald-700 text-[10px] font-bold">
-                                {region.id.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                          </div>
-                          <DifficultyBadge level={region.difficulty} />
-                        </div>
-                        <Badge variant="outline" className="w-fit text-xs bg-emerald-50 text-emerald-700 border-emerald-200">
-                          {region.activityType}
-                        </Badge>
-                        <h4 className="font-semibold text-sm text-foreground leading-snug line-clamp-3">{region.activity}</h4>
-                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
-                          <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
-                            <Globe className="size-2.5 mr-0.5" />
-                            {region.name.split(' y ')[0]}
-                          </Badge>
-                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                            <Clock className="size-2.5" />
-                            {region.time}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-
-          {/* Book reference */}
-          <FadeIn delay={0.15}>
-            <div className="max-w-2xl mx-auto mt-16 text-center">
-              <div className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-5 py-2.5 shadow-sm">
-                <BookOpen className="size-4 text-emerald-600" />
-                <span className="text-sm text-muted-foreground">
-                  Contenido basado en{' '}
-                  <span className="font-semibold text-foreground">'Toda la Historia del mundo'</span> de
-                  Jean-Claude Barreau y Guillaume Bigot
-                </span>
-              </div>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    MAIN PAGE
-   ═══════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════ */
 
-export default function Home() {
+export default function HomePage() {
   const router = useRouter();
-  const { isDark, toggle: toggleTheme } = useTheme();
+  const { isDark, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
+  const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [currentView, setCurrentView] = useState<'home' | 'subject' | 'catalog'>('home');
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-  const [searchSubject, setSearchSubject] = useState('');
-  const [navSearchQuery, setNavSearchQuery] = useState('');
+  const megaRef = useRef<HTMLDivElement>(null);
+  const megaTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
-  const navigateToSubject = useCallback(
-    (subject: string) => {
-      setSelectedSubject(subject);
-      setCurrentView('subject');
-      setMobileOpen(false);
-      scrollToTop();
-    },
-    [scrollToTop]
-  );
-
-  const goHome = useCallback(() => {
-    setCurrentView('home');
-    setSelectedSubject(null);
-    setSearchSubject('');
-    setMobileOpen(false);
-    scrollToTop();
-  }, [scrollToTop]);
-
-  const handleNavClick = useCallback(
-    (link: (typeof navLinks)[number]) => {
-      if (link.action === 'historia') {
-        navigateToSubject('historia');
-      } else if (link.action === 'navigate') {
-        router.push(link.href);
-        setMobileOpen(false);
-      } else {
-        // If already on home view, just scroll to section without going to top
-        if (currentView === 'home') {
-          setMobileOpen(false);
-          setTimeout(() => {
-            const el = document.querySelector(link.href);
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth' });
-            }
-          }, 100);
-        } else {
-          // If on subject/detail view, go home first then scroll
-          goHome();
-          setTimeout(() => {
-            const el = document.querySelector(link.href);
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth' });
-            }
-          }, 300);
-        }
-      }
-    },
-    [navigateToSubject, goHome, router, currentView]
-  );
-
-  const handleSearch = useCallback(() => {
-    if (searchSubject) {
-      const subjectMap: Record<string, string> = {
-        matematica: 'matematica',
-        historia: 'historia',
-        ingles: 'ingles',
-        fisica: 'fisica',
-        quimica: 'quimica',
-        programacion: 'programacion',
-        ingreso: 'ingreso',
-      };
-      const mapped = subjectMap[searchSubject];
-      if (mapped === 'historia') {
-        navigateToSubject('historia');
-      } else {
-        goHome();
-      }
-    }
-  }, [searchSubject, navigateToSubject, goHome]);
-
-  const handlePopularSearch = useCallback(
-    (term: string) => {
-      if (term === 'Historia') {
-        navigateToSubject('historia');
-      } else {
-        goHome();
-      }
-    },
-    [navigateToSubject, goHome]
-  );
-
-  const handleNavSearch = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    if (navSearchQuery.trim().toLowerCase().includes('historia')) {
-      navigateToSubject('historia');
-    }
-    setNavSearchQuery('');
-  }, [navSearchQuery, navigateToSubject]);
-
+  /* scroll listener */
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  /* ─── Subject Detail View ─── */
-  if (currentView === 'subject' && selectedSubject === 'historia') {
-    return (
-      <div className="min-h-screen flex flex-col">
-        {/* Navbar */}
-        <header
-          className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-            scrolled
-              ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm border-b border-border'
-              : 'bg-white dark:bg-gray-950'
-          }`}
-        >
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16 md:h-18">
-              <button onClick={goHome} className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
-                <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white">
-                  <Sparkles className="size-5" />
-                </div>
-                <div className="flex flex-col leading-none">
-                  <span className="text-lg font-bold text-foreground tracking-tight">IntensivaAR</span>
-                  <span className="text-[10px] text-muted-foreground hidden sm:block">Clases intensivas Argentina</span>
-                </div>
-              </button>
+  /* close mega menu on outside click */
+  useEffect(() => {
+    const handle = (e: MouseEvent) => {
+      if (megaRef.current && !megaRef.current.contains(e.target as Node)) {
+        setMegaOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, []);
 
-              {/* Desktop: Search + Theme + Nav */}
-              <div className="hidden lg:flex items-center gap-3 flex-1 ml-6 max-w-2xl">
-                <form onSubmit={handleNavSearch} className="relative flex-1 max-w-xs">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-                  <input
-                    type="text"
-                    value={navSearchQuery}
-                    onChange={(e) => setNavSearchQuery(e.target.value)}
-                    placeholder="Buscador"
-                    className="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
-                  />
-                </form>
-                <button
-                  onClick={toggleTheme}
-                  className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
-                  aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                  title={isDark ? 'Modo claro' : 'Modo oscuro'}
-                >
-                  {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
-                </button>
-                <nav className="flex items-center gap-1">
-                  {navLinks.map((link) => (
-                    <button
-                      key={link.label}
-                      onClick={() => handleNavClick(link)}
-                      className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
-                    >
-                      {link.label}
-                    </button>
-                  ))}
-                </nav>
-              </div>
+  const navigateToSubject = (subject: string) => {
+    if (subject === 'historia') router.push('/materias/historia');
+  };
 
-              <div className="hidden lg:flex items-center gap-3">
-                <Button variant="outline" size="sm" className="text-sm">¿Sos profesor?</Button>
-                <Button variant="ghost" size="sm" className="text-sm">Ingresa</Button>
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
-              </div>
+  const handleNavClick = (href: string, navigate?: boolean) => {
+    setMobileOpen(false);
+    setMegaOpen(false);
+    if (navigate) {
+      router.push(href);
+    } else if (href.startsWith('/')) {
+      router.push(href);
+    } else if (href.startsWith('#')) {
+      const el = document.querySelector(href);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-              <div className="flex lg:hidden items-center gap-2">
-                <button
-                  onClick={toggleTheme}
-                  className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
-                  aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                >
-                  {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
-                </button>
-                <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Menu className="size-5" />
-                      <span className="sr-only">Abrir menú</span>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="right" className="w-80">
-                    <SheetHeader>
-                      <SheetTitle className="flex items-center gap-2">
-                        <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
-                          <Sparkles className="size-4" />
-                        </div>
-                        IntensivaAR
-                      </SheetTitle>
-                    </SheetHeader>
-                    <form onSubmit={handleNavSearch} className="mt-4 relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-                      <input
-                        type="text"
-                        value={navSearchQuery}
-                        onChange={(e) => setNavSearchQuery(e.target.value)}
-                        placeholder="Buscador"
-                        className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
-                      />
-                    </form>
-                    <nav className="flex flex-col gap-1 mt-4">
-                      {navLinks.map((link) => (
-                        <button
-                          key={link.label}
-                          onClick={() => handleNavClick(link)}
-                          className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
-                        >
-                          {link.label}
-                        </button>
-                      ))}
-                    </nav>
-                  </SheetContent>
-                </Sheet>
-              </div>
-            </div>
-          </div>
-        </header>
+  const megaEnter = () => {
+    if (megaTimeoutRef.current) clearTimeout(megaTimeoutRef.current);
+    setMegaOpen(true);
+  };
+  const megaLeave = () => {
+    megaTimeoutRef.current = setTimeout(() => setMegaOpen(false), 200);
+  };
 
-        <main className="flex-1">
-          <SubjectDetailView subject="historia" onBack={goHome} />
-        </main>
+  /* ── STAR RATING ── */
+  const Stars = ({ count }: { count: number }) => (
+    <div className="flex items-center gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          className={`size-4 ${i < count ? 'text-amber-400 fill-amber-400' : 'text-gray-300 dark:text-gray-600'}`}
+        />
+      ))}
+    </div>
+  );
 
-        {/* Footer (same as home) */}
-        <FooterSection onNavClick={handleNavClick} />
-      </div>
-    );
-  }
-
-  /* ─── HOME VIEW ─── */
+  /* ═══════════════════════════════════════════════════
+     RENDER
+     ═══════════════════════════════════════════════════ */
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* ─── NAVBAR ─── */}
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      {/* ───────────────────────────────────────────────
+         HEADER
+         ─────────────────────────────────────────────── */}
       <header
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm border-b border-border'
-            : 'bg-white dark:bg-gray-950'
+            ? 'h-[72px] bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl shadow-sm border-b border-border/60'
+            : 'h-[80px] bg-white dark:bg-gray-950 border-b border-transparent'
         }`}
       >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-18">
-            {/* Logo */}
-            <button onClick={goHome} className="flex items-center gap-2 shrink-0">
-              <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white">
-                <Sparkles className="size-5" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-lg font-bold text-foreground tracking-tight">
-                  IntensivaAR
-                </span>
-                <span className="text-[10px] text-muted-foreground hidden sm:block">
-                  Clases intensivas Argentina
-                </span>
-              </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
+          {/* Logo */}
+          <button
+            onClick={() => handleNavClick('#')}
+            className="flex items-center gap-2.5 shrink-0 group"
+          >
+            <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white group-hover:bg-emerald-700 transition-colors">
+              <Sparkles className="size-5" />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-foreground hidden sm:inline">
+              Intensiva<span className="text-emerald-600">AR</span>
+            </span>
+          </button>
+
+          {/* Desktop nav (centered) */}
+          <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+            {navItems.map((item) =>
+              item.hasMega ? (
+                <div
+                  key={item.label}
+                  ref={megaRef}
+                  className="relative"
+                  onMouseEnter={megaEnter}
+                  onMouseLeave={megaLeave}
+                >
+                  <button
+                    onClick={() => setMegaOpen((v) => !v)}
+                    className="flex items-center gap-1 px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg"
+                  >
+                    {item.label}
+                    <ChevronDown
+                      className={`size-3.5 transition-transform duration-200 ${megaOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+
+                  {/* ── MEGA MENU ── */}
+                  <AnimatePresence>
+                    {megaOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[min(900px,90vw)] bg-white dark:bg-gray-950 rounded-2xl shadow-2xl border border-border/60 p-6 md:p-8 z-50"
+                        onMouseEnter={megaEnter}
+                        onMouseLeave={megaLeave}
+                      >
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                          {megaMenuData.map((col) => (
+                            <div key={col.title}>
+                              <h4 className="text-xs font-semibold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-3">
+                                {col.title}
+                              </h4>
+                              <div className="space-y-2.5">
+                                {col.items.map((item) => (
+                                  <button
+                                    key={item.title}
+                                    onClick={() => {
+                                      setMegaOpen(false);
+                                      if (item.title === 'Historia') {
+                                        router.push('/materias/historia');
+                                      }
+                                    }}
+                                    className="group/item flex items-start gap-2.5 text-left w-full"
+                                  >
+                                    <span className="mt-0.5 flex items-center justify-center size-8 rounded-lg bg-muted/60 dark:bg-gray-800 text-muted-foreground group-hover/item:bg-emerald-100 dark:group-hover/item:bg-emerald-900/50 group-hover/item:text-emerald-600 transition-colors shrink-0">
+                                      {item.icon}
+                                    </span>
+                                    <div className="min-w-0">
+                                      <p className="text-sm font-medium text-foreground group-hover/item:text-emerald-600 transition-colors truncate">
+                                        {item.title}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground leading-snug line-clamp-1">
+                                        {item.desc}
+                                      </p>
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <button
+                  key={item.label}
+                  onClick={() => handleNavClick(item.href, item.navigate)}
+                  className="px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg"
+                >
+                  {item.label}
+                </button>
+              )
+            )}
+          </nav>
+
+          {/* Right side */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={toggle}
+              className="flex items-center justify-center size-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
             </button>
 
-            {/* Desktop: Search + Theme + Nav */}
-            <div className="hidden lg:flex items-center gap-3 flex-1 ml-6 max-w-2xl">
-              <form onSubmit={handleNavSearch} className="relative flex-1 max-w-xs">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-                <input
-                  type="text"
-                  value={navSearchQuery}
-                  onChange={(e) => setNavSearchQuery(e.target.value)}
-                  placeholder="Buscador"
-                  className="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
-                />
-              </form>
-              <button
-                onClick={toggleTheme}
-                className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
-                aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-                title={isDark ? 'Modo claro' : 'Modo oscuro'}
-              >
-                {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
-              </button>
-              <nav className="flex items-center gap-1">
-                {navLinks.map((link) => (
-                  <button
-                    key={link.label}
-                    onClick={() => handleNavClick(link)}
-                    className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </nav>
-            </div>
+            <button
+              className="hidden md:inline-flex px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => {}}
+            >
+              Iniciar sesión
+            </button>
 
-            {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center gap-3">
-              <Button variant="outline" size="sm" className="text-sm">
-                ¿Sos profesor?
-              </Button>
-              <Button variant="ghost" size="sm" className="text-sm">
-                Ingresa
-              </Button>
-              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                Regístrate
-              </Button>
-            </div>
+            <Button
+              className="hidden sm:inline-flex bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm shadow-emerald-600/20 hover:shadow-emerald-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              onClick={() => {}}
+            >
+              Empieza ahora
+            </Button>
 
-            {/* Mobile: Theme Toggle + Menu */}
-            <div className="flex lg:hidden items-center gap-2">
-              <button
-                onClick={toggleTheme}
-                className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
-                aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-              >
-                {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
-              </button>
-              <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="size-5" />
-                    <span className="sr-only">Abrir menú</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-80">
-                  <SheetHeader>
-                    <SheetTitle className="flex items-center gap-2">
-                      <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
-                        <Sparkles className="size-4" />
-                      </div>
-                      IntensivaAR
-                    </SheetTitle>
-                  </SheetHeader>
-                  <form onSubmit={handleNavSearch} className="mt-4 relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-                    <input
-                      type="text"
-                      value={navSearchQuery}
-                      onChange={(e) => setNavSearchQuery(e.target.value)}
-                      placeholder="Buscador"
-                      className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
+            {/* Mobile hamburger */}
+            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+              <SheetTrigger asChild>
+                <button
+                  className="lg:hidden flex items-center justify-center size-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                  aria-label="Menú"
+                >
+                  <Menu className="size-5" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[320px] sm:w-[380px] p-0">
+                <SheetHeader className="p-6 pb-4 border-b border-border">
+                  <SheetTitle className="flex items-center gap-2.5">
+                    <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
+                      <Sparkles className="size-4" />
+                    </div>
+                    <span className="text-lg font-bold">
+                      Intensiva<span className="text-emerald-600">AR</span>
+                    </span>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col px-4 py-4 gap-1">
+                  {/* Search */}
+                  <div className="relative mb-3">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Buscar cursos..."
+                      className="pl-9 h-10 rounded-lg bg-muted/50 border-0 focus-visible:ring-1"
                     />
-                  </form>
-                  <nav className="flex flex-col gap-1 mt-4">
-                    {navLinks.map((link) => (
-                      <button
-                        key={link.label}
-                        onClick={() => handleNavClick(link)}
-                        className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
-                      >
-                        {link.label}
-                      </button>
-                    ))}
-                  </nav>
-                  <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
-                    <Button variant="outline" className="w-full">¿Sos profesor?</Button>
-                    <Button variant="ghost" className="w-full">Ingresa</Button>
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
                   </div>
-                </SheetContent>
-              </Sheet>
-            </div>
+                  {navItems.map((item) => (
+                    <button
+                      key={item.label}
+                      onClick={() => handleNavClick(item.href, item.navigate)}
+                      className="flex items-center justify-between px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted/60 rounded-lg transition-colors"
+                    >
+                      {item.label}
+                      <ChevronRight className="size-4 text-muted-foreground" />
+                    </button>
+                  ))}
+                  <div className="border-t border-border my-3" />
+                  <Button
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg mt-1"
+                    onClick={() => {}}
+                  >
+                    Empieza ahora
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
 
-      <main className="flex-1">
-        {/* ─── HERO ─── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-950 dark:to-emerald-950 py-16 md:py-24 lg:py-32">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100/40 dark:bg-emerald-800/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-100/30 dark:bg-teal-800/15 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+      {/* ───────────────────────────────────────────────
+         HERO
+         ─────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden min-h-[85vh] flex items-center">
+        {/* bg decorations */}
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-100/50 dark:bg-emerald-900/20 rounded-full blur-3xl -translate-x-1/3 -translate-y-1/3" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-100/40 dark:bg-teal-900/15 rounded-full blur-3xl translate-x-1/4 translate-y-1/4" />
+        </div>
 
-          {/* Floating Dark Mode Toggle in Hero */}
-          <button
-            onClick={toggleTheme}
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center justify-center size-11 rounded-full border border-border dark:border-white/20 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md text-foreground hover:bg-muted/80 dark:hover:bg-gray-700/80 transition-all shadow-lg hover:shadow-xl"
-            aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-            title={isDark ? 'Modo claro' : 'Modo oscuro'}
-          >
-            {isDark ? (
-              <Sun className="size-5 text-amber-400" />
-            ) : (
-              <Moon className="size-5 text-slate-600" />
-            )}
-          </button>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="max-w-xl"
+            >
+              <Badge className="mb-6 px-4 py-1.5 text-sm font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0 gap-1.5">
+                <Sparkles className="size-3.5" />
+                Plataforma #1 de clases intensivas en Argentina
+              </Badge>
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <FadeIn>
-                <Badge
-                  variant="secondary"
-                  className="mb-6 px-4 py-1.5 text-sm font-medium bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50"
-                >
-                  <Flame className="size-3.5 mr-1" />
-                  Inscripciones abiertas para Verano 2024
-                </Badge>
-              </FadeIn>
+              <h1 className="text-4xl sm:text-5xl md:text-[3.4rem] font-extrabold tracking-tight text-foreground leading-[1.1] mb-6">
+                Aprendé cualquier materia{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+                  desde cero
+                </span>
+              </h1>
 
-              <FadeIn delay={0.1}>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-foreground leading-tight">
-                  Clases intensivas para{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">
-                    aprobar y avanzar.
-                  </span>
-                </h1>
-              </FadeIn>
-
-              <FadeIn delay={0.2}>
-                <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Encontrá cursos intensivos de verano e invierno para materias
-                  previas, ingreso universitario, idiomas y mucho más.
-                </p>
-              </FadeIn>
-
-              <FadeIn delay={0.3}>
-                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <Button
-                    size="lg"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 text-base shadow-lg shadow-emerald-600/20"
-                    onClick={() => {
-                      goHome();
-                      setTimeout(() => {
-                        document.querySelector('#search')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 100);
-                    }}
-                  >
-                    <Search className="size-4 mr-2" />
-                    Buscar cursos
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="px-8 text-base border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/50"
-                  >
-                    Soy profesor
-                  </Button>
-                  {/* Mobile: Small search button next to Soy profesor */}
-                  <button
-                    onClick={() => {
-                      goHome();
-                      setTimeout(() => {
-                        document.querySelector('#search')?.scrollIntoView({ behavior: 'smooth' });
-                      }, 100);
-                    }}
-                    className="lg:hidden flex items-center justify-center size-12 rounded-full border border-emerald-300 dark:border-emerald-600 bg-white dark:bg-gray-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/50 transition-colors shadow-md"
-                    aria-label="Buscar cursos"
-                  >
-                    <Search className="size-5" />
-                  </button>
-                </div>
-              </FadeIn>
-            </div>
-
-            <FadeIn delay={0.4}>
-              <div className="mt-14 grid sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
-                <Card className="group relative overflow-hidden border-2 border-amber-200 dark:border-amber-700/50 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className="flex items-center justify-center size-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 shrink-0 group-hover:scale-110 transition-transform">
-                      <Flame className="size-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-foreground">Verano Intensivo</h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Aprovecha las vacaciones para estudiar
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="group relative overflow-hidden border-2 border-sky-200 dark:border-sky-700/50 bg-gradient-to-br from-sky-50 to-cyan-50 dark:from-sky-950/40 dark:to-cyan-950/40 hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className="flex items-center justify-center size-12 rounded-xl bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 shrink-0 group-hover:scale-110 transition-transform">
-                      <Snowflake className="size-6" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-foreground">Invierno Intensivo</h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Reforzá, repasá y aprobá tus materias
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </FadeIn>
-          </div>
-        </section>
-
-        {/* ─── SEARCH SECTION ─── */}
-        <Section id="search">
-          <FadeIn>
-            <div className="max-w-2xl mx-auto text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                Encontrá tu curso ideal
-              </h2>
-              <p className="text-muted-foreground mt-3 text-lg">
-                Explorá cientos de cursos intensivos en toda Argentina
+              <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-md">
+                Cursos intensivos de verano e invierno con los mejores profesores de Argentina.
+                Aprendé más rápido, certifícate y alcanzá tus objetivos académicos.
               </p>
-            </div>
-          </FadeIn>
 
-          <FadeIn delay={0.1}>
-            <Card className="max-w-5xl mx-auto border-2 shadow-xl">
-              <CardContent className="p-4 md:p-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                  <div className="lg:col-span-2">
-                    <Select value={searchSubject} onValueChange={setSearchSubject}>
-                      <SelectTrigger className="w-full h-11">
-                        <Search className="size-4 text-emerald-500 mr-1.5" />
-                        <SelectValue placeholder="¿Qué querés estudiar?" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="matematica">Matemática</SelectItem>
-                        <SelectItem value="historia">Historia</SelectItem>
-                        <SelectItem value="ingles">Inglés</SelectItem>
-                        <SelectItem value="fisica">Física</SelectItem>
-                        <SelectItem value="quimica">Química</SelectItem>
-                        <SelectItem value="programacion">Programación</SelectItem>
-                        <SelectItem value="ingreso">Ingreso Universitario</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Select>
-                    <SelectTrigger className="w-full h-11">
-                      <MapPin className="size-4 text-muted-foreground mr-1.5" />
-                      <SelectValue placeholder="¿Dónde?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todo">Todas las provincias</SelectItem>
-                      <SelectItem value="buenosaires">Buenos Aires</SelectItem>
-                      <SelectItem value="cordoba">Córdoba</SelectItem>
-                      <SelectItem value="rosario">Rosario</SelectItem>
-                      <SelectItem value="mendoza">Mendoza</SelectItem>
-                      <SelectItem value="tucuman">Tucumán</SelectItem>
-                      <SelectItem value="online">Online</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select>
-                    <SelectTrigger className="w-full h-11">
-                      <Monitor className="size-4 text-muted-foreground mr-1.5" />
-                      <SelectValue placeholder="Modalidad" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todas">Todas</SelectItem>
-                      <SelectItem value="online">Online</SelectItem>
-                      <SelectItem value="presencial">Presencial</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select>
-                    <SelectTrigger className="w-full h-11">
-                      <Calendar className="size-4 text-muted-foreground mr-1.5" />
-                      <SelectValue placeholder="Cuándo?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todas">Todas</SelectItem>
-                      <SelectItem value="verano">Verano</SelectItem>
-                      <SelectItem value="invierno">Invierno</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="mt-4 flex justify-center">
-                  <Button
-                    size="lg"
-                    onClick={handleSearch}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 shadow-lg shadow-emerald-600/20"
-                  >
-                    <Search className="size-4 mr-2" />
-                    Buscar cursos
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </FadeIn>
-
-          {/* Popular searches */}
-          <FadeIn delay={0.2}>
-            <div className="max-w-5xl mx-auto mt-8 text-center">
-              <p className="text-sm text-muted-foreground mb-3">Búsquedas populares:</p>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                {popularSearches.map((term) => (
-                  <Badge
-                    key={term}
-                    variant="secondary"
-                    onClick={() => handlePopularSearch(term)}
-                    className={`px-4 py-1.5 text-sm cursor-pointer hover:bg-emerald-100 hover:text-emerald-800 transition-colors ${
-                      term === 'Historia' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : ''
-                    }`}
-                  >
-                    <Search className="size-3 mr-1 opacity-50" />
-                    {term}
-                  </Badge>
-                ))}
+              <div className="flex flex-wrap items-center gap-3 mb-10">
+                <Button
+                  size="lg"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-7 py-6 text-base font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/35 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                >
+                  Comenzar Gratis
+                  <ArrowRight className="size-4 ml-2" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="rounded-xl px-7 py-6 text-base font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  onClick={() => {
+                    const el = document.querySelector('#cursos');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  Ver Cursos
+                </Button>
               </div>
-            </div>
-          </FadeIn>
-        </Section>
 
-        {/* ─── NICHOS DESTACADOS ─── */}
-        <Section id="nichos" bg>
-          <SectionHeading
-            title="Ejemplos de nichos que funcionan"
-            subtitle="Descubrí algunas de las áreas más demandadas en clases intensivas"
-          />
-          <div className="grid sm:grid-cols-2 gap-4 md:gap-6 max-w-5xl mx-auto">
-            {nichos.map((n, i) => (
-              <FadeIn key={n.title} delay={i * 0.1}>
-                <Card className="group h-full hover:shadow-lg hover:border-emerald-200 transition-all">
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="flex items-center justify-center size-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
-                        {n.icon}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-base text-foreground leading-snug">{n.title}</h3>
-                        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{n.desc}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-            ))}
-          </div>
-        </Section>
-
-        {/* ─── CATEGORÍAS ─── */}
-        <Section id="categorias">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 md:mb-16 gap-4">
-            <FadeIn>
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                  Explorá por categoría
-                </h2>
-                <p className="text-muted-foreground mt-2 text-lg">
-                  Encontrá el curso perfecto para vos
-                </p>
+              <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-foreground">10k+</span>
+                  <span className="text-sm text-muted-foreground">Alumnos activos</span>
+                </div>
+                <div className="w-px h-8 bg-border hidden sm:block" />
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-foreground">500+</span>
+                  <span className="text-sm text-muted-foreground">Cursos disponibles</span>
+                </div>
+                <div className="w-px h-8 bg-border hidden sm:block" />
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold text-foreground">4.9</span>
+                  <Star className="size-5 text-amber-400 fill-amber-400" />
+                  <span className="text-sm text-muted-foreground">Rating promedio</span>
+                </div>
               </div>
-            </FadeIn>
-            <FadeIn delay={0.1}>
-              <button
-                onClick={() => {
-                  goHome();
-                  setTimeout(() => {
-                    document.querySelector('#catalogo')?.scrollIntoView({ behavior: 'smooth' });
-                  }, 100);
-                }}
-                className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1 group"
+            </motion.div>
+
+            {/* Right — Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 40, rotate: 2 }}
+              animate={{ opacity: 1, x: 0, rotate: 1.5 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="relative hidden lg:block"
+            >
+              <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-br from-emerald-200 to-teal-200 dark:from-emerald-800/30 dark:to-teal-800/30 rounded-3xl blur-2xl opacity-60" />
+                <img
+                  src="/hero-dashboard.png"
+                  alt="Dashboard de IntensivaAR"
+                  className="relative w-full rounded-2xl shadow-2xl shadow-emerald-900/10 dark:shadow-emerald-900/30 border border-border/40"
+                />
+              </div>
+              {/* floating badges */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8, duration: 0.4 }}
+                className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-3 border border-border/60 flex items-center gap-2.5"
               >
-                Ver todas las categorías
-                <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </FadeIn>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 md:gap-6">
-            {categorias.map((cat, i) => (
-              <FadeIn key={cat.name} delay={i * 0.06}>
-                <Card
-                  className={`group cursor-pointer hover:shadow-lg transition-all text-center h-full ${
-                    cat.slug === 'historia'
-                      ? 'hover:border-emerald-300 dark:hover:border-emerald-700 border-emerald-100 dark:border-emerald-900 bg-emerald-50/30 dark:bg-emerald-950/20'
-                      : 'hover:border-emerald-200'
-                  }`}
-                  onClick={() => {
-                    if (cat.slug === 'historia') {
-                      navigateToSubject('historia');
-                    } else {
-                      goHome();
-                    }
-                  }}
-                >
-                  <CardContent className="p-4 md:p-5 flex flex-col items-center gap-2">
-                    <div
-                      className={`flex items-center justify-center size-12 rounded-xl shrink-0 group-hover:scale-110 transition-all ${
-                        cat.slug === 'historia'
-                          ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400'
-                          : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50'
-                      }`}
-                    >
-                      {cat.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-xs text-foreground">{cat.name}</h3>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{cat.count} cursos</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-            ))}
-          </div>
-        </Section>
-
-        {/* ─── CÓMO FUNCIONA ─── */}
-        <Section id="como-funciona" bg>
-          <SectionHeading title="¿Cómo funciona?" />
-          <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
-            {steps.map((step, i) => (
-              <FadeIn key={step.title} delay={i * 0.15} className="text-center">
-                <div className="relative mx-auto mb-6">
-                  <div className="flex items-center justify-center size-20 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 mx-auto">
-                    {step.icon}
-                  </div>
-                  <div className="absolute -top-2 -right-2 flex items-center justify-center size-8 rounded-full bg-emerald-600 text-white text-sm font-bold">
-                    {i + 1}
-                  </div>
+                <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                  <Users className="size-4 text-emerald-600" />
                 </div>
-                <h3 className="font-bold text-lg text-foreground">{step.title}</h3>
-                <p className="text-muted-foreground mt-2 leading-relaxed">{step.desc}</p>
-              </FadeIn>
-            ))}
+                <div>
+                  <p className="text-xs text-muted-foreground">Conectados ahora</p>
+                  <p className="text-sm font-semibold text-foreground">1,247 alumnos</p>
+                </div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1, duration: 0.4 }}
+                className="absolute -top-4 -right-4 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-3 border border-border/60 flex items-center gap-2.5"
+              >
+                <div className="flex items-center justify-center size-9 rounded-lg bg-amber-100 dark:bg-amber-900/50">
+                  <Star className="size-4 text-amber-500" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Satisfacción</p>
+                  <p className="text-sm font-semibold text-foreground">98.5% positivas</p>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </Section>
+        </div>
+      </section>
 
-        {/* ─── PROFESORES DESTACADOS ─── */}
-        <Section id="profesores">
-          <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 md:mb-16 gap-4">
-            <FadeIn>
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                  Profesores destacados
-                </h2>
-                <p className="text-muted-foreground mt-2 text-lg">
-                  Aprendé con los mejores profesores del país
-                </p>
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.1}>
-              <span className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1 group cursor-pointer">
-                Ver todos los profesores
-                <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-              </span>
-            </FadeIn>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
-            {profesores.map((prof, i) => (
-              <FadeIn key={prof.name} delay={i * 0.08}>
-                <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full">
-                  <CardContent className="p-5 text-center">
-                    <Avatar className="size-16 mx-auto mb-3 ring-2 ring-emerald-100 dark:ring-emerald-900">
-                      <AvatarFallback className="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 text-lg font-bold">
-                        {prof.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <h3 className="font-semibold text-base text-foreground">{prof.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-0.5">{prof.subject}</p>
-                    <div className="flex items-center justify-center gap-1 mt-1.5 text-xs text-muted-foreground">
-                      <MapPin className="size-3" />
-                      {prof.location}
-                    </div>
-                    <div className="flex items-center justify-center gap-1 mt-2">
-                      <Star className="size-3.5 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-semibold text-foreground">{prof.rating}</span>
-                      <span className="text-xs text-muted-foreground">({prof.reviews} reseñas)</span>
-                    </div>
-                    <Badge
-                      variant={prof.modality === 'Online' ? 'default' : 'secondary'}
-                      className={`mt-3 text-xs ${
-                        prof.modality === 'Online'
-                          ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
-                          : 'bg-slate-100 text-slate-700 border-slate-200'
-                      }`}
-                    >
-                      <Monitor className="size-3 mr-0.5" />
-                      {prof.modality}
-                    </Badge>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-            ))}
-          </div>
-        </Section>
-
-        {/* ─── CATÁLOGO DIGITAL ─── */}
-        <Section id="catalogo" bg>
+      {/* ───────────────────────────────────────────────
+         TRUST / LOGOS BAR
+         ─────────────────────────────────────────────── */}
+      <section className="py-12 md:py-16 border-y border-border/50 bg-muted/20 dark:bg-gray-900/20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="max-w-2xl mx-auto text-center mb-4">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <div className="flex items-center justify-center size-10 rounded-xl bg-emerald-600 text-white">
-                  <Library className="size-5" />
+            <p className="text-center text-sm text-muted-foreground mb-8 tracking-wide uppercase font-medium">
+              Utilizado por estudiantes de las mejores universidades
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <div className="flex items-center justify-center gap-3 md:gap-5 flex-wrap">
+              {universities.map((uni) => (
+                <div
+                  key={uni}
+                  className="px-4 py-2 rounded-full bg-white dark:bg-gray-900 border border-border/60 text-xs sm:text-sm font-medium text-muted-foreground hover:border-emerald-300 dark:hover:border-emerald-700 hover:text-foreground transition-colors"
+                >
+                  {uni}
                 </div>
-                <span className="text-lg font-bold text-emerald-700 dark:text-emerald-400">IntensivaAR</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
-                Catálogo Digital
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Explorá todo el material de estudio disponible para nuestros cursos
-              </p>
+              ))}
             </div>
           </FadeIn>
+        </div>
+      </section>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto mt-12">
-            {catalogBooks.map((book, i) => (
-              <FadeIn key={book.title} delay={i * 0.05}>
-                <Card
-                  className={`group hover:shadow-lg transition-all h-full cursor-pointer ${
-                    book.navigateTo ? 'hover:border-emerald-300' : 'hover:border-emerald-200'
-                  }`}
-                  onClick={() => {
-                    if (book.navigateTo) {
-                      navigateToSubject(book.navigateTo);
-                    }
-                  }}
-                >
-                  <CardContent className="p-5 flex flex-col gap-3">
-                    {/* Book icon + subject badge */}
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 group-hover:scale-110 transition-all">
-                        {book.icon}
-                      </div>
-                      <Badge
-                        variant="outline"
-                        className={`text-[10px] shrink-0 ${
-                          book.subject === 'Historia'
-                            ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
-                            : 'bg-muted/50 text-muted-foreground border-border'
-                        }`}
-                      >
-                        {book.subject}
-                      </Badge>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-sm text-foreground leading-snug group-hover:text-emerald-700 transition-colors">
-                        {book.title}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-1">{book.author}</p>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed flex-1">{book.desc}</p>
-                    <div className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium pt-2 border-t border-border/50">
-                      <BookOpen className="size-3.5" />
-                      Ver material
-                      {book.navigateTo && (
-                        <ArrowRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-            ))}
-          </div>
-        </Section>
+      {/* ───────────────────────────────────────────────
+         BENEFITS
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="beneficios">
+        <SectionHeading
+          badge="Ventajas"
+          title="¿Por qué elegir IntensivaAR?"
+          subtitle="Todo lo que necesitás para alcanzar tus objetivos académicos, en un solo lugar."
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {benefits.map((b, i) => (
+            <FadeIn key={b.title} delay={i * 0.08}>
+              <Card className="h-full group hover:shadow-xl hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="p-6 flex flex-col gap-4">
+                  <div className="flex items-center justify-center size-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                    {b.icon}
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground">{b.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </SectionWrap>
 
-        {/* ─── BLOG ─── */}
-        <Section id="blog">
-          <SectionHeading
-            title="Consejos, guías y recursos en nuestro blog"
-            subtitle="Enterate de estrategias para estudiar mejor y aprobar tus materias."
-          />
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {blogArticles.map((article, i) => (
-              <FadeIn key={article.title} delay={i * 0.1}>
-                <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full cursor-pointer">
-                  <div className="h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-t-lg" />
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Badge
-                        variant="secondary"
-                        className="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900"
-                      >
-                        {article.icon}
-                        {article.tag}
-                      </Badge>
-                    </div>
-                    <h3 className="font-bold text-lg text-foreground group-hover:text-emerald-700 transition-colors leading-snug">
-                      {article.title}
+      {/* ───────────────────────────────────────────────
+         CATEGORIES
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="cursos" dark>
+        <SectionHeading
+          badge="Categorías"
+          title="Explorá por categoría"
+          subtitle="Encontrá el curso perfecto entre más de 500 opciones organizadas por área de estudio."
+        />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+          {categorias.map((cat, i) => (
+            <FadeIn key={cat.name} delay={i * 0.06}>
+              <Card
+                className="group cursor-pointer hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 hover:-translate-y-0.5 h-full"
+                onClick={() => {
+                  if (cat.name === 'Historia') router.push('/materias/historia');
+                }}
+              >
+                <CardContent className="p-5 flex flex-col gap-3">
+                  <div
+                    className={`flex items-center justify-center size-12 rounded-xl ${cat.color} group-hover:scale-110 transition-transform duration-300`}
+                  >
+                    {cat.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-sm sm:text-base group-hover:text-emerald-600 transition-colors">
+                      {cat.name}
                     </h3>
-                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{article.desc}</p>
-                    <div className="mt-4 flex items-center gap-1 text-sm text-emerald-600 font-medium">
-                      Leer más
-                      <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-            ))}
-          </div>
-          <FadeIn delay={0.3}>
-            <div className="text-center mt-10">
-              <Button variant="outline" className="border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 px-8">
-                <Newspaper className="size-4 mr-2" />
-                Ir al blog
+                    <p className="text-xs text-muted-foreground mt-0.5">{cat.count} cursos</p>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-auto">
+                    Explorar
+                    <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </SectionWrap>
+
+      {/* ───────────────────────────────────────────────
+         VERANO / INVIERNO BANNER
+         ─────────────────────────────────────────────── */}
+      <SectionWrap>
+        <div className="grid md:grid-cols-2 gap-5">
+          <FadeIn direction="left">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-yellow-500 p-8 md:p-10 text-white min-h-[220px] flex flex-col justify-between">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-3">
+                  <Flame className="size-6" />
+                  <span className="text-sm font-semibold uppercase tracking-widest opacity-90">
+                    Verano 2025
+                  </span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                  Aproveitá las vacaciones
+                </h3>
+                <p className="text-sm opacity-90 max-w-sm leading-relaxed">
+                  Cursos intensivos de enero y febrero. Aprobá materias pendientes o adelantate con el cuatrimestre.
+                </p>
+              </div>
+              <Button
+                variant="secondary"
+                className="relative z-10 w-fit bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border-0 rounded-xl mt-4"
+              >
+                Ver cursos de verano
+                <ArrowRight className="size-4 ml-2" />
               </Button>
             </div>
           </FadeIn>
-        </Section>
-
-        {/* ─── NEWSLETTER ─── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 py-16 md:py-20">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 left-10 w-40 h-40 border border-white/30 rounded-full" />
-            <div className="absolute bottom-10 right-10 w-60 h-60 border border-white/20 rounded-full" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-white/10 rounded-full" />
-          </div>
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <FadeIn>
-              <div className="max-w-2xl mx-auto text-center">
-                <div className="flex items-center justify-center size-14 rounded-2xl bg-white/15 text-white mx-auto mb-6">
-                  <Mail className="size-7" />
+          <FadeIn direction="right">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-500 p-8 md:p-10 text-white min-h-[220px] flex flex-col justify-between">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-3">
+                  <Snowflake className="size-6" />
+                  <span className="text-sm font-semibold uppercase tracking-widest opacity-90">
+                    Invierno 2025
+                  </span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-                  Recibí cursos, consejos y novedades
-                </h2>
-                <p className="mt-4 text-emerald-100 text-lg leading-relaxed">
-                  Suscribite a nuestro newsletter y enterate de las últimas novedades
-                  directamente en tu correo.
+                <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                  Mantené tu ritmo
+                </h3>
+                <p className="text-sm opacity-90 max-w-sm leading-relaxed">
+                  Durante el receso de invierno, profundizá en materias difíciles con cursos de alta intensidad.
                 </p>
-                <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
-                  <Input
-                    placeholder="Tu correo electrónico"
-                    type="email"
-                    className="h-12 bg-white/10 border-white/20 text-white placeholder:text-emerald-200/70 focus-visible:border-white/50 focus-visible:ring-white/20"
-                  />
-                  <Button size="lg" className="w-full sm:w-auto bg-white text-emerald-700 hover:bg-emerald-50 font-semibold shadow-lg px-8">
-                    Suscribíte
-                  </Button>
+              </div>
+              <Button
+                variant="secondary"
+                className="relative z-10 w-fit bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border-0 rounded-xl mt-4"
+              >
+                Ver cursos de invierno
+                <ArrowRight className="size-4 ml-2" />
+              </Button>
+            </div>
+          </FadeIn>
+        </div>
+      </SectionWrap>
+
+      {/* ───────────────────────────────────────────────
+         HOW IT WORKS
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="como-funciona" dark>
+        <SectionHeading
+          badge="Proceso simple"
+          title="¿Cómo funciona?"
+          subtitle="Empezá a aprender en 3 simples pasos. Sin complicaciones."
+        />
+        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          {[
+            {
+              step: '01',
+              icon: <Search className="size-7" />,
+              title: 'Buscá tu curso',
+              desc: 'Explorá nuestro catálogo y filtrá por materia, modalidad, ubicación y fecha.',
+            },
+            {
+              step: '02',
+              icon: <BarChart3 className="size-7" />,
+              title: 'Compará opciones',
+              desc: 'Revisá profesores, opiniones de alumnos, programas y precios para elegir el mejor.',
+            },
+            {
+              step: '03',
+              icon: <CheckCircle2 className="size-7" />,
+              title: 'Inscribite y empezá',
+              desc: 'Completá tu inscripción en minutos y empezá a aprender de inmediato.',
+            },
+          ].map((item, i) => (
+            <FadeIn key={item.step} delay={i * 0.1}>
+              <div className="text-center">
+                <div className="flex items-center justify-center size-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 mx-auto mb-5">
+                  {item.icon}
                 </div>
-                <p className="mt-4 text-xs text-emerald-200/60">Sin spam. Cancelá cuando quieras.</p>
+                <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-2 block">
+                  Paso {item.step}
+                </span>
+                <h3 className="text-xl font-semibold text-foreground mb-3">{item.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                  {item.desc}
+                </p>
               </div>
             </FadeIn>
-          </div>
-        </section>
-      </main>
+          ))}
+        </div>
+      </SectionWrap>
 
-      <FooterSection onNavClick={handleNavClick} />
-    </div>
-  );
-}
-
-/* ─── FOOTER (shared component) ─── */
-function FooterSection({ onNavClick }: { onNavClick: (link: (typeof navLinks)[number]) => void }) {
-  return (
-    <footer className="bg-slate-900 dark:bg-black text-slate-300 pt-16 pb-8">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white">
-                <Sparkles className="size-5" />
-              </div>
-              <span className="text-xl font-bold text-white">IntensivaAR</span>
-            </div>
-            <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
-              La plataforma líder en clases intensivas de verano e invierno en todo
-              el país. Conectamos estudiantes con los mejores profesores.
-            </p>
-            <div className="flex items-center gap-3 mt-6">
-              {[Instagram, Facebook, Twitter, Youtube].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="size-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-emerald-600 transition-colors"
-                >
-                  <Icon className="size-4" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Nav columns */}
-          {Object.entries(footerNav).map(([title, links]) => (
-            <div key={title}>
-              <h4 className="text-sm font-semibold text-white mb-4">{title}</h4>
-              <ul className="space-y-2.5">
-                {links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-slate-400 hover:text-emerald-400 transition-colors"
+      {/* ───────────────────────────────────────────────
+         FEATURED PROFESSORS
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="profesores">
+        <SectionHeading
+          badge="Docentes"
+          title="Profesores destacados"
+          subtitle="Aprendé con los mejores profesionales de cada área, seleccionados por su experiencia y dedicación."
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {profesores.map((prof, i) => (
+            <FadeIn key={prof.name} delay={i * 0.07}>
+              <Card className="group hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 h-full">
+                <CardContent className="p-6 flex flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="size-12">
+                      <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-semibold text-sm">
+                        {prof.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0">
+                      <h4 className="font-semibold text-foreground truncate">{prof.name}</h4>
+                      <p className="text-sm text-muted-foreground">{prof.subject}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <Stars count={Math.round(prof.rating)} />
+                      <span className="text-sm font-medium text-foreground">{prof.rating}</span>
+                      <span className="text-xs text-muted-foreground">({prof.reviews})</span>
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className={`text-xs font-medium border-0 ${
+                        prof.modality === 'Online'
+                          ? 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300'
+                          : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+                      }`}
                     >
-                      {link}
-                    </a>
+                      {prof.modality === 'Online' ? (
+                        <Monitor className="size-3 mr-1" />
+                      ) : (
+                        <MapPin className="size-3 mr-1" />
+                      )}
+                      {prof.modality}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <MapPin className="size-3" />
+                    {prof.location}
+                  </p>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </SectionWrap>
+
+      {/* ───────────────────────────────────────────────
+         CATALOG
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="catalogo" dark>
+        <SectionHeading
+          badge="Recursos"
+          title="Catálogo Digital"
+          subtitle="Accedé a material de estudio, libros y guías preparadas por nuestros profesores."
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {catalogBooks.map((book, i) => (
+            <FadeIn key={book.title} delay={i * 0.04}>
+              <Card
+                className={`group cursor-pointer hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 hover:-translate-y-0.5 h-full ${
+                  book.navigateTo === 'historia' ? 'hover:ring-1 hover:ring-emerald-400/50' : ''
+                }`}
+                onClick={() => {
+                  if (book.navigateTo) navigateToSubject(book.navigateTo);
+                }}
+              >
+                <CardContent className="p-5 flex flex-col gap-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center justify-center size-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      {book.icon}
+                    </div>
+                    <Badge variant="secondary" className="text-xs shrink-0">
+                      {book.subject}
+                    </Badge>
+                  </div>
+                  <h3 className="font-semibold text-sm text-foreground group-hover:text-emerald-600 transition-colors line-clamp-2">
+                    {book.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed flex-1">
+                    {book.desc}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{book.author}</p>
+                  {book.navigateTo && (
+                    <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 pt-2 border-t border-border/50">
+                      Ver material
+                      <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </SectionWrap>
+
+      {/* ───────────────────────────────────────────────
+         TESTIMONIALS
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="testimonios">
+        <SectionHeading
+          badge="Testimonios"
+          title="Lo que dicen nuestros alumnos"
+          subtitle="Miles de estudiantes ya confían en IntensivaAR para alcanzar sus metas académicas."
+        />
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {testimonials.map((t, i) => (
+            <FadeIn key={t.name} delay={i * 0.1}>
+              <Card className="h-full hover:shadow-lg transition-shadow duration-300">
+                <CardContent className="p-6 flex flex-col gap-4">
+                  <div className="flex items-center gap-1 mb-1">
+                    <Stars count={t.rating} />
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed flex-1 italic">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-3 pt-3 border-t border-border/60">
+                    <Avatar className="size-9">
+                      <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-semibold text-xs">
+                        {t.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.course}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </SectionWrap>
+
+      {/* ───────────────────────────────────────────────
+         PRICING
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="precios" dark>
+        <SectionHeading
+          badge="Planes"
+          title="Planes y precios"
+          subtitle="Elegí el plan que mejor se adapte a tus necesidades. Sin costos ocultos."
+        />
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {[
+            {
+              name: 'Básico',
+              price: 'Gratis',
+              period: '',
+              desc: 'Ideal para explorar la plataforma',
+              features: [
+                'Explorar todos los cursos',
+                'Ver perfiles de profesores',
+                'Leer opiniones de alumnos',
+                'Acceso al catálogo digital',
+              ],
+              cta: 'Comenzar gratis',
+              featured: false,
+            },
+            {
+              name: 'Premium',
+              price: '$9.900',
+              period: '/mes',
+              desc: 'La experiencia completa de aprendizaje',
+              features: [
+                'Todo lo del plan Básico',
+                'Acceso a todos los cursos',
+                'Clases en vivo ilimitadas',
+                'Certificación incluida',
+                'Material de estudio descargable',
+                'Soporte prioritario',
+              ],
+              cta: 'Comenzar Premium',
+              featured: true,
+            },
+            {
+              name: 'Profesores',
+              price: 'Contactanos',
+              period: '',
+              desc: 'Publicá tus cursos en la plataforma',
+              features: [
+                'Crear cursos ilimitados',
+                'Gestionar alumnos',
+                'Estadísticas y analytics',
+                'Perfil verificado',
+                'Soporte dedicado',
+              ],
+              cta: 'Soy profesor',
+              featured: false,
+            },
+          ].map((plan, i) => (
+            <FadeIn key={plan.name} delay={i * 0.1}>
+              <Card
+                className={`relative h-full flex flex-col ${
+                  plan.featured
+                    ? 'ring-2 ring-emerald-600 dark:ring-emerald-500 shadow-xl shadow-emerald-600/10 scale-[1.02] md:scale-105'
+                    : 'hover:shadow-lg'
+                } transition-all duration-300`}
+              >
+                {plan.featured && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-emerald-600 text-white border-0 px-4 py-1 text-xs font-semibold shadow-sm">
+                      Más popular
+                    </Badge>
+                  </div>
+                )}
+                <CardContent className="p-6 md:p-8 flex flex-col flex-1 gap-5">
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
+                    <p className="text-sm text-muted-foreground mt-0.5">{plan.desc}</p>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl md:text-4xl font-extrabold text-foreground">
+                      {plan.price}
+                    </span>
+                    {plan.period && (
+                      <span className="text-sm text-muted-foreground">{plan.period}</span>
+                    )}
+                  </div>
+                  <ul className="space-y-2.5 flex-1">
+                    {plan.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-foreground">
+                        <CheckCircle2 className="size-4 text-emerald-500 mt-0.5 shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className={`w-full rounded-xl py-5 font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                      plan.featured
+                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-600/20'
+                        : 'bg-muted hover:bg-muted/80 text-foreground'
+                    }`}
+                  >
+                    {plan.cta}
+                  </Button>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </SectionWrap>
+
+      {/* ───────────────────────────────────────────────
+         FAQ
+         ─────────────────────────────────────────────── */}
+      <SectionWrap id="faq">
+        <SectionHeading
+          badge="FAQ"
+          title="Preguntas frecuentes"
+          subtitle="Encontrá respuestas a las consultas más comunes sobre nuestros cursos y la plataforma."
+        />
+        <div className="max-w-3xl mx-auto">
+          <FadeIn>
+            <Accordion type="single" collapsible className="space-y-3">
+              {faqItems.map((item, i) => (
+                <AccordionItem
+                  key={i}
+                  value={`faq-${i}`}
+                  className="bg-card border border-border rounded-xl px-5 data-[state=open]:border-emerald-300 dark:data-[state=open]:border-emerald-800 data-[state=open]:shadow-md transition-all"
+                >
+                  <AccordionTrigger className="hover:no-underline py-4 text-left text-base font-medium">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </FadeIn>
+        </div>
+      </SectionWrap>
+
+      {/* ───────────────────────────────────────────────
+         NEWSLETTER CTA
+         ─────────────────────────────────────────────── */}
+      <section className="py-20 md:py-28">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 p-8 sm:p-12 md:p-16 text-center">
+              <div className="absolute top-0 left-0 w-80 h-80 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2" />
+              <div className="absolute bottom-0 right-0 w-64 h-64 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full" />
+              <div className="relative z-10 max-w-xl mx-auto">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+                  Empezá hoy mismo
+                </h2>
+                <p className="text-emerald-100 text-base sm:text-lg mb-8 leading-relaxed">
+                  Suscribite a nuestro newsletter y recibí novedades, descuentos exclusivos y tips de estudio directo en tu email.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                  <Input
+                    type="email"
+                    placeholder="tu@email.com"
+                    className="h-12 bg-white/20 backdrop-blur-sm border-white/30 text-white placeholder:text-emerald-200/60 rounded-xl focus-visible:ring-2 focus-visible:ring-white/50"
+                  />
+                  <Button className="h-12 bg-white text-emerald-700 hover:bg-emerald-50 font-semibold rounded-xl px-6 shadow-lg shadow-black/10 shrink-0 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    Suscribirme
+                    <ArrowRight className="size-4 ml-2" />
+                  </Button>
+                </div>
+                <p className="text-xs text-emerald-200/60 mt-4">
+                  Sin spam. Cancelá cuando quieras.
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────
+         FOOTER
+         ─────────────────────────────────────────────── */}
+      <footer className="bg-gray-950 text-gray-300 dark:bg-black dark:text-gray-400">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-10">
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-3 lg:col-span-1">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
+                  <Sparkles className="size-4" />
+                </div>
+                <span className="text-lg font-bold text-white">
+                  Intensiva<span className="text-emerald-400">AR</span>
+                </span>
+              </div>
+              <p className="text-sm leading-relaxed mb-5 max-w-xs">
+                La plataforma líder en clases intensivas de Argentina. Aprendé más rápido con los mejores profesores.
+              </p>
+              <div className="flex items-center gap-2">
+                {[
+                  { icon: <Globe className="size-4" />, label: 'Web' },
+                  { icon: <Mail className="size-4" />, label: 'Email' },
+                  { icon: <BookOpen className="size-4" />, label: 'Blog' },
+                ].map((s) => (
+                  <button
+                    key={s.label}
+                    className="flex items-center justify-center size-9 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                    aria-label={s.label}
+                  >
+                    {s.icon}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Producto */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+                Producto
+              </h4>
+              <ul className="space-y-2.5">
+                {[
+                  { label: 'Cursos', href: '#cursos' },
+                  { label: 'Explorar', href: '/explorar', nav: true },
+                  { label: 'Materias', href: '/materias', nav: true },
+                  { label: 'Catálogo', href: '#catalogo' },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <button
+                      onClick={() => handleNavClick(link.href, link.nav)}
+                      className="text-sm text-gray-400 hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </button>
                   </li>
                 ))}
               </ul>
             </div>
-          ))}
+
+            {/* Empresa */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+                Empresa
+              </h4>
+              <ul className="space-y-2.5">
+                {['Sobre nosotros', 'Contacto', 'Blog', 'Trabajá con nosotros'].map((item) => (
+                  <li key={item}>
+                    <button className="text-sm text-gray-400 hover:text-white transition-colors">
+                      {item}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+                Legal
+              </h4>
+              <ul className="space-y-2.5">
+                {['Términos y condiciones', 'Política de privacidad', 'Preguntas frecuentes'].map(
+                  (item) => (
+                    <li key={item}>
+                      <button className="text-sm text-gray-400 hover:text-white transition-colors">
+                        {item}
+                      </button>
+                    </li>
+                  )
+                )}
+              </ul>
+            </div>
+
+            {/* Contacto */}
+            <div className="col-span-2 md:col-span-1">
+              <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
+                Contacto
+              </h4>
+              <ul className="space-y-2.5">
+                <li className="flex items-center gap-2 text-sm text-gray-400">
+                  <Mail className="size-3.5 shrink-0" />
+                  hola@intensiva.ar
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-400">
+                  <MapPin className="size-3.5 shrink-0" />
+                  Buenos Aires, Argentina
+                </li>
+                <li className="flex items-center gap-2 text-sm text-gray-400">
+                  <Phone className="size-3.5 shrink-0" />
+                  +54 11 5555-0000
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <p>&copy; 2024 IntensivaAR. Todos los derechos reservados.</p>
-          <p>Hecho con 💚 en Argentina</p>
+        {/* Bottom bar */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-gray-500">
+              © {new Date().getFullYear()} IntensivaAR. Todos los derechos reservados.
+            </p>
+            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+              <span>Hecho con</span>
+              <Heart className="size-3 text-emerald-500 fill-emerald-500" />
+              <span>en Argentina</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
 }
