@@ -696,7 +696,7 @@ function SubjectDetailView({
       className="min-h-screen"
     >
       {/* Breadcrumb */}
-      <div className="bg-muted/40 border-b border-border">
+      <div className="bg-muted/40 dark:bg-gray-900/60 border-b border-border">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <nav className="flex items-center gap-1.5 text-sm">
             <button
@@ -714,7 +714,7 @@ function SubjectDetailView({
       </div>
 
       {/* Subject Header */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-12 md:py-16">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-950 dark:to-emerald-950 py-12 md:py-16">
         <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto">
@@ -1003,16 +1003,28 @@ export default function Home() {
         router.push(link.href);
         setMobileOpen(false);
       } else {
-        goHome();
-        setTimeout(() => {
-          const el = document.querySelector(link.href);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 100);
+        // If already on home view, just scroll to section without going to top
+        if (currentView === 'home') {
+          setMobileOpen(false);
+          setTimeout(() => {
+            const el = document.querySelector(link.href);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 100);
+        } else {
+          // If on subject/detail view, go home first then scroll
+          goHome();
+          setTimeout(() => {
+            const el = document.querySelector(link.href);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 300);
+        }
       }
     },
-    [navigateToSubject, goHome, router]
+    [navigateToSubject, goHome, router, currentView]
   );
 
   const handleSearch = useCallback(() => {
@@ -1068,8 +1080,8 @@ export default function Home() {
         <header
           className={`sticky top-0 z-50 w-full transition-all duration-300 ${
             scrolled
-              ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-border'
-              : 'bg-white dark:bg-slate-900'
+              ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm border-b border-border'
+              : 'bg-white dark:bg-gray-950'
           }`}
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -1192,8 +1204,8 @@ export default function Home() {
       <header
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-border'
-            : 'bg-white dark:bg-slate-900'
+            ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm border-b border-border'
+            : 'bg-white dark:bg-gray-950'
         }`}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -1319,16 +1331,30 @@ export default function Home() {
 
       <main className="flex-1">
         {/* ─── HERO ─── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-16 md:py-24 lg:py-32">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-100/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+        <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950 dark:via-gray-950 dark:to-emerald-950 py-16 md:py-24 lg:py-32">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100/40 dark:bg-emerald-800/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-100/30 dark:bg-teal-800/15 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+
+          {/* Floating Dark Mode Toggle in Hero */}
+          <button
+            onClick={toggleTheme}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center justify-center size-11 rounded-full border border-border dark:border-white/20 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md text-foreground hover:bg-muted/80 dark:hover:bg-gray-700/80 transition-all shadow-lg hover:shadow-xl"
+            aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            title={isDark ? 'Modo claro' : 'Modo oscuro'}
+          >
+            {isDark ? (
+              <Sun className="size-5 text-amber-400" />
+            ) : (
+              <Moon className="size-5 text-slate-600" />
+            )}
+          </button>
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <FadeIn>
                 <Badge
                   variant="secondary"
-                  className="mb-6 px-4 py-1.5 text-sm font-medium bg-emerald-100 text-emerald-800 border-emerald-200"
+                  className="mb-6 px-4 py-1.5 text-sm font-medium bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50"
                 >
                   <Flame className="size-3.5 mr-1" />
                   Inscripciones abiertas para Verano 2024
@@ -1373,15 +1399,28 @@ export default function Home() {
                   >
                     Soy profesor
                   </Button>
+                  {/* Mobile: Small search button next to Soy profesor */}
+                  <button
+                    onClick={() => {
+                      goHome();
+                      setTimeout(() => {
+                        document.querySelector('#search')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="lg:hidden flex items-center justify-center size-12 rounded-full border border-emerald-300 dark:border-emerald-600 bg-white dark:bg-gray-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/50 transition-colors"
+                    aria-label="Buscar cursos"
+                  >
+                    <Search className="size-5" />
+                  </button>
                 </div>
               </FadeIn>
             </div>
 
             <FadeIn delay={0.4}>
               <div className="mt-14 grid sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
-                <Card className="group relative overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 hover:shadow-lg transition-shadow">
+                <Card className="group relative overflow-hidden border-2 border-amber-200 dark:border-amber-700/50 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 hover:shadow-lg transition-shadow">
                   <CardContent className="p-6 flex items-start gap-4">
-                    <div className="flex items-center justify-center size-12 rounded-xl bg-amber-100 text-amber-600 shrink-0 group-hover:scale-110 transition-transform">
+                    <div className="flex items-center justify-center size-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 shrink-0 group-hover:scale-110 transition-transform">
                       <Flame className="size-6" />
                     </div>
                     <div>
@@ -1392,9 +1431,9 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="group relative overflow-hidden border-2 border-sky-200 bg-gradient-to-br from-sky-50 to-cyan-50 hover:shadow-lg transition-shadow">
+                <Card className="group relative overflow-hidden border-2 border-sky-200 dark:border-sky-700/50 bg-gradient-to-br from-sky-50 to-cyan-50 dark:from-sky-950/40 dark:to-cyan-950/40 hover:shadow-lg transition-shadow">
                   <CardContent className="p-6 flex items-start gap-4">
-                    <div className="flex items-center justify-center size-12 rounded-xl bg-sky-100 text-sky-600 shrink-0 group-hover:scale-110 transition-transform">
+                    <div className="flex items-center justify-center size-12 rounded-xl bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 shrink-0 group-hover:scale-110 transition-transform">
                       <Snowflake className="size-6" />
                     </div>
                     <div>
@@ -1854,7 +1893,7 @@ export default function Home() {
 /* ─── FOOTER (shared component) ─── */
 function FooterSection({ onNavClick }: { onNavClick: (link: (typeof navLinks)[number]) => void }) {
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
+    <footer className="bg-slate-900 dark:bg-black text-slate-300 pt-16 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           {/* Brand */}

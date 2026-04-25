@@ -55,8 +55,8 @@ export default function SiteNavbar() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-border'
-          : 'bg-white dark:bg-slate-900'
+          ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-sm border-b border-border'
+          : 'bg-white dark:bg-gray-950'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
