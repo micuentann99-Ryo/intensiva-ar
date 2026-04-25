@@ -1,269 +1,179 @@
-# Worklog
+# Worklog — IntensivaAR
 
-## Task 2 - Fullstack Developer: IntensivaAR Landing Page
+## Descripción General del Proyecto
 
-**Date**: 2024
-**Status**: ✅ Completed
-
-### Summary
-Built a complete, production-quality landing page for **IntensivaAR** - a platform for intensive classes in Argentina. The page includes 10 distinct sections with smooth animations, responsive design, and an emerald/green color scheme.
-
-### Files Modified
-
-1. **`src/app/globals.css`**
-   - Replaced default theme with emerald green primary palette
-   - Primary color: `oklch(0.596 0.145 163.225)` (emerald-600 equivalent)
-   - Updated all CSS variables for both light and dark modes
-   - Added smooth scrolling and custom scrollbar styles
-
-2. **`src/app/layout.tsx`**
-   - Updated metadata: title, description, keywords in Spanish
-   - Changed `lang` attribute to "es" for Spanish
-   - Added openGraph metadata for social sharing
-
-3. **`src/app/page.tsx`**
-   - Complete single-page landing page with all 10 sections:
-     - Sticky Navbar with mobile hamburger (Sheet component)
-     - Hero section with gradient text and promotional cards
-     - Search section with 4 filter Select dropdowns
-     - Nichos Destacados section (4 niche cards)
-     - Categorías section (6 category cards in grid)
-     - Cómo Funciona section (3 steps)
-     - Profesores Destacados section (5 professor cards)
-     - Blog section (3 article cards)
-     - Newsletter CTA section (gradient background)
-     - Footer with navigation columns and social icons
-   - Uses Framer Motion for fade-in-on-scroll animations
-   - Fully responsive (mobile-first design)
-   - Uses shadcn/ui components: Button, Card, Badge, Input, Select, Avatar, Sheet
-   - Uses lucide-react icons throughout
-   - No exaggerated statistics as requested
-   - Sticky footer implementation with `min-h-screen flex flex-col`
-
-### Technical Details
-- ESLint passes with zero errors
-- Dev server compiles successfully (200 OK responses)
-- All color references use emerald/green palette (no indigo/blue)
-- Smooth scroll navigation between sections
-- Animation wrapper component using `useInView` and `framer-motion`
+**IntensivaAR** es una plataforma argentina de clases intensivas de verano e invierno. Es un sitio web Next.js 16 con Tailwind CSS 4 + shadcn/ui, con modo claro/oscuro, diseño responsive y animaciones con Framer Motion.
 
 ---
 
-## Task 2 (Cont.) - Fullstack Developer: Historia Universal Course Section
+## Rutas del Sitio
 
-**Date**: 2024
-**Status**: ✅ Completed
-
-### Summary
-Added a comprehensive **"Historia Universal"** course section to the IntensivaAR landing page. The section is based on the book "Toda la Historia del mundo" by Jean-Claude Barreau and Guillaume Bigot, covering 10 world regions with actual content extracted from the PDF.
-
-### Files Modified
-
-1. **`src/app/page.tsx`**
-   - **Nav link**: Added "Historia" link pointing to `#historia` in the `navLinks` array
-   - **New imports**: Added `Accordion`, `AccordionContent`, `AccordionItem`, `AccordionTrigger`, `Progress`, `ScrollArea`, `ScrollBar` from shadcn/ui. Added 17 new lucide-react icons (`Landmark`, `Mountain`, `Globe`, `Compass`, `ScrollText`, `Ship`, `TreePine`, `Palmtree`, `Clock`, `Zap`, `FileText`, `MessageSquare`, `Map`, `Trophy`, `ChevronDown`, `BookMarked`, `History`)
-   - **Data structures**: Added `historyRegions` (10 regions with full content), `activityCategories` (8 categories), `progressEras` (6 historical eras)
-   - **Helper components**: `RegionIcon` (maps string icon names to lucide components), `DifficultyBadge` (renders difficulty with colored badge)
-   - **History Section** (`#historia`) inserted between Blog and Newsletter, containing:
-     - **Course Header**: Title "Historia Universal", subtitle with book reference, "Curso intensivo" badge, decorative progress bar showing chapters 1-37 with era color legend
-     - **Region Subdivisions**: Accordion (`type="multiple"`) with 10 expandable cards, each containing:
-       - Region icon + name + intro snippet
-       - Full content text (or bullet list for Europa)
-       - Activity card with type badge, difficulty, estimated time
-       - Amber-themed styling with warm borders
-     - **Activities Section**: Category badge summary (8 types), grid of 10 activity cards with:
-       - Region icon + avatar initials
-       - Difficulty badge (Fácil/Medio/Difícil)
-       - Activity type badge
-       - Activity description (line-clamped)
-       - Region tag + time estimate
-     - **Course Progress Tracker**: Horizontal scrollable area with 6 era columns showing:
-       - Color-coded era bars
-       - Chapter ranges
-       - Mini progress indicators
-       - Era color legend grid (responsive 2/3/6 columns)
-     - **Book reference pill**: Floating badge citing the source book
-
-### Technical Details
-- ESLint passes with zero errors
-- Dev server compiles successfully (200 OK)
-- Warm amber/orange accent colors for history content (existing emerald theme preserved)
-- All text in Argentine Spanish
-- Uses `type="multiple"` accordion so multiple regions can be open at once
-- Europa region uses array content rendered as bullet list (20 items)
-- Responsive layout throughout (mobile-first)
-- Framer Motion animations on all sub-sections
+| Ruta | Descripción |
+|------|-------------|
+| `/` | Landing page principal (estilo SaaS premium Wix Studio) |
+| `/explorar` | Explorador de categorías (3 columnas: Ciencias Exactas, Sociales, Idiomas) |
+| `/materias` | Listado de materias con tarjetas de colores |
+| `/materias/historia` | Línea de tiempo de Historia Universal (10 períodos expandibles) |
 
 ---
 
-## Task 3 - Fullstack Developer: Interactive Navigation & Catálogo Digital
+## Stack Tecnológico
 
-**Date**: 2024
-**Status**: ✅ Completed
-
-### Summary
-Made the IntensivaAR website fully interactive with client-side routing, breadcrumb navigation, a "Catálogo Digital" section, and deep Historia subject detail view. All navigation elements (navbar, categories, search, popular searches, catalog) are now clickable and functional.
-
-### Files Modified
-
-1. **`src/app/page.tsx`** — Complete rewrite of the component architecture
-
-#### State Management
-- Added `currentView` state: `'home' | 'subject' | 'catalog'` to toggle between views
-- Added `selectedSubject` state: `null | 'historia'` for subject navigation
-- Added `searchSubject` state for controlled search Select
-- All navigation uses `useCallback` for performance and smooth scroll-to-top transitions
-
-#### New Data Structures
-- `historiaSubdivisions`: 15 subdivision cards with icons (Dna, Globe, Landmark, Castle, Palette, Mountain, MapPin, TreePine, Flag, Compass, ScrollText, Newspaper, Ship), descriptions, and topic counts
-- `catalogBooks`: 12 catalog entries (6 Historia, plus Matemática, Inglés, Física, Química, Programación, Ingreso Universitario)
-- Updated `categorias` array: added `slug` field, added "Historia" entry (count: 48)
-- Updated `navLinks`: added "Catálogo" link, changed "Historia" to use `action: 'historia'`
-- Updated `popularSearches`: added "Historia" term
-- Updated `footerNav.Categorías`: added "Historia"
-
-#### New Imports
-- `Dna`, `Castle`, `Palette`, `Flag`, `ChevronLeft`, `Library`, `AnimatePresence` from lucide-react
-- `useCallback` from React
-
-#### Interactive Features
-
-1. **Search Interactive**: Select dropdown now controlled via `searchSubject` state. "Buscar cursos" button triggers `handleSearch()`. Selecting "Historia" navigates to subject view. Search trigger shows emerald magnifying glass icon.
-
-2. **Category Cards Clickable**: Each card in "Explorá por categoría" has onClick. Clicking "Historia" navigates to subject detail. Historia card highlighted with emerald tint. Grid changed from 6 to 7 columns.
-
-3. **Popular Search Badges Clickable**: Each badge has onClick with magnifying glass icon prefix. "Historia" badge has emerald styling.
-
-4. **Navbar Navigation**: Logo and all nav links use `handleNavClick()`. "Historia" nav link navigates to subject view. "Catálogo" scrolls to catalog section. Mobile menu links also interactive.
-
-5. **Catálogo Digital Section**: New section between Profesores and Blog with:
-   - Library icon + IntensivaAR branding header
-   - 12 book/material cards in 4-column grid
-   - Each card shows: icon, subject badge, title, author, description, "Ver material" button
-   - Historia books have highlighted emerald badge
-   - Clicking a Historia book navigates to Historia subject view
-
-6. **Subject Detail View** (`SubjectDetailView` component):
-   - **Breadcrumb**: Inicio > Cursos > Historia (clickable "Inicio" to go back)
-   - **Header**: Title, subtitle, book reference, progress bar with era colors, "Volver al inicio" button with arrow
-   - **Subdivisions Grid**: 15 cards (3 columns) with icon, name, description (line-clamped), topic count badge, "Explorar" button
-   - **Region Accordion**: Reuses existing historyRegions data in emerald theme (changed from amber)
-   - **Activities Section**: 10 activity cards with difficulty badges
-   - **Book Reference**: Crediting Barreau & Bigot
-   - Framer Motion page transition (fade + slide)
-
-7. **Footer Shared**: Extracted `FooterSection` component reused in both home and subject views
-
-#### Style Consistency
-- All interactive history elements use emerald green theme (changed previous amber accents to emerald)
-- Magnifying glass (Search icon) in search trigger and popular badges
-- Smooth scroll-to-top on all navigation
-- Mobile responsive throughout
-- All text in Argentine Spanish
-
-### Technical Details
-- ESLint passes with zero errors
-- Dev server compiles successfully (200 OK)
-- No external libraries added
-- File reduced from ~1513 lines to ~1100 lines (cleaner architecture)
-- Uses `AnimatePresence` ready for future page transitions
-- `FooterSection` component avoids code duplication
+- **Framework**: Next.js 16.1.3 (App Router, Turbopack)
+- **UI**: Tailwind CSS 4 + shadcn/ui (Radix primitives)
+- **Animaciones**: Framer Motion
+- **Iconos**: lucide-react
+- **Tipografía**: Inter (Google Fonts)
+- **Modo oscuro**: class strategy (`@custom-variant dark (&:is(.dark *))`)
+- **Tema hook**: `src/hooks/use-theme.ts` (localStorage key: `intensiva-theme`)
 
 ---
 
-## Task 4 - Fullstack Developer: 3 New Route Pages for IntensivaAR
+## Archivos Clave
 
-**Date**: 2024
-**Status**: ✅ Completed
+### Páginas
+- `src/app/page.tsx` — Landing page principal (~700+ líneas, estilo premium SaaS)
+- `src/app/explorar/page.tsx` — Explorador de categorías (3 acordeones)
+- `src/app/materias/page.tsx` — Tarjetas de materias (6 materias con bordes de colores)
+- `src/app/materias/historia/page.tsx` — Línea de tiempo (10 períodos expandibles con contenido rico)
 
-### Summary
-Created 3 new route pages following the visual style of Fundación Carlos Slim's educational portal, adapted to IntensivaAR's emerald green branding. Extracted shared navbar and footer components for reuse across all pages. Updated home page navigation to link to new routes.
+### Componentes compartidos
+- `src/components/site-navbar.tsx` — Navbar con: logo, links, buscador, toggle dark/light, menú mobile (Sheet)
+- `src/components/site-footer.tsx` — Footer con 3 columnas + redes sociales
 
-### Files Created
+### Estilos y config
+- `src/app/globals.css` — Variables CSS (oklch), tema claro y oscuro
+- `src/app/layout.tsx` — Layout raíz con Inter font, metadata SEO
+- `tailwind.config.ts` — Configuración de Tailwind con dark mode class strategy
+- `src/hooks/use-theme.ts` — Hook custom para dark/light toggle con localStorage
 
-1. **`src/components/site-navbar.tsx`** — Shared navbar component
-   - Sticky header with blur effect on scroll
-   - IntensivaAR logo (green square with Sparkles icon)
-   - Navigation links: Cursos (/), Explorar (/explorar), Materias (/materias), Historia (/materias/historia), Profesores (/#profesores), Catálogo (/#catalogo)
-   - Active link highlighting with emerald green color
-   - Mobile responsive with Sheet hamburger menu
-   - Uses `next/link` for client-side navigation
-   - Uses `usePathname` for active state detection
+### Componentes shadcn/ui utilizados
+Accordion, Badge, Button, Card, Input, Select, Avatar, Sheet, Toaster
 
-2. **`src/components/site-footer.tsx`** — Shared footer component
-   - Brand section with logo and description
-   - 3 navigation columns (Navegación, Categorías, Información)
-   - Categorías links point to /materias and /materias/historia
-   - Social media icons (Instagram, Facebook, Twitter, Youtube)
-   - Copyright notice with Argentina branding
+---
 
-3. **`src/app/explorar/page.tsx`** — Category Browsing Page
-   - Breadcrumb: Inicio > Explorar
-   - Page title "Explorar" with description
-   - 3-column responsive layout (stacks on mobile)
-   - Each column uses Accordion component with:
-     - Colored circular icon (emerald/teal tones)
-     - Category title (Ciencias Exactas, Ciencias Sociales, Idiomas y Humanidades)
-     - Expandable subcategories with ChevronRight icons
-     - Each sub-item is a clickable Link
-   - 12 total subcategory items across 3 columns
-   - Framer Motion staggered entrance animations
+## Historial de Tareas Completadas
 
-4. **`src/app/materias/page.tsx`** — Subjects Listing Page
-   - Breadcrumb: Inicio > Materias
-   - Emerald green gradient banner with "Materias" title and BookOpen icon
-   - List of 6 subject cards with:
-     - Colored left border (purple, amber, teal, emerald, sky, rose)
-     - Subject icon in colored background
-     - Subject name with right-pointing arrow
-   - "Historia" card is expandable (useState) showing sub-item "Historia del Mundo" → /materias/historia
-   - Historia card gets light green background when expanded
-   - AnimatePresence for smooth expand/collapse animation
-   - Framer Motion staggered entrance animations
+### Task 1 — Landing page inicial
+- 10 secciones: navbar, hero, search, nichos, categorías, cómo funciona, profesores, blog, newsletter, footer
+- Paleta verde esmeralda, animaciones fade-in-on-scroll
 
-5. **`src/app/materias/historia/page.tsx`** — History Timeline Page
-   - Breadcrumb: Inicio > Materias > Historia
-   - Title: "Línea del tiempo — Historia del Mundo"
-   - Subtitle crediting Barreau & Bigot
-   - 10 expandable timeline periods using Accordion:
-     1. Prehistoria y Orígenes
-     2. Pangea y Primeras Civilizaciones
-     3. Mundo Antiguo
-     4. Edad Media
-     5. Renacimiento y Reformas
-     6. América Precolombina
-     7. Conquista y Colonia
-     8. Independencia de América
-     9. Siglo XIX
-     10. Historia Contemporánea
-   - Each expanded period shows:
-     - Historical description paragraph
-     - Key topics as bullet points with ChevronRight icons
-     - Activity suggestion with type, difficulty badge, and time estimate
-   - Clean divide-y separated timeline aesthetic
-   - Emerald green activity cards matching existing theme
+### Task 2 — Sección Historia Universal
+- Contenido extraído del PDF "Toda la Historia del mundo" de Barreau & Bigot
+- 10 regiones, 8 categorías de actividad, 6 eras con barra de progreso
 
-### Files Modified
+### Task 3 — Navegación interactiva
+- Client-side routing con useRouter
+- Catálogo digital con 12 materiales
+- Vista de detalle de materia (Historia)
+- Breadcrumbs y navegación entre vistas
 
-6. **`src/app/page.tsx`** — Updated navigation only
-   - Added `import { useRouter } from 'next/navigation'`
-   - Added `const router = useRouter()` in Home component
-   - Updated `navLinks` array:
-     - Added "Explorar" → `/explorar` (action: 'navigate')
-     - Changed "Materias" from `#categorias` to `/materias` (action: 'navigate')
-     - Changed "Historia" from `action: 'historia'` to `/materias/historia` (action: 'navigate')
-   - Updated `handleNavClick` function:
-     - Added `action === 'navigate'` branch that calls `router.push(link.href)`
-   - All existing sections (hero, search, nichos, profesores, blog, catalog, etc.) remain untouched
+### Task 4 — 3 nuevas rutas
+- `/explorar` — Explorador 3 columnas con acordeones
+- `/materias` — Tarjetas de materias con bordes de colores
+- `/materias/historia` — Timeline con 10 períodos
+- Navbar y footer extraídos como componentes compartidos
 
-### Technical Details
-- ESLint passes with zero errors
-- `npx next build` succeeds with all 3 new routes generated as static pages
-- Dev server compiles successfully (200 OK)
-- No external libraries added
-- All new pages use `'use client'` directive
-- Consistent emerald green theme across all pages
-- All text in Spanish
-- Responsive design (mobile-first)
-- shadcn/ui Accordion, Badge, Sheet, Button components used throughout
-- lucide-react icons for all visual elements
+### Task 5 — Barra de búsqueda y toggle dark/light
+- Buscador funcional en navbar (redirige a /materias o /materias/historia según query)
+- Botón sol/luna en navbar para alternar modo oscuro
+- Fix de navegación: eliminado conflicto entre goHome() + setTimeout
+
+### Task 6 — Dark mode completo y responsive
+- `dark:` variants en TODOS los componentes de TODAS las páginas
+- Cambio de `bg-white` a `bg-background` en sub-páginas
+- Fix de iconos, badges, breadcrumbs, avatares, tarjetas en modo oscuro
+- Verificación responsive mobile/tablet/desktop
+
+### Task 7 — Rediseño premium SaaS (Wix Studio style)
+- **Landing page completamente rediseñada** con estilo corporativo moderno:
+  - Header sticky (80px) con logo centrado, menú centrado, selector de idioma, CTA
+  - Mega menú desplegable (full-width, multi-columna, animación fade+slide)
+  - Hero: H1 gigante, subtítulo, 2 CTAs, layout 2 columnas, mockup de laptop
+  - Secciones: Beneficios, Categorías, Testimonios, Pricing, FAQ
+  - Footer profesional multi-columna
+  - Animaciones de hover, micro-interacciones, glassmorphism
+- Tipografía: Inter (no Poppins/Manrope todavía)
+
+### Task 8 — Fixes de la página de Historia
+- **Acordeón roto**: Reemplazado Radix Accordion por sistema manual con useState + AnimatePresence de Framer Motion
+- **Contenido enriquecido**: Cada período pasó de ~5 a ~9 temas clave + descripción ampliada
+- **Dark mode puro negro**: Cambiados todos los `dark:bg-gray-950` a `dark:bg-black`
+- Colores dark mode: fondo `oklch(0.02 0 0)` (negro puro), texto `oklch(0.98 0 0)` (blanco puro)
+
+---
+
+## Estado Actual del Tema (globals.css)
+
+### Modo Claro
+- `--background`: oklch(0.995 0.001 160) — casi blanco con tinte verde sutíl
+- `--foreground`: oklch(0.13 0.015 260) — casi negro
+- `--primary`: oklch(0.596 0.145 163.225) — verde esmeralda
+- `--card`: oklch(1 0 0) — blanco puro
+- `--border`: oklch(0.92 0.005 260) — gris claro
+
+### Modo Oscuro
+- `--background`: oklch(0.02 0 0) — **negro puro** (corregido de gris)
+- `--foreground`: oklch(0.98 0 0) — **blanco puro** (sin opacidad)
+- `--card`: oklch(0.07 0 0) — negro profundo
+- `--muted`: oklch(0.14 0 0) — gris muy oscuro
+- `--border`: oklch(1 0 0 / 10%) — blanco con 10% opacidad
+- `--primary`: oklch(0.65 0.17 163.225) — verde esmeralda claro
+
+---
+
+## Contenido de /materias/historia — 10 Períodos
+
+1. **Prehistoria y Orígenes** (~3.000.000 – 3.000 a.C.) — Lucy, Homo erectus, fuego, neolítico
+2. **Pangea y Primeras Civilizaciones** (~3.500 – 500 a.C.) — Sumeria, Egipto, valle del Indo
+3. **Mundo Antiguo** (~800 a.C. – 476 d.C.) — Grecia, Roma, Alejandro Magno
+4. **Edad Media** (476 – 1453 d.C.) — Cruzadas, Islam, Peste Negra, Juana de Arco
+5. **Renacimiento y Reformas** (1453 – 1648 d.C.) — Colón, Carlos V, Lutero, Gutenberg
+6. **América Precolombina** (~2.000 a.C. – 1492 d.C.) — Olmecas, mayas, aztecas, incas
+7. **Conquista y Colonia** (1492 – 1810 d.C.) — Cortés, Pizarro, virreinatos
+8. **Independencia de América** (1810 – 1825 d.C.) — San Martín, Bolívar
+9. **Siglo XIX** (1815 – 1914 d.C.) — Revolución Industrial, unificaciones
+10. **Historia Contemporánea** (1914 – actualidad) — Guerras Mundiales, Guerra Fría, globalización
+
+Cada período tiene: descripción (200+ palabras), 8-9 temas clave, actividad propuesta con tipo/dificultad/tiempo.
+
+---
+
+## Funcionalidades Implementadas
+
+- ✅ Dark/light mode con persistencia en localStorage
+- ✅ Navegación con router Next.js (client-side)
+- ✅ Breadcrumbs en todas las sub-páginas
+- ✅ Buscador funcional en navbar
+- ✅ Mega menú desplegable en landing
+- ✅ Acordeones expandibles (manual, con AnimatePresence)
+- ✅ Animaciones de entrada con Framer Motion (fade-in-on-scroll)
+- ✅ Responsive mobile/tablet/desktop
+- ✅ SEO metadata en español
+
+---
+
+## Pendientes / Mejoras Futuras
+
+1. **Landing page**: Incorporar tipografías Poppins/Manrope (solo se usa Inter actualmente)
+2. **Pricing real**: Las secciones de pricing y testimonios tienen contenido placeholder
+3. **Páginas de detalle**: Crear páginas individuales para cada materia (no solo Historia)
+4. **Blog**: Crear páginas de blog reales
+5. **Auth**: Implementar login/registro (botones "Ingresa"/"Regístrate" son placeholder)
+6. **Perfil de profesor**: Crear página para "¿Sos profesor?"
+7. **Idiomas**: Implementar selector de idioma funcional
+8. **Contenido de materias**: Agregar más materias con contenido detallado (Matemática, Inglés, etc.)
+9. **FAQ**: Contenido real de preguntas frecuentes
+10. **Newsletter**: Formulario funcional de newsletter
+
+---
+
+## Notas Importantes
+
+- Todos los textos están en **español argentino** (vos, sabés, etc.)
+- No se usan emojis en el código (reemplazados por iconos lucide-react)
+- La paleta principal es **verde esmeralda** (emerald-600: oklch 0.596 0.145 163.225)
+- El modo oscuro usa **negro puro** (oklch 0.02) NO gris
+- Los builds siempre deben pasar limpios (`npm run build`)
+- Proyecto ubicado en `/home/z/my-project/`
+- Archivos generados para usuario van a `/home/z/my-project/download/`
