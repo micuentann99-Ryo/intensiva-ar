@@ -75,7 +75,7 @@ export default function ExplorarPage() {
 
       <main className="flex-1">
         {/* Breadcrumb */}
-        <div className="bg-muted/40 dark:bg-gray-900/60 border-b border-border">
+        <div className="bg-muted/40 dark:bg-black/60 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <nav className="flex items-center gap-1.5 text-sm">
               <Link

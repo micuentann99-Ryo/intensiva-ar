@@ -117,7 +117,7 @@ function SectionWrap({
   return (
     <section
       id={id}
-      className={`py-20 md:py-28 ${dark ? 'bg-muted/40 dark:bg-gray-900/40' : ''} ${className}`}
+      className={`py-20 md:py-28 ${dark ? 'bg-muted/40 dark:bg-black/40' : ''} ${className}`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
     </section>
@@ -386,8 +386,8 @@ export default function HomePage() {
       <header
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
           scrolled
-            ? 'h-[72px] bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl shadow-sm border-b border-border/60'
-            : 'h-[80px] bg-white dark:bg-gray-950 border-b border-transparent'
+            ? 'h-[72px] bg-white/90 dark:bg-black/90 backdrop-blur-xl shadow-sm border-b border-border/60'
+            : 'h-[80px] bg-white dark:bg-black border-b border-transparent'
         }`}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
@@ -433,7 +433,7 @@ export default function HomePage() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.98 }}
                         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[min(900px,90vw)] bg-white dark:bg-gray-950 rounded-2xl shadow-2xl border border-border/60 p-6 md:p-8 z-50"
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[min(900px,90vw)] bg-white dark:bg-black rounded-2xl shadow-2xl border border-border/60 p-6 md:p-8 z-50"
                         onMouseEnter={megaEnter}
                         onMouseLeave={megaLeave}
                       >
@@ -662,7 +662,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.4 }}
-                className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-3 border border-border/60 flex items-center gap-2.5"
+                className="absolute -bottom-4 -left-4 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-lg p-3 border border-border/60 flex items-center gap-2.5"
               >
                 <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
                   <Users className="size-4 text-emerald-600" />
@@ -676,7 +676,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1, duration: 0.4 }}
-                className="absolute -top-4 -right-4 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-3 border border-border/60 flex items-center gap-2.5"
+                className="absolute -top-4 -right-4 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-lg p-3 border border-border/60 flex items-center gap-2.5"
               >
                 <div className="flex items-center justify-center size-9 rounded-lg bg-amber-100 dark:bg-amber-900/50">
                   <Star className="size-4 text-amber-500" />
@@ -694,7 +694,7 @@ export default function HomePage() {
       {/* ───────────────────────────────────────────────
          TRUST / LOGOS BAR
          ─────────────────────────────────────────────── */}
-      <section className="py-12 md:py-16 border-y border-border/50 bg-muted/20 dark:bg-gray-900/20">
+      <section className="py-12 md:py-16 border-y border-border/50 bg-muted/20 dark:bg-black/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-center text-sm text-muted-foreground mb-8 tracking-wide uppercase font-medium">
@@ -706,7 +706,7 @@ export default function HomePage() {
               {universities.map((uni) => (
                 <div
                   key={uni}
-                  className="px-4 py-2 rounded-full bg-white dark:bg-gray-900 border border-border/60 text-xs sm:text-sm font-medium text-muted-foreground hover:border-emerald-300 dark:hover:border-emerald-700 hover:text-foreground transition-colors"
+                  className="px-4 py-2 rounded-full bg-white dark:bg-[#0a0a0a] border border-border/60 text-xs sm:text-sm font-medium text-muted-foreground hover:border-emerald-300 dark:hover:border-emerald-700 hover:text-foreground transition-colors"
                 >
                   {uni}
                 </div>
