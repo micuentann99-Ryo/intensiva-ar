@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { useTheme } from '@/hooks/use-theme';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +34,8 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   Menu,
   Search,
+  Sun,
+  Moon,
   Flame,
   Snowflake,
   GraduationCap,
@@ -962,11 +965,13 @@ function SubjectDetailView({
 
 export default function Home() {
   const router = useRouter();
+  const { isDark, toggle: toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'home' | 'subject' | 'catalog'>('home');
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [searchSubject, setSearchSubject] = useState('');
+  const [navSearchQuery, setNavSearchQuery] = useState('');
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1041,6 +1046,14 @@ export default function Home() {
     [navigateToSubject, goHome]
   );
 
+  const handleNavSearch = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    if (navSearchQuery.trim().toLowerCase().includes('historia')) {
+      navigateToSubject('historia');
+    }
+    setNavSearchQuery('');
+  }, [navSearchQuery, navigateToSubject]);
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -1055,8 +1068,8 @@ export default function Home() {
         <header
           className={`sticky top-0 z-50 w-full transition-all duration-300 ${
             scrolled
-              ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-border'
-              : 'bg-white'
+              ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-border'
+              : 'bg-white dark:bg-slate-900'
           }`}
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -1070,51 +1083,94 @@ export default function Home() {
                   <span className="text-[10px] text-muted-foreground hidden sm:block">Clases intensivas Argentina</span>
                 </div>
               </button>
-              <nav className="hidden lg:flex items-center gap-1">
-                {navLinks.map((link) => (
-                  <button
-                    key={link.label}
-                    onClick={() => handleNavClick(link)}
-                    className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
-                  >
-                    {link.label}
-                  </button>
-                ))}
-              </nav>
+
+              {/* Desktop: Search + Theme + Nav */}
+              <div className="hidden lg:flex items-center gap-3 flex-1 ml-6 max-w-2xl">
+                <form onSubmit={handleNavSearch} className="relative flex-1 max-w-xs">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                  <input
+                    type="text"
+                    value={navSearchQuery}
+                    onChange={(e) => setNavSearchQuery(e.target.value)}
+                    placeholder="Buscador"
+                    className="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
+                  />
+                </form>
+                <button
+                  onClick={toggleTheme}
+                  className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
+                  aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                  title={isDark ? 'Modo claro' : 'Modo oscuro'}
+                >
+                  {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
+                </button>
+                <nav className="flex items-center gap-1">
+                  {navLinks.map((link) => (
+                    <button
+                      key={link.label}
+                      onClick={() => handleNavClick(link)}
+                      className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
+                    >
+                      {link.label}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
               <div className="hidden lg:flex items-center gap-3">
                 <Button variant="outline" size="sm" className="text-sm">¿Sos profesor?</Button>
                 <Button variant="ghost" size="sm" className="text-sm">Ingresa</Button>
                 <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
               </div>
-              <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="lg:hidden">
-                    <Menu className="size-5" />
-                    <span className="sr-only">Abrir menú</span>
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-80">
-                  <SheetHeader>
-                    <SheetTitle className="flex items-center gap-2">
-                      <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
-                        <Sparkles className="size-4" />
-                      </div>
-                      IntensivaAR
-                    </SheetTitle>
-                  </SheetHeader>
-                  <nav className="flex flex-col gap-1 mt-4">
-                    {navLinks.map((link) => (
-                      <button
-                        key={link.label}
-                        onClick={() => handleNavClick(link)}
-                        className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
-                      >
-                        {link.label}
-                      </button>
-                    ))}
-                  </nav>
-                </SheetContent>
-              </Sheet>
+
+              <div className="flex lg:hidden items-center gap-2">
+                <button
+                  onClick={toggleTheme}
+                  className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
+                  aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                >
+                  {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
+                </button>
+                <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Menu className="size-5" />
+                      <span className="sr-only">Abrir menú</span>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-80">
+                    <SheetHeader>
+                      <SheetTitle className="flex items-center gap-2">
+                        <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
+                          <Sparkles className="size-4" />
+                        </div>
+                        IntensivaAR
+                      </SheetTitle>
+                    </SheetHeader>
+                    <form onSubmit={handleNavSearch} className="mt-4 relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                      <input
+                        type="text"
+                        value={navSearchQuery}
+                        onChange={(e) => setNavSearchQuery(e.target.value)}
+                        placeholder="Buscador"
+                        className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
+                      />
+                    </form>
+                    <nav className="flex flex-col gap-1 mt-4">
+                      {navLinks.map((link) => (
+                        <button
+                          key={link.label}
+                          onClick={() => handleNavClick(link)}
+                          className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
+                        >
+                          {link.label}
+                        </button>
+                      ))}
+                    </nav>
+                  </SheetContent>
+                </Sheet>
+              </div>
             </div>
           </div>
         </header>
@@ -1136,8 +1192,8 @@ export default function Home() {
       <header
         className={`sticky top-0 z-50 w-full transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-border'
-            : 'bg-white'
+            ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm border-b border-border'
+            : 'bg-white dark:bg-slate-900'
         }`}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -1157,18 +1213,38 @@ export default function Home() {
               </div>
             </button>
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <button
-                  key={link.label}
-                  onClick={() => handleNavClick(link)}
-                  className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
-                >
-                  {link.label}
-                </button>
-              ))}
-            </nav>
+            {/* Desktop: Search + Theme + Nav */}
+            <div className="hidden lg:flex items-center gap-3 flex-1 ml-6 max-w-2xl">
+              <form onSubmit={handleNavSearch} className="relative flex-1 max-w-xs">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                <input
+                  type="text"
+                  value={navSearchQuery}
+                  onChange={(e) => setNavSearchQuery(e.target.value)}
+                  placeholder="Buscador"
+                  className="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
+                />
+              </form>
+              <button
+                onClick={toggleTheme}
+                className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
+                aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+                title={isDark ? 'Modo claro' : 'Modo oscuro'}
+              >
+                {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
+              </button>
+              <nav className="flex items-center gap-1">
+                {navLinks.map((link) => (
+                  <button
+                    key={link.label}
+                    onClick={() => handleNavClick(link)}
+                    className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
 
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-3">
@@ -1183,41 +1259,60 @@ export default function Home() {
               </Button>
             </div>
 
-            {/* Mobile Menu */}
-            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden">
-                  <Menu className="size-5" />
-                  <span className="sr-only">Abrir menú</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-80">
-                <SheetHeader>
-                  <SheetTitle className="flex items-center gap-2">
-                    <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
-                      <Sparkles className="size-4" />
-                    </div>
-                    IntensivaAR
-                  </SheetTitle>
-                </SheetHeader>
-                <nav className="flex flex-col gap-1 mt-4">
-                  {navLinks.map((link) => (
-                    <button
-                      key={link.label}
-                      onClick={() => handleNavClick(link)}
-                      className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
-                    >
-                      {link.label}
-                    </button>
-                  ))}
-                </nav>
-                <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
-                  <Button variant="outline" className="w-full">¿Sos profesor?</Button>
-                  <Button variant="ghost" className="w-full">Ingresa</Button>
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
-                </div>
-              </SheetContent>
-            </Sheet>
+            {/* Mobile: Theme Toggle + Menu */}
+            <div className="flex lg:hidden items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
+                aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              >
+                {isDark ? <Sun className="size-[18px] text-amber-400" /> : <Moon className="size-[18px] text-slate-600" />}
+              </button>
+              <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="size-5" />
+                    <span className="sr-only">Abrir menú</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80">
+                  <SheetHeader>
+                    <SheetTitle className="flex items-center gap-2">
+                      <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
+                        <Sparkles className="size-4" />
+                      </div>
+                      IntensivaAR
+                    </SheetTitle>
+                  </SheetHeader>
+                  <form onSubmit={handleNavSearch} className="mt-4 relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                    <input
+                      type="text"
+                      value={navSearchQuery}
+                      onChange={(e) => setNavSearchQuery(e.target.value)}
+                      placeholder="Buscador"
+                      className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
+                    />
+                  </form>
+                  <nav className="flex flex-col gap-1 mt-4">
+                    {navLinks.map((link) => (
+                      <button
+                        key={link.label}
+                        onClick={() => handleNavClick(link)}
+                        className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
+                      >
+                        {link.label}
+                      </button>
+                    ))}
+                  </nav>
+                  <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
+                    <Button variant="outline" className="w-full">¿Sos profesor?</Button>
+                    <Button variant="ghost" className="w-full">Ingresa</Button>
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </header>

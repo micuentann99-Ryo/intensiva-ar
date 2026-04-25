@@ -70,7 +70,7 @@ const categories = [
 
 export default function ExplorarPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
       <SiteNavbar />
 
       <main className="flex-1">

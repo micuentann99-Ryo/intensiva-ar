@@ -78,7 +78,7 @@ export default function MateriasPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900">
       <SiteNavbar />
 
       <main className="flex-1">
@@ -195,7 +195,7 @@ export default function MateriasPage() {
                           <div className="px-5 pb-4 pt-1">
                             <Link
                               href="/materias/historia"
-                              className="flex items-center justify-between py-3 px-4 rounded-lg bg-white border border-emerald-100 hover:bg-emerald-50 hover:border-emerald-200 transition-colors group"
+                              className="flex items-center justify-between py-3 px-4 rounded-lg bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors group"
                             >
                               <div className="flex items-center gap-3">
                                 <Landmark className="size-4 text-emerald-600" />
