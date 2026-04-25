@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, type ReactNode } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -40,6 +40,7 @@ import {
   Calendar,
   Star,
   ChevronRight,
+  ChevronLeft,
   BookOpen,
   Calculator,
   FlaskConical,
@@ -81,6 +82,11 @@ import {
   ChevronDown,
   BookMarked,
   History,
+  Dna,
+  Castle,
+  Palette,
+  Flag,
+  Library,
 } from 'lucide-react';
 
 /* ─── Fade-in animation wrapper ─── */
@@ -167,18 +173,20 @@ function SectionHeading({
    ═══════════════════════════════════════════════════ */
 
 const navLinks = [
-  { label: 'Cursos', href: '#cursos' },
-  { label: 'Verano', href: '#search' },
-  { label: 'Invierno', href: '#search' },
-  { label: 'Materias', href: '#categorias' },
-  { label: 'Historia', href: '#historia' },
-  { label: 'Profesores', href: '#profesores' },
-  { label: 'Cómo funciona', href: '#como-funciona' },
+  { label: 'Cursos', href: '#cursos', action: null },
+  { label: 'Verano', href: '#search', action: null },
+  { label: 'Invierno', href: '#search', action: null },
+  { label: 'Materias', href: '#categorias', action: null },
+  { label: 'Historia', href: '#', action: 'historia' },
+  { label: 'Catálogo', href: '#catalogo', action: null },
+  { label: 'Profesores', href: '#profesores', action: null },
+  { label: 'Cómo funciona', href: '#como-funciona', action: null },
 ];
 
 const popularSearches = [
   'Matemática',
   'Inglés',
+  'Historia',
   'Ingreso Universitario',
   'Química',
   'Física',
@@ -209,16 +217,18 @@ const nichos = [
 ];
 
 const categorias = [
-  { icon: <Calculator className="size-7" />, name: 'Matemáticas', count: 245 },
+  { icon: <Calculator className="size-7" />, name: 'Matemáticas', count: 245, slug: 'matematica' },
   {
     icon: <GraduationCap className="size-7" />,
     name: 'Ingreso Universitario',
     count: 189,
+    slug: 'ingreso',
   },
-  { icon: <BookOpen className="size-7" />, name: 'Inglés', count: 167 },
-  { icon: <FlaskConical className="size-7" />, name: 'Ciencias', count: 134 },
-  { icon: <Code className="size-7" />, name: 'Informática y Programación', count: 98 },
-  { icon: <Wrench className="size-7" />, name: 'Talleres y Cursos cortos', count: 76 },
+  { icon: <BookOpen className="size-7" />, name: 'Inglés', count: 167, slug: 'ingles' },
+  { icon: <Landmark className="size-7" />, name: 'Historia', count: 48, slug: 'historia' },
+  { icon: <FlaskConical className="size-7" />, name: 'Ciencias', count: 134, slug: 'ciencias' },
+  { icon: <Code className="size-7" />, name: 'Informática y Programación', count: 98, slug: 'programacion' },
+  { icon: <Wrench className="size-7" />, name: 'Talleres y Cursos cortos', count: 76, slug: 'talleres' },
 ];
 
 const steps = [
@@ -312,6 +322,7 @@ const footerNav = {
   Navegación: ['Inicio', 'Cursos', 'Profesores', 'Cómo funciona', 'Blog'],
   Categorías: [
     'Matemáticas',
+    'Historia',
     'Ingreso Universitario',
     'Inglés',
     'Ciencias',
@@ -326,9 +337,134 @@ const footerNav = {
   ],
 };
 
-/* ─── History region data ─── */
+/* ─── Catalog Books ─── */
+const catalogBooks = [
+  { title: 'Toda la Historia del mundo', subject: 'Historia', author: 'Barreau & Bigot', desc: 'De la prehistoria a la actualidad en 37 capítulos', icon: <Globe className="size-5 text-emerald-600" />, navigateTo: 'historia' },
+  { title: 'Curso Intensivo de Matemática', subject: 'Matemática', author: 'IntensivaAR', desc: 'Álgebra, geometría, trigonometría y cálculo', icon: <Calculator className="size-5 text-emerald-600" />, navigateTo: null },
+  { title: 'Inglés para Profesionales', subject: 'Inglés', author: 'IntensivaAR', desc: 'Gramática avanzada y conversación', icon: <BookOpen className="size-5 text-emerald-600" />, navigateTo: null },
+  { title: 'Física Universitaria', subject: 'Física', author: 'IntensivaAR', desc: 'Mecánica, termodinámica y electromagnetismo', icon: <Atom className="size-5 text-emerald-600" />, navigateTo: null },
+  { title: 'Química Orgánica', subject: 'Química', author: 'IntensivaAR', desc: 'Estudio completo de compuestos del carbono', icon: <FlaskConical className="size-5 text-emerald-600" />, navigateTo: null },
+  { title: 'Programación desde Cero', subject: 'Programación', author: 'IntensivaAR', desc: 'Python, JavaScript y algoritmos', icon: <Code className="size-5 text-emerald-600" />, navigateTo: null },
+  { title: 'Preparación Ingreso UBA/CBC', subject: 'Ingreso Universitario', author: 'IntensivaAR', desc: 'Matemática, lengua y ciencias', icon: <GraduationCap className="size-5 text-emerald-600" />, navigateTo: null },
+  { title: 'Ingreso a Medicina', subject: 'Ingreso Universitario', author: 'IntensivaAR', desc: 'Biología, química y razonamiento', icon: <Heart className="size-5 text-emerald-600" />, navigateTo: null },
+  { title: 'Historia Argentina Contemporánea', subject: 'Historia', author: 'IntensivaAR', desc: 'Desde la independencia hasta la actualidad', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' },
+  { title: 'Historia de las Civilizaciones', subject: 'Historia', author: 'IntensivaAR', desc: 'Egipto, Grecia, Roma y el mundo antiguo', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' },
+  { title: 'El Mundo en la Edad Media', subject: 'Historia', author: 'IntensivaAR', desc: 'Imperios, cruzadas y nacimiento de naciones', icon: <Castle className="size-5 text-emerald-600" />, navigateTo: 'historia' },
+  { title: 'Guerras del Siglo XX', subject: 'Historia', author: 'IntensivaAR', desc: 'Primera y Segunda Guerra Mundial', icon: <Flag className="size-5 text-emerald-600" />, navigateTo: 'historia' },
+];
+
+/* ─── History Subdivisions ─── */
 type LucideIcon = React.ComponentType<{ className?: string }>;
 
+const historiaSubdivisions = [
+  {
+    id: 'prehistoria',
+    name: 'Prehistoria y Orígenes',
+    icon: Dna,
+    desc: 'El origen del ser humano en África oriental, la invención del lenguaje, mutaciones genéticas, Lucy, el paso del Estrecho de Bering hacia América.',
+    topics: 6,
+  },
+  {
+    id: 'pangea',
+    name: 'Pangea y Primeras Civilizaciones',
+    icon: Globe,
+    desc: 'Los ríos nutricios (Nilo, Éufrates, Indo), los primeros Estados, las religiones antiguas, Sumeria, Egipto faraónico, la aparición de la escritura.',
+    topics: 5,
+  },
+  {
+    id: 'mundo-antiguo',
+    name: 'Mundo Antiguo (Grecia y Roma)',
+    icon: Landmark,
+    desc: 'Cretenses, fenicios, judíos. El Imperio persa. Alejandro Magno. Cartago y Roma. El Imperio romano. El judeo-cristianismo.',
+    topics: 7,
+  },
+  {
+    id: 'edad-media',
+    name: 'Edad Media',
+    icon: Castle,
+    desc: 'La caída de Roma. Los tiempos bárbaros. La época del islam. Las cruzadas. El nacimiento de las naciones. La guerra de los Cien Años. Juana de Arco.',
+    topics: 8,
+  },
+  {
+    id: 'renacimiento',
+    name: 'Renacimiento y Reformas',
+    icon: Palette,
+    desc: 'Los grandes descubrimientos. La muerte de las civilizaciones precolombinas. Carlos V. Francisco I. Las reformas religiosas. Miguel Ángel, Leonardo, Maquiavelo.',
+    topics: 6,
+  },
+  {
+    id: 'mexico-aztecas',
+    name: 'Historia de México y Aztecas',
+    icon: Mountain,
+    desc: 'El Imperio azteca/mexica. Moctezuma. Cortés y la conquista. La Noche Triste. Tenochtitlán. Maximiliano. Chiapas.',
+    topics: 5,
+  },
+  {
+    id: 'peru-incas',
+    name: 'Historia del Perú e Incas',
+    icon: Mountain,
+    desc: 'El Imperio inca. Atahualpa y Pizarro. Cajamarca. El desfase temporal. La independencia. Ayacucho.',
+    topics: 4,
+  },
+  {
+    id: 'argentina-sudamerica',
+    name: 'Historia de Argentina y Sudamérica',
+    icon: MapPin,
+    desc: 'Las revoluciones de independencia. San Martín. Bolívar. La fragmentación latinoamericana. El apartheid indígena.',
+    topics: 6,
+  },
+  {
+    id: 'brasil-centroamerica',
+    name: 'Historia de Brasil y Centroamérica',
+    icon: TreePine,
+    desc: 'Brasil portugués. Dom Pedro. La monarquía brasileña. Los mayas en Guatemala. Las civilizaciones precolombinas menores.',
+    topics: 4,
+  },
+  {
+    id: 'america-norte',
+    name: 'Historia de América del Norte',
+    icon: Flag,
+    desc: 'Los pieles rojas. La guerra de Secesión. La expansión hacia el oeste. El ferrocarril continental. Tocqueville.',
+    topics: 5,
+  },
+  {
+    id: 'africa',
+    name: 'Historia de África',
+    icon: Compass,
+    desc: 'Los orígenes humanos. La colonización. La guerra de los Boers. El Congo. Sudáfrica. Egipto y el canal de Suez.',
+    topics: 5,
+  },
+  {
+    id: 'asia',
+    name: 'Historia de Asia',
+    icon: ScrollText,
+    desc: 'China y los ríos nutricios. Japón y la era Meiji. La India británica. El Imperio otomano. Indonesia.',
+    topics: 6,
+  },
+  {
+    id: 'europa-moderna',
+    name: 'Historia de Europa Moderna',
+    icon: Landmark,
+    desc: 'Las guerras de religión. Richelieu y Luis XIV. El Siglo de las Luces. La Revolución Francesa. Napoleón.',
+    topics: 8,
+  },
+  {
+    id: 'contemporanea',
+    name: 'Historia Contemporánea',
+    icon: Newspaper,
+    desc: 'La Belle Époque. La Gran Guerra. La Revolución rusa. Hitler. La Segunda Guerra Mundial. La Guerra Fría. La descolonización. La globalización.',
+    topics: 9,
+  },
+  {
+    id: 'paises-bajos-oceania',
+    name: 'Países Bajos y Oceanía',
+    icon: Ship,
+    desc: 'Los boers. Bélgica. Australia y Nueva Zelanda como dominios británicos. Las posesiones francesas en el Pacífico.',
+    topics: 4,
+  },
+];
+
+/* ─── History region data ─── */
 const historyRegions = [
   {
     id: 'mexico',
@@ -485,70 +621,29 @@ const activityCategories = [
 ];
 
 const progressEras = [
-  {
-    name: 'Prehistoria',
-    color: 'bg-stone-500',
-    chapters: ['Cap. 1-3'],
-    range: [0, 8],
-  },
-  {
-    name: 'Antigüedad',
-    color: 'bg-amber-600',
-    chapters: ['Cap. 4-12'],
-    range: [8, 35],
-  },
-  {
-    name: 'Edad Media',
-    color: 'bg-rose-600',
-    chapters: ['Cap. 13-18'],
-    range: [35, 54],
-  },
-  {
-    name: 'Renacimiento',
-    color: 'bg-violet-600',
-    chapters: ['Cap. 19-24'],
-    range: [54, 70],
-  },
-  {
-    name: 'Época Moderna',
-    color: 'bg-sky-600',
-    chapters: ['Cap. 25-30'],
-    range: [70, 86],
-  },
-  {
-    name: 'Contemporánea',
-    color: 'bg-emerald-600',
-    chapters: ['Cap. 31-37'],
-    range: [86, 100],
-  },
+  { name: 'Prehistoria', color: 'bg-stone-500', chapters: ['Cap. 1-3'], range: [0, 8] },
+  { name: 'Antigüedad', color: 'bg-amber-600', chapters: ['Cap. 4-12'], range: [8, 35] },
+  { name: 'Edad Media', color: 'bg-rose-600', chapters: ['Cap. 13-18'], range: [35, 54] },
+  { name: 'Renacimiento', color: 'bg-violet-600', chapters: ['Cap. 19-24'], range: [54, 70] },
+  { name: 'Época Moderna', color: 'bg-sky-600', chapters: ['Cap. 25-30'], range: [70, 86] },
+  { name: 'Contemporánea', color: 'bg-emerald-600', chapters: ['Cap. 31-37'], range: [86, 100] },
 ];
 
 /* ─── Icon helper ─── */
 function RegionIcon({ icon, className }: { icon: string; className?: string }) {
   const props = { className };
   switch (icon) {
-    case 'landmark':
-      return <Landmark {...props} />;
-    case 'mountain':
-      return <Mountain {...props} />;
-    case 'globe':
-      return <Globe {...props} />;
-    case 'mapPin':
-      return <MapPin {...props} />;
-    case 'treePine':
-      return <TreePine {...props} />;
-    case 'landmark2':
-      return <Landmark {...props} />;
-    case 'compass':
-      return <Compass {...props} />;
-    case 'scrollText':
-      return <ScrollText {...props} />;
-    case 'ship':
-      return <Ship {...props} />;
-    case 'palmtree':
-      return <Palmtree {...props} />;
-    default:
-      return <Globe {...props} />;
+    case 'landmark': return <Landmark {...props} />;
+    case 'mountain': return <Mountain {...props} />;
+    case 'globe': return <Globe {...props} />;
+    case 'mapPin': return <MapPin {...props} />;
+    case 'treePine': return <TreePine {...props} />;
+    case 'landmark2': return <Landmark {...props} />;
+    case 'compass': return <Compass {...props} />;
+    case 'scrollText': return <ScrollText {...props} />;
+    case 'ship': return <Ship {...props} />;
+    case 'palmtree': return <Palmtree {...props} />;
+    default: return <Globe {...props} />;
   }
 }
 
@@ -568,12 +663,377 @@ function DifficultyBadge({ level }: { level: string }) {
 }
 
 /* ═══════════════════════════════════════════════════
+   SUBJECT DETAIL VIEW
+   ═══════════════════════════════════════════════════ */
+
+function SubjectDetailView({
+  subject,
+  onBack,
+}: {
+  subject: string;
+  onBack: () => void;
+}) {
+  const subjectInfo: Record<string, { title: string; subtitle: string }> = {
+    historia: {
+      title: 'Historia Universal',
+      subtitle: 'De la prehistoria a la actualidad',
+    },
+  };
+
+  const info = subjectInfo[subject] ?? { title: subject, subtitle: '' };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen"
+    >
+      {/* Breadcrumb */}
+      <div className="bg-muted/40 border-b border-border">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <nav className="flex items-center gap-1.5 text-sm">
+            <button
+              onClick={onBack}
+              className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+            >
+              Inicio
+            </button>
+            <ChevronRight className="size-3.5 text-muted-foreground" />
+            <span className="text-muted-foreground">Cursos</span>
+            <ChevronRight className="size-3.5 text-muted-foreground" />
+            <span className="text-emerald-700 font-medium">{info.title}</span>
+          </nav>
+        </div>
+      </div>
+
+      {/* Subject Header */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-12 md:py-16">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-3xl mx-auto">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6 group"
+            >
+              <ChevronLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
+              Volver al inicio
+            </button>
+
+            <Badge className="mb-4 px-4 py-1.5 text-sm font-medium bg-emerald-100 text-emerald-800 border-emerald-200 gap-1.5">
+              <History className="size-3.5" />
+              Curso intensivo
+            </Badge>
+
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
+              {info.title}
+            </h1>
+            <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
+              {info.subtitle} — Basado en{' '}
+              <span className="font-semibold text-emerald-700">'Toda la Historia del mundo'</span> de
+              Barreau y Bigot
+            </p>
+
+            {/* Progress bar */}
+            <div className="mt-6 max-w-lg">
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                <span>Cap. 1 — Prehistoria</span>
+                <span>Cap. 37 — Globalización</span>
+              </div>
+              <Progress value={100} className="h-2.5 bg-emerald-100" />
+              <div className="flex gap-3 mt-3 flex-wrap">
+                {progressEras.map((era) => (
+                  <span key={era.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span className={`inline-block size-2 rounded-full ${era.color}`} />
+                    {era.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Subdivisions Grid */}
+      {subject === 'historia' && (
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <FadeIn>
+              <div className="max-w-5xl mx-auto mb-10">
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2">
+                  <BookMarked className="size-6 text-emerald-600" />
+                  Subdivisiones del curso
+                </h2>
+                <p className="text-muted-foreground mt-2">
+                  Explorá las distintas épocas y regiones que abarca el curso
+                </p>
+              </div>
+            </FadeIn>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+              {historiaSubdivisions.map((sub, i) => (
+                <FadeIn key={sub.id} delay={i * 0.05}>
+                  <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full cursor-pointer">
+                    <CardContent className="p-5 flex flex-col gap-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 text-emerald-600 shrink-0 group-hover:bg-emerald-100 group-hover:scale-110 transition-all">
+                          <sub.icon className="size-5" />
+                        </div>
+                        <Badge variant="secondary" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-100 shrink-0">
+                          {sub.topics} temas
+                        </Badge>
+                      </div>
+                      <h3 className="font-semibold text-base text-foreground group-hover:text-emerald-700 transition-colors">
+                        {sub.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1">
+                        {sub.desc}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium mt-auto pt-2 border-t border-border/50">
+                        Explorar
+                        <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Region Accordion Detail */}
+      <section className="py-12 md:py-16 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-xl md:text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                <Globe className="size-5 text-emerald-600" />
+                Regiones del mundo — Contenido detallado
+              </h3>
+              <Accordion type="multiple" className="space-y-3">
+                {historyRegions.map((region, idx) => (
+                  <FadeIn key={region.id} delay={idx * 0.03}>
+                    <AccordionItem
+                      value={region.id}
+                      className="bg-card border border-border rounded-xl px-4 data-[state=open]:border-emerald-300 data-[state=open]:shadow-md transition-all"
+                    >
+                      <AccordionTrigger className="hover:no-underline py-4">
+                        <div className="flex items-center gap-3 text-left">
+                          <div className="flex items-center justify-center size-10 rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
+                            <RegionIcon icon={region.icon} className="size-5" />
+                          </div>
+                          <div>
+                            <span className="font-semibold text-base text-foreground block">
+                              {region.name}
+                            </span>
+                            <span className="text-xs text-muted-foreground block mt-0.5 line-clamp-1">
+                              {region.intro}
+                            </span>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-4">
+                        <div className="space-y-4 pt-1">
+                          <p className="text-sm text-muted-foreground leading-relaxed">{region.intro}</p>
+                          {Array.isArray(region.content) ? (
+                            <ul className="space-y-1.5 text-sm text-foreground">
+                              {region.content.map((item, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <ChevronRight className="size-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-sm text-foreground leading-relaxed bg-muted/50 rounded-lg p-4 border border-border/50">
+                              {region.content as string}
+                            </p>
+                          )}
+                          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg p-4 border border-emerald-200/60">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Lightbulb className="size-4 text-emerald-600" />
+                              <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wide">
+                                Actividad: {region.activityType}
+                              </span>
+                            </div>
+                            <p className="text-sm text-foreground leading-relaxed">{region.activity}</p>
+                            <div className="flex items-center gap-3 mt-3 flex-wrap">
+                              <DifficultyBadge level={region.difficulty} />
+                              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="size-3" />
+                                {region.time}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </FadeIn>
+                ))}
+              </Accordion>
+            </div>
+          </FadeIn>
+
+          {/* Activities Section */}
+          <FadeIn delay={0.1}>
+            <div className="max-w-4xl mx-auto mt-16">
+              <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+                <PenTool className="size-5 text-emerald-600" />
+                Actividades del curso
+              </h3>
+              <p className="text-muted-foreground mb-8 text-sm">
+                10 actividades prácticas para profundizar en cada región del mundo
+              </p>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {activityCategories.map((cat) => (
+                  <Badge key={cat.label} variant="outline" className={`${cat.color} text-xs gap-1`}>
+                    <FileText className="size-3" />
+                    {cat.label}
+                    <span className="ml-1 opacity-60">({cat.count})</span>
+                  </Badge>
+                ))}
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {historyRegions.map((region, idx) => (
+                  <FadeIn key={region.id} delay={idx * 0.04}>
+                    <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full cursor-pointer">
+                      <CardContent className="p-5 flex flex-col gap-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
+                              <RegionIcon icon={region.icon} className="size-4" />
+                            </div>
+                            <Avatar className="size-6">
+                              <AvatarFallback className="bg-emerald-100 text-emerald-700 text-[10px] font-bold">
+                                {region.id.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                          <DifficultyBadge level={region.difficulty} />
+                        </div>
+                        <Badge variant="outline" className="w-fit text-xs bg-emerald-50 text-emerald-700 border-emerald-200">
+                          {region.activityType}
+                        </Badge>
+                        <h4 className="font-semibold text-sm text-foreground leading-snug line-clamp-3">{region.activity}</h4>
+                        <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
+                          <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
+                            <Globe className="size-2.5 mr-0.5" />
+                            {region.name.split(' y ')[0]}
+                          </Badge>
+                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Clock className="size-2.5" />
+                            {region.time}
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </FadeIn>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Book reference */}
+          <FadeIn delay={0.15}>
+            <div className="max-w-2xl mx-auto mt-16 text-center">
+              <div className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-5 py-2.5 shadow-sm">
+                <BookOpen className="size-4 text-emerald-600" />
+                <span className="text-sm text-muted-foreground">
+                  Contenido basado en{' '}
+                  <span className="font-semibold text-foreground">'Toda la Historia del mundo'</span> de
+                  Jean-Claude Barreau y Guillaume Bigot
+                </span>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════ */
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [currentView, setCurrentView] = useState<'home' | 'subject' | 'catalog'>('home');
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const [searchSubject, setSearchSubject] = useState('');
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const navigateToSubject = useCallback(
+    (subject: string) => {
+      setSelectedSubject(subject);
+      setCurrentView('subject');
+      setMobileOpen(false);
+      scrollToTop();
+    },
+    [scrollToTop]
+  );
+
+  const goHome = useCallback(() => {
+    setCurrentView('home');
+    setSelectedSubject(null);
+    setSearchSubject('');
+    setMobileOpen(false);
+    scrollToTop();
+  }, [scrollToTop]);
+
+  const handleNavClick = useCallback(
+    (link: (typeof navLinks)[number]) => {
+      if (link.action === 'historia') {
+        navigateToSubject('historia');
+      } else {
+        goHome();
+        setTimeout(() => {
+          const el = document.querySelector(link.href);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    },
+    [navigateToSubject, goHome]
+  );
+
+  const handleSearch = useCallback(() => {
+    if (searchSubject) {
+      const subjectMap: Record<string, string> = {
+        matematica: 'matematica',
+        historia: 'historia',
+        ingles: 'ingles',
+        fisica: 'fisica',
+        quimica: 'quimica',
+        programacion: 'programacion',
+        ingreso: 'ingreso',
+      };
+      const mapped = subjectMap[searchSubject];
+      if (mapped === 'historia') {
+        navigateToSubject('historia');
+      } else {
+        goHome();
+      }
+    }
+  }, [searchSubject, navigateToSubject, goHome]);
+
+  const handlePopularSearch = useCallback(
+    (term: string) => {
+      if (term === 'Historia') {
+        navigateToSubject('historia');
+      } else {
+        goHome();
+      }
+    },
+    [navigateToSubject, goHome]
+  );
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -581,6 +1041,89 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  /* ─── Subject Detail View ─── */
+  if (currentView === 'subject' && selectedSubject === 'historia') {
+    return (
+      <div className="min-h-screen flex flex-col">
+        {/* Navbar */}
+        <header
+          className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+            scrolled
+              ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-border'
+              : 'bg-white'
+          }`}
+        >
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16 md:h-18">
+              <button onClick={goHome} className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
+                <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white">
+                  <Sparkles className="size-5" />
+                </div>
+                <div className="flex flex-col leading-none">
+                  <span className="text-lg font-bold text-foreground tracking-tight">IntensivaAR</span>
+                  <span className="text-[10px] text-muted-foreground hidden sm:block">Clases intensivas Argentina</span>
+                </div>
+              </button>
+              <nav className="hidden lg:flex items-center gap-1">
+                {navLinks.map((link) => (
+                  <button
+                    key={link.label}
+                    onClick={() => handleNavClick(link)}
+                    className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </nav>
+              <div className="hidden lg:flex items-center gap-3">
+                <Button variant="outline" size="sm" className="text-sm">¿Sos profesor?</Button>
+                <Button variant="ghost" size="sm" className="text-sm">Ingresa</Button>
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
+              </div>
+              <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="lg:hidden">
+                    <Menu className="size-5" />
+                    <span className="sr-only">Abrir menú</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80">
+                  <SheetHeader>
+                    <SheetTitle className="flex items-center gap-2">
+                      <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-600 text-white">
+                        <Sparkles className="size-4" />
+                      </div>
+                      IntensivaAR
+                    </SheetTitle>
+                  </SheetHeader>
+                  <nav className="flex flex-col gap-1 mt-4">
+                    {navLinks.map((link) => (
+                      <button
+                        key={link.label}
+                        onClick={() => handleNavClick(link)}
+                        className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
+                      >
+                        {link.label}
+                      </button>
+                    ))}
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1">
+          <SubjectDetailView subject="historia" onBack={goHome} />
+        </main>
+
+        {/* Footer (same as home) */}
+        <FooterSection onNavClick={handleNavClick} />
+      </div>
+    );
+  }
+
+  /* ─── HOME VIEW ─── */
   return (
     <div className="min-h-screen flex flex-col">
       {/* ─── NAVBAR ─── */}
@@ -594,7 +1137,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-18">
             {/* Logo */}
-            <a href="#" className="flex items-center gap-2 shrink-0">
+            <button onClick={goHome} className="flex items-center gap-2 shrink-0">
               <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white">
                 <Sparkles className="size-5" />
               </div>
@@ -606,18 +1149,18 @@ export default function Home() {
                   Clases intensivas Argentina
                 </span>
               </div>
-            </a>
+            </button>
 
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.label}
-                  href={link.href}
+                  onClick={() => handleNavClick(link)}
                   className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
                 >
                   {link.label}
-                </a>
+                </button>
               ))}
             </nav>
 
@@ -653,26 +1196,19 @@ export default function Home() {
                 </SheetHeader>
                 <nav className="flex flex-col gap-1 mt-4">
                   {navLinks.map((link) => (
-                    <a
+                    <button
                       key={link.label}
-                      href={link.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60"
+                      onClick={() => handleNavClick(link)}
+                      className="px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted/60 text-left"
                     >
                       {link.label}
-                    </a>
+                    </button>
                   ))}
                 </nav>
                 <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
-                  <Button variant="outline" className="w-full">
-                    ¿Sos profesor?
-                  </Button>
-                  <Button variant="ghost" className="w-full">
-                    Ingresa
-                  </Button>
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-                    Regístrate
-                  </Button>
+                  <Button variant="outline" className="w-full">¿Sos profesor?</Button>
+                  <Button variant="ghost" className="w-full">Ingresa</Button>
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
                 </div>
               </SheetContent>
             </Sheet>
@@ -683,7 +1219,6 @@ export default function Home() {
       <main className="flex-1">
         {/* ─── HERO ─── */}
         <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-16 md:py-24 lg:py-32">
-          {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-100/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
 
@@ -720,12 +1255,15 @@ export default function Home() {
                   <Button
                     size="lg"
                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 text-base shadow-lg shadow-emerald-600/20"
-                    asChild
+                    onClick={() => {
+                      goHome();
+                      setTimeout(() => {
+                        document.querySelector('#search')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
                   >
-                    <a href="#search">
-                      <Search className="size-4 mr-2" />
-                      Buscar cursos
-                    </a>
+                    <Search className="size-4 mr-2" />
+                    Buscar cursos
                   </Button>
                   <Button
                     variant="outline"
@@ -738,7 +1276,6 @@ export default function Home() {
               </FadeIn>
             </div>
 
-            {/* Promotional Cards */}
             <FadeIn delay={0.4}>
               <div className="mt-14 grid sm:grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto">
                 <Card className="group relative overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 hover:shadow-lg transition-shadow">
@@ -747,9 +1284,7 @@ export default function Home() {
                       <Flame className="size-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-foreground">
-                        Verano Intensivo
-                      </h3>
+                      <h3 className="font-bold text-lg text-foreground">Verano Intensivo</h3>
                       <p className="text-sm text-muted-foreground mt-1">
                         Aprovecha las vacaciones para estudiar
                       </p>
@@ -762,9 +1297,7 @@ export default function Home() {
                       <Snowflake className="size-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-foreground">
-                        Invierno Intensivo
-                      </h3>
+                      <h3 className="font-bold text-lg text-foreground">Invierno Intensivo</h3>
                       <p className="text-sm text-muted-foreground mt-1">
                         Reforzá, repasá y aprobá tus materias
                       </p>
@@ -794,9 +1327,9 @@ export default function Home() {
               <CardContent className="p-4 md:p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                   <div className="lg:col-span-2">
-                    <Select>
+                    <Select value={searchSubject} onValueChange={setSearchSubject}>
                       <SelectTrigger className="w-full h-11">
-                        <BookOpen className="size-4 text-muted-foreground mr-1.5" />
+                        <Search className="size-4 text-emerald-500 mr-1.5" />
                         <SelectValue placeholder="¿Qué querés estudiar?" />
                       </SelectTrigger>
                       <SelectContent>
@@ -852,6 +1385,7 @@ export default function Home() {
                 <div className="mt-4 flex justify-center">
                   <Button
                     size="lg"
+                    onClick={handleSearch}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 shadow-lg shadow-emerald-600/20"
                   >
                     <Search className="size-4 mr-2" />
@@ -865,16 +1399,18 @@ export default function Home() {
           {/* Popular searches */}
           <FadeIn delay={0.2}>
             <div className="max-w-5xl mx-auto mt-8 text-center">
-              <p className="text-sm text-muted-foreground mb-3">
-                Búsquedas populares:
-              </p>
+              <p className="text-sm text-muted-foreground mb-3">Búsquedas populares:</p>
               <div className="flex flex-wrap items-center justify-center gap-2">
                 {popularSearches.map((term) => (
                   <Badge
                     key={term}
                     variant="secondary"
-                    className="px-4 py-1.5 text-sm cursor-pointer hover:bg-emerald-100 hover:text-emerald-800 transition-colors"
+                    onClick={() => handlePopularSearch(term)}
+                    className={`px-4 py-1.5 text-sm cursor-pointer hover:bg-emerald-100 hover:text-emerald-800 transition-colors ${
+                      term === 'Historia' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : ''
+                    }`}
                   >
+                    <Search className="size-3 mr-1 opacity-50" />
                     {term}
                   </Badge>
                 ))}
@@ -899,12 +1435,8 @@ export default function Home() {
                         {n.icon}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-base text-foreground leading-snug">
-                          {n.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                          {n.desc}
-                        </p>
+                        <h3 className="font-semibold text-base text-foreground leading-snug">{n.title}</h3>
+                        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{n.desc}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -928,31 +1460,51 @@ export default function Home() {
               </div>
             </FadeIn>
             <FadeIn delay={0.1}>
-              <a
-                href="#"
+              <button
+                onClick={() => {
+                  goHome();
+                  setTimeout(() => {
+                    document.querySelector('#catalogo')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
                 className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1 group"
               >
                 Ver todas las categorías
                 <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-              </a>
+              </button>
             </FadeIn>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 md:gap-6">
             {categorias.map((cat, i) => (
-              <FadeIn key={cat.name} delay={i * 0.08}>
-                <Card className="group cursor-pointer hover:shadow-lg hover:border-emerald-200 transition-all text-center h-full">
-                  <CardContent className="p-5 md:p-6 flex flex-col items-center gap-3">
-                    <div className="flex items-center justify-center size-14 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100 group-hover:scale-110 transition-all">
+              <FadeIn key={cat.name} delay={i * 0.06}>
+                <Card
+                  className={`group cursor-pointer hover:shadow-lg transition-all text-center h-full ${
+                    cat.slug === 'historia'
+                      ? 'hover:border-emerald-300 border-emerald-100 bg-emerald-50/30'
+                      : 'hover:border-emerald-200'
+                  }`}
+                  onClick={() => {
+                    if (cat.slug === 'historia') {
+                      navigateToSubject('historia');
+                    } else {
+                      goHome();
+                    }
+                  }}
+                >
+                  <CardContent className="p-4 md:p-5 flex flex-col items-center gap-2">
+                    <div
+                      className={`flex items-center justify-center size-12 rounded-xl shrink-0 group-hover:scale-110 transition-all ${
+                        cat.slug === 'historia'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100'
+                      }`}
+                    >
                       {cat.icon}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm text-foreground">
-                        {cat.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {cat.count} cursos
-                      </p>
+                      <h3 className="font-semibold text-xs text-foreground">{cat.name}</h3>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">{cat.count} cursos</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -964,7 +1516,6 @@ export default function Home() {
         {/* ─── CÓMO FUNCIONA ─── */}
         <Section id="como-funciona" bg>
           <SectionHeading title="¿Cómo funciona?" />
-
           <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
             {steps.map((step, i) => (
               <FadeIn key={step.title} delay={i * 0.15} className="text-center">
@@ -977,12 +1528,7 @@ export default function Home() {
                   </div>
                 </div>
                 <h3 className="font-bold text-lg text-foreground">{step.title}</h3>
-                <p className="text-muted-foreground mt-2 leading-relaxed">
-                  {step.desc}
-                </p>
-                {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-10 left-[calc(50%+60px)] w-[calc(100%-120px)] h-[2px] bg-emerald-200" />
-                )}
+                <p className="text-muted-foreground mt-2 leading-relaxed">{step.desc}</p>
               </FadeIn>
             ))}
           </div>
@@ -1002,13 +1548,10 @@ export default function Home() {
               </div>
             </FadeIn>
             <FadeIn delay={0.1}>
-              <a
-                href="#"
-                className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1 group"
-              >
+              <span className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1 group cursor-pointer">
                 Ver todos los profesores
                 <ChevronRight className="size-4 group-hover:translate-x-0.5 transition-transform" />
-              </a>
+              </span>
             </FadeIn>
           </div>
 
@@ -1022,29 +1565,19 @@ export default function Home() {
                         {prof.initials}
                       </AvatarFallback>
                     </Avatar>
-                    <h3 className="font-semibold text-base text-foreground">
-                      {prof.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                      {prof.subject}
-                    </p>
+                    <h3 className="font-semibold text-base text-foreground">{prof.name}</h3>
+                    <p className="text-sm text-muted-foreground mt-0.5">{prof.subject}</p>
                     <div className="flex items-center justify-center gap-1 mt-1.5 text-xs text-muted-foreground">
                       <MapPin className="size-3" />
                       {prof.location}
                     </div>
                     <div className="flex items-center justify-center gap-1 mt-2">
                       <Star className="size-3.5 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-semibold text-foreground">
-                        {prof.rating}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        ({prof.reviews} reseñas)
-                      </span>
+                      <span className="text-sm font-semibold text-foreground">{prof.rating}</span>
+                      <span className="text-xs text-muted-foreground">({prof.reviews} reseñas)</span>
                     </div>
                     <Badge
-                      variant={
-                        prof.modality === 'Online' ? 'default' : 'secondary'
-                      }
+                      variant={prof.modality === 'Online' ? 'default' : 'secondary'}
                       className={`mt-3 text-xs ${
                         prof.modality === 'Online'
                           ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
@@ -1061,18 +1594,86 @@ export default function Home() {
           </div>
         </Section>
 
+        {/* ─── CATÁLOGO DIGITAL ─── */}
+        <Section id="catalogo" bg>
+          <FadeIn>
+            <div className="max-w-2xl mx-auto text-center mb-4">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="flex items-center justify-center size-10 rounded-xl bg-emerald-600 text-white">
+                  <Library className="size-5" />
+                </div>
+                <span className="text-lg font-bold text-emerald-700">IntensivaAR</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-4">
+                Catálogo Digital
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Explorá todo el material de estudio disponible para nuestros cursos
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto mt-12">
+            {catalogBooks.map((book, i) => (
+              <FadeIn key={book.title} delay={i * 0.05}>
+                <Card
+                  className={`group hover:shadow-lg transition-all h-full cursor-pointer ${
+                    book.navigateTo ? 'hover:border-emerald-300' : 'hover:border-emerald-200'
+                  }`}
+                  onClick={() => {
+                    if (book.navigateTo) {
+                      navigateToSubject(book.navigateTo);
+                    }
+                  }}
+                >
+                  <CardContent className="p-5 flex flex-col gap-3">
+                    {/* Book icon + subject badge */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center justify-center size-11 rounded-xl bg-emerald-50 text-emerald-600 shrink-0 group-hover:bg-emerald-100 group-hover:scale-110 transition-all">
+                        {book.icon}
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] shrink-0 ${
+                          book.subject === 'Historia'
+                            ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                            : 'bg-muted/50 text-muted-foreground border-border'
+                        }`}
+                      >
+                        {book.subject}
+                      </Badge>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-sm text-foreground leading-snug group-hover:text-emerald-700 transition-colors">
+                        {book.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">{book.author}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed flex-1">{book.desc}</p>
+                    <div className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium pt-2 border-t border-border/50">
+                      <BookOpen className="size-3.5" />
+                      Ver material
+                      {book.navigateTo && (
+                        <ArrowRight className="size-3 group-hover:translate-x-0.5 transition-transform" />
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeIn>
+            ))}
+          </div>
+        </Section>
+
         {/* ─── BLOG ─── */}
-        <Section id="blog" bg>
+        <Section id="blog">
           <SectionHeading
             title="Consejos, guías y recursos en nuestro blog"
             subtitle="Enterate de estrategias para estudiar mejor y aprobar tus materias."
           />
-
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {blogArticles.map((article, i) => (
               <FadeIn key={article.title} delay={i * 0.1}>
                 <Card className="group hover:shadow-lg hover:border-emerald-200 transition-all h-full cursor-pointer">
-                  {/* Colored header bar */}
                   <div className="h-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-t-lg" />
                   <CardContent className="p-6">
                     <div className="flex items-center gap-2 mb-3">
@@ -1087,9 +1688,7 @@ export default function Home() {
                     <h3 className="font-bold text-lg text-foreground group-hover:text-emerald-700 transition-colors leading-snug">
                       {article.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                      {article.desc}
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{article.desc}</p>
                     <div className="mt-4 flex items-center gap-1 text-sm text-emerald-600 font-medium">
                       Leer más
                       <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -1099,293 +1698,15 @@ export default function Home() {
               </FadeIn>
             ))}
           </div>
-
           <FadeIn delay={0.3}>
             <div className="text-center mt-10">
-              <Button
-                variant="outline"
-                className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 px-8"
-              >
+              <Button variant="outline" className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 px-8">
                 <Newspaper className="size-4 mr-2" />
                 Ir al blog
               </Button>
             </div>
           </FadeIn>
         </Section>
-
-        {/* ─── HISTORIA UNIVERSAL ─── */}
-        <section id="historia" className="relative overflow-hidden bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30 py-16 md:py-24">
-          <div className="absolute top-20 right-10 w-72 h-72 bg-amber-100/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 left-10 w-64 h-64 bg-orange-100/20 rounded-full blur-3xl" />
-
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            {/* Course Header */}
-            <FadeIn>
-              <div className="max-w-3xl mx-auto text-center mb-12 md:mb-16">
-                <Badge className="mb-4 px-4 py-1.5 text-sm font-medium bg-amber-100 text-amber-800 border-amber-200 gap-1.5">
-                  <History className="size-3.5" />
-                  Curso intensivo
-                </Badge>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
-                  Historia Universal
-                </h2>
-                <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  De la prehistoria a la actualidad — Basado en{' '}
-                  <span className="font-semibold text-amber-700">'Toda la Historia del mundo'</span> de
-                  Barreau y Bigot
-                </p>
-
-                {/* Decorative progress bar */}
-                <div className="mt-6 max-w-lg mx-auto">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                    <span>Cap. 1 — Prehistoria</span>
-                    <span>Cap. 37 — Globalización</span>
-                  </div>
-                  <Progress value={100} className="h-3 bg-amber-100" />
-                  <div className="flex gap-1 mt-3 justify-center flex-wrap">
-                    {progressEras.map((era) => (
-                      <span
-                        key={era.name}
-                        className="flex items-center gap-1.5 text-xs text-muted-foreground"
-                      >
-                        <span className={`inline-block size-2 rounded-full ${era.color}`} />
-                        {era.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Region Cards — Accordion */}
-            <FadeIn delay={0.1}>
-              <div className="max-w-4xl mx-auto">
-                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                  <BookMarked className="size-5 text-amber-600" />
-                  Regiones del mundo
-                </h3>
-                <Accordion type="multiple" className="space-y-3">
-                  {historyRegions.map((region, idx) => (
-                    <FadeIn key={region.id} delay={idx * 0.04}>
-                      <AccordionItem
-                        value={region.id}
-                        className="bg-card border-2 border-amber-100 rounded-xl px-4 data-[state=open]:border-amber-300 data-[state=open]:shadow-md transition-all"
-                      >
-                        <AccordionTrigger className="hover:no-underline py-4">
-                          <div className="flex items-center gap-3 text-left">
-                            <div className="flex items-center justify-center size-10 rounded-lg bg-amber-50 text-amber-600 shrink-0">
-                              <RegionIcon icon={region.icon} className="size-5" />
-                            </div>
-                            <div>
-                              <span className="font-semibold text-base text-foreground block">
-                                {region.name}
-                              </span>
-                              <span className="text-xs text-muted-foreground block mt-0.5 line-clamp-1">
-                                {region.intro}
-                              </span>
-                            </div>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="pb-4">
-                          <div className="space-y-4 pt-1">
-                            {/* Full intro */}
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {region.intro}
-                            </p>
-
-                            {/* Content */}
-                            {Array.isArray(region.content) ? (
-                              <ul className="space-y-1.5 text-sm text-foreground">
-                                {region.content.map((item, i) => (
-                                  <li key={i} className="flex items-start gap-2">
-                                    <ChevronRight className="size-3.5 text-amber-500 mt-0.5 shrink-0" />
-                                    <span>{item}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className="text-sm text-foreground leading-relaxed bg-muted/50 rounded-lg p-4 border border-border/50">
-                                {region.content as string}
-                              </p>
-                            )}
-
-                            {/* Activity card */}
-                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-200/60">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Lightbulb className="size-4 text-amber-600" />
-                                <span className="text-xs font-semibold text-amber-800 uppercase tracking-wide">
-                                  Actividad: {region.activityType}
-                                </span>
-                              </div>
-                              <p className="text-sm text-foreground leading-relaxed">
-                                {region.activity}
-                              </p>
-                              <div className="flex items-center gap-3 mt-3 flex-wrap">
-                                <DifficultyBadge level={region.difficulty} />
-                                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                  <Clock className="size-3" />
-                                  {region.time}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </FadeIn>
-                  ))}
-                </Accordion>
-              </div>
-            </FadeIn>
-
-            {/* Activities Section */}
-            <FadeIn delay={0.15}>
-              <div className="max-w-4xl mx-auto mt-16">
-                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                  <PenTool className="size-5 text-amber-600" />
-                  Actividades del curso
-                </h3>
-                <p className="text-muted-foreground mb-8 text-sm">
-                  10 actividades prácticas para profundizar en cada región del mundo
-                </p>
-
-                {/* Category badges */}
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {activityCategories.map((cat) => (
-                    <Badge
-                      key={cat.label}
-                      variant="outline"
-                      className={`${cat.color} text-xs gap-1`}
-                    >
-                      <FileText className="size-3" />
-                      {cat.label}
-                      <span className="ml-1 opacity-60">({cat.count})</span>
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Activity cards grid */}
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {historyRegions.map((region, idx) => (
-                    <FadeIn key={region.id} delay={idx * 0.05}>
-                      <Card className="group hover:shadow-lg hover:border-amber-200 transition-all h-full cursor-pointer">
-                        <CardContent className="p-5 flex flex-col gap-3">
-                          {/* Header */}
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <div className="flex items-center justify-center size-8 rounded-lg bg-amber-50 text-amber-600 shrink-0">
-                                <RegionIcon icon={region.icon} className="size-4" />
-                              </div>
-                              <Avatar className="size-6">
-                                <AvatarFallback className="bg-amber-100 text-amber-700 text-[10px] font-bold">
-                                  {region.id.slice(0, 2).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                            </div>
-                            <DifficultyBadge level={region.difficulty} />
-                          </div>
-
-                          {/* Activity type */}
-                          <Badge
-                            variant="outline"
-                            className="w-fit text-xs bg-amber-50 text-amber-700 border-amber-200"
-                          >
-                            {region.activityType}
-                          </Badge>
-
-                          {/* Title */}
-                          <h4 className="font-semibold text-sm text-foreground leading-snug line-clamp-3">
-                            {region.activity}
-                          </h4>
-
-                          {/* Region tag + time */}
-                          <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
-                            <Badge variant="secondary" className="text-[10px] px-2 py-0.5">
-                              <Globe className="size-2.5 mr-0.5" />
-                              {region.name.split(' y ')[0]}
-                            </Badge>
-                            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                              <Clock className="size-2.5" />
-                              {region.time}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </FadeIn>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Course Progress Tracker — Horizontal scrollable */}
-            <FadeIn delay={0.2}>
-              <div className="max-w-4xl mx-auto mt-16">
-                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                  <BarChart3 className="size-5 text-amber-600" />
-                  Progreso del curso
-                </h3>
-                <p className="text-muted-foreground mb-6 text-sm">
-                  Los 37 capítulos del libro, agrupados por era histórica
-                </p>
-
-                <ScrollArea className="w-full">
-                  <div className="flex gap-4 pb-4 min-w-max">
-                    {progressEras.map((era) => (
-                      <div
-                        key={era.name}
-                        className="flex flex-col items-center gap-2 min-w-[140px]"
-                      >
-                        <div className={`w-full h-2 rounded-full ${era.color}`} />
-                        <span className="text-sm font-semibold text-foreground">{era.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {era.chapters.join(', ')}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <Progress
-                            value={era.range[1] - era.range[0]}
-                            className="h-1.5 w-24 bg-muted"
-                          />
-                          <span className="text-[10px] text-muted-foreground">
-                            {era.range[1] - era.range[0]}%
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-
-                {/* Era color legend */}
-                <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                  {progressEras.map((era) => (
-                    <div
-                      key={era.name}
-                      className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/40 rounded-lg px-3 py-2"
-                    >
-                      <span className={`inline-block size-3 rounded-full ${era.color} shrink-0`} />
-                      <span className="font-medium text-foreground">{era.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Book reference */}
-            <FadeIn delay={0.25}>
-              <div className="max-w-2xl mx-auto mt-16 text-center">
-                <div className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-5 py-2.5 shadow-sm">
-                  <BookOpen className="size-4 text-amber-600" />
-                  <span className="text-sm text-muted-foreground">
-                    Contenido basado en{' '}
-                    <span className="font-semibold text-foreground">
-                      'Toda la Historia del mundo'
-                    </span>{' '}
-                    de Jean-Claude Barreau y Guillaume Bigot
-                  </span>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-        </section>
 
         {/* ─── NEWSLETTER ─── */}
         <section className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 py-16 md:py-20">
@@ -1394,7 +1715,6 @@ export default function Home() {
             <div className="absolute bottom-10 right-10 w-60 h-60 border border-white/20 rounded-full" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-white/10 rounded-full" />
           </div>
-
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <FadeIn>
               <div className="max-w-2xl mx-auto text-center">
@@ -1408,106 +1728,84 @@ export default function Home() {
                   Suscribite a nuestro newsletter y enterate de las últimas novedades
                   directamente en tu correo.
                 </p>
-
                 <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto">
                   <Input
                     placeholder="Tu correo electrónico"
                     type="email"
                     className="h-12 bg-white/10 border-white/20 text-white placeholder:text-emerald-200/70 focus-visible:border-white/50 focus-visible:ring-white/20"
                   />
-                  <Button
-                    size="lg"
-                    className="w-full sm:w-auto bg-white text-emerald-700 hover:bg-emerald-50 font-semibold shadow-lg px-8"
-                  >
+                  <Button size="lg" className="w-full sm:w-auto bg-white text-emerald-700 hover:bg-emerald-50 font-semibold shadow-lg px-8">
                     Suscribíte
                   </Button>
                 </div>
-
-                <p className="mt-4 text-xs text-emerald-200/60">
-                  Sin spam. Cancelá cuando quieras.
-                </p>
+                <p className="mt-4 text-xs text-emerald-200/60">Sin spam. Cancelá cuando quieras.</p>
               </div>
             </FadeIn>
           </div>
         </section>
       </main>
 
-      {/* ─── FOOTER ─── */}
-      <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
-            {/* Brand */}
-            <div className="lg:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white">
-                  <Sparkles className="size-5" />
-                </div>
-                <span className="text-xl font-bold text-white">IntensivaAR</span>
-              </div>
-              <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
-                La plataforma líder en clases intensivas de verano e invierno en todo
-                el país. Conectamos estudiantes con los mejores profesores.
-              </p>
-              <div className="flex items-center gap-3 mt-6">
-                {[
-                  { icon: <Instagram className="size-5" />, label: 'Instagram' },
-                  { icon: <Facebook className="size-5" />, label: 'Facebook' },
-                  { icon: <Twitter className="size-5" />, label: 'Twitter' },
-                  { icon: <Youtube className="size-5" />, label: 'YouTube' },
-                ].map((social) => (
-                  <a
-                    key={social.label}
-                    href="#"
-                    aria-label={social.label}
-                    className="flex items-center justify-center size-10 rounded-lg bg-slate-800 text-slate-400 hover:bg-emerald-600 hover:text-white transition-all"
-                  >
-                    {social.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Navigation columns */}
-            {Object.entries(footerNav).map(([title, links]) => (
-              <div key={title}>
-                <h3 className="font-semibold text-white text-sm uppercase tracking-wider mb-4">
-                  {title}
-                </h3>
-                <ul className="space-y-2.5">
-                  {links.map((link) => (
-                    <li key={link}>
-                      <a
-                        href="#"
-                        className="text-sm text-slate-400 hover:text-emerald-400 transition-colors"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-slate-800">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-sm text-slate-500">
-                © 2024 IntensivaAR. Todos los derechos reservados.
-              </p>
-              <p className="text-sm text-slate-500">
-                Hecho con{' '}
-                <span className="text-rose-400" role="img" aria-label="amor">
-                  ❤️
-                </span>{' '}
-                en Argentina{' '}
-                <span role="img" aria-label="bandera de Argentina">
-                  🇦🇷
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <FooterSection onNavClick={handleNavClick} />
     </div>
+  );
+}
+
+/* ─── FOOTER (shared component) ─── */
+function FooterSection({ onNavClick }: { onNavClick: (link: (typeof navLinks)[number]) => void }) {
+  return (
+    <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+          {/* Brand */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center justify-center size-9 rounded-lg bg-emerald-600 text-white">
+                <Sparkles className="size-5" />
+              </div>
+              <span className="text-xl font-bold text-white">IntensivaAR</span>
+            </div>
+            <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
+              La plataforma líder en clases intensivas de verano e invierno en todo
+              el país. Conectamos estudiantes con los mejores profesores.
+            </p>
+            <div className="flex items-center gap-3 mt-6">
+              {[Instagram, Facebook, Twitter, Youtube].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="size-9 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-emerald-600 transition-colors"
+                >
+                  <Icon className="size-4" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Nav columns */}
+          {Object.entries(footerNav).map(([title, links]) => (
+            <div key={title}>
+              <h4 className="text-sm font-semibold text-white mb-4">{title}</h4>
+              <ul className="space-y-2.5">
+                {links.map((link) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="text-sm text-slate-400 hover:text-emerald-400 transition-colors"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+          <p>&copy; 2024 IntensivaAR. Todos los derechos reservados.</p>
+          <p>Hecho con 💚 en Argentina</p>
+        </div>
+      </div>
+    </footer>
   );
 }

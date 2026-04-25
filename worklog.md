@@ -93,3 +93,78 @@ Added a comprehensive **"Historia Universal"** course section to the IntensivaAR
 - Europa region uses array content rendered as bullet list (20 items)
 - Responsive layout throughout (mobile-first)
 - Framer Motion animations on all sub-sections
+
+---
+
+## Task 3 - Fullstack Developer: Interactive Navigation & Catálogo Digital
+
+**Date**: 2024
+**Status**: ✅ Completed
+
+### Summary
+Made the IntensivaAR website fully interactive with client-side routing, breadcrumb navigation, a "Catálogo Digital" section, and deep Historia subject detail view. All navigation elements (navbar, categories, search, popular searches, catalog) are now clickable and functional.
+
+### Files Modified
+
+1. **`src/app/page.tsx`** — Complete rewrite of the component architecture
+
+#### State Management
+- Added `currentView` state: `'home' | 'subject' | 'catalog'` to toggle between views
+- Added `selectedSubject` state: `null | 'historia'` for subject navigation
+- Added `searchSubject` state for controlled search Select
+- All navigation uses `useCallback` for performance and smooth scroll-to-top transitions
+
+#### New Data Structures
+- `historiaSubdivisions`: 15 subdivision cards with icons (Dna, Globe, Landmark, Castle, Palette, Mountain, MapPin, TreePine, Flag, Compass, ScrollText, Newspaper, Ship), descriptions, and topic counts
+- `catalogBooks`: 12 catalog entries (6 Historia, plus Matemática, Inglés, Física, Química, Programación, Ingreso Universitario)
+- Updated `categorias` array: added `slug` field, added "Historia" entry (count: 48)
+- Updated `navLinks`: added "Catálogo" link, changed "Historia" to use `action: 'historia'`
+- Updated `popularSearches`: added "Historia" term
+- Updated `footerNav.Categorías`: added "Historia"
+
+#### New Imports
+- `Dna`, `Castle`, `Palette`, `Flag`, `ChevronLeft`, `Library`, `AnimatePresence` from lucide-react
+- `useCallback` from React
+
+#### Interactive Features
+
+1. **Search Interactive**: Select dropdown now controlled via `searchSubject` state. "Buscar cursos" button triggers `handleSearch()`. Selecting "Historia" navigates to subject view. Search trigger shows emerald magnifying glass icon.
+
+2. **Category Cards Clickable**: Each card in "Explorá por categoría" has onClick. Clicking "Historia" navigates to subject detail. Historia card highlighted with emerald tint. Grid changed from 6 to 7 columns.
+
+3. **Popular Search Badges Clickable**: Each badge has onClick with magnifying glass icon prefix. "Historia" badge has emerald styling.
+
+4. **Navbar Navigation**: Logo and all nav links use `handleNavClick()`. "Historia" nav link navigates to subject view. "Catálogo" scrolls to catalog section. Mobile menu links also interactive.
+
+5. **Catálogo Digital Section**: New section between Profesores and Blog with:
+   - Library icon + IntensivaAR branding header
+   - 12 book/material cards in 4-column grid
+   - Each card shows: icon, subject badge, title, author, description, "Ver material" button
+   - Historia books have highlighted emerald badge
+   - Clicking a Historia book navigates to Historia subject view
+
+6. **Subject Detail View** (`SubjectDetailView` component):
+   - **Breadcrumb**: Inicio > Cursos > Historia (clickable "Inicio" to go back)
+   - **Header**: Title, subtitle, book reference, progress bar with era colors, "Volver al inicio" button with arrow
+   - **Subdivisions Grid**: 15 cards (3 columns) with icon, name, description (line-clamped), topic count badge, "Explorar" button
+   - **Region Accordion**: Reuses existing historyRegions data in emerald theme (changed from amber)
+   - **Activities Section**: 10 activity cards with difficulty badges
+   - **Book Reference**: Crediting Barreau & Bigot
+   - Framer Motion page transition (fade + slide)
+
+7. **Footer Shared**: Extracted `FooterSection` component reused in both home and subject views
+
+#### Style Consistency
+- All interactive history elements use emerald green theme (changed previous amber accents to emerald)
+- Magnifying glass (Search icon) in search trigger and popular badges
+- Smooth scroll-to-top on all navigation
+- Mobile responsive throughout
+- All text in Argentine Spanish
+
+### Technical Details
+- ESLint passes with zero errors
+- Dev server compiles successfully (200 OK)
+- No external libraries added
+- File reduced from ~1513 lines to ~1100 lines (cleaner architecture)
+- Uses `AnimatePresence` ready for future page transitions
+- `FooterSection` component avoids code duplication
