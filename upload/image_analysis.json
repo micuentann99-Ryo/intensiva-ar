@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "# Texto extraído de la imagen\n\n## Encabezado y navegación\n- **Logo y eslogan**: \"IntensivaAR - Clases intensivas Argentina\"\n- **Enlaces de navegación superior**: \"Cursos\", \"Verano\", \"Invierno\", \"Materias\", \"Profesores\", \"Blog\", \"Cómo funciona\"\n- **Botones de acción**: \"¿Sos profesor?\", \"Enseña con nosotros\", \"Publica tus cursos\", \"Ingresa\", \"Regístrate\"\n\n## Sección principal\n- **Título principal**: \"Clases intensivas para aprobar y avanzar.\"\n- **Descripción**: \"Encontrá cursos intensivos de verano e invierno para materias previas, ingreso universitario, idiomas y mucho más.\"\n- **Botones de acción**: \"Buscar cursos\", \"Soy profesor\"\n- **Estadísticas**: \"+5.000 cursos\", \"+3.000 profesores\", \"+20.000 alumnos\"\n- **Imágenes de promoción**: \n  - \"Verano Intensivo\" con ícono de fuego: \"Aprovecha las vacaciones para estudiar!\"\n  - \"Invierno Intensivo\" con ícono de nieve: \"Reforzá, repasá y aprobá tus materias.\"\n\n## Búsqueda de cursos\n- **Título**: \"Encontrá tu curso ideal\"\n- **Filtros**:\n  - \"¿Qué quieres estudiar?\": \"Materia o curso\" (menú desplegable)\n  - \"¿Dónde?\": \"Todas las provincias\" (menú desplegable)\n  - \"Modalidad\": \"Online o presencial\" (menú desplegable)\n  - \"Cuándo\": \"Verano o Invierno\" (menú desplegable)\n- **Botón de búsqueda**: \"Buscar cursos\"\n- **Búsquedas populares**: \"Matemática\", \"Inglés\", \"Ingreso Universitario\", \"Química\", \"Física\", \"Programación\"\n\n## Exploración por categoría\n- **Título**: \"Explorá por categoria\"\n- **Enlace**: \"Ver todas las categorías →\"\n- **Categorías con cantidad de cursos**:\n  - \"Matemáticas\": \"+650 cursos\"\n  - \"Ingreso Universitario\": \"+650 cursos\"\n  - \"Inglés\": \"+1.200 cursos\"\n  - \"Ciencias\": \"+750 cursos\"\n  - \"Informática y Programación\": \"+600 cursos\"\n  - \"Talleres y Cursos cortos\": \"+550 cursos\"\n\n## ¿Cómo funciona?\n- **Título**: \"¿Cómo funciona?\"\n- **Pasos**:\n  1. \"Buscá tu curso\": \"Filtá por materia, modalidad, ubicación y fecha.\"\n  2. \"Compará opciones\": \"Revisá profesores, opiniones, programas y precios.\"\n  3. \"Inscribite y empezá\": \"Elegí tu curso e inscríbite de forma rápida y segura.\"\n- **Imágenes**: Iconos de búsqueda, comparación, inscripción y laptop con calendario.\n\n## Profesores destacados\n- **Título**: \"Profesores destacados\"\n- **Enlace**: \"Ver todos los profesores →\"\n- **Profesores con datos**:\n  - \"Martin T.\": \"Matemáticas\", \"Buenos Aires\", \"Presencial y Online\", calificación 4.9 (320)\n  - \"Sofia R.\": \"Inglés\", \"Córdoba\", \"Online\", calificación 4.9 (280)\n  - \"Facundo L.\": \"Física\", \"Rosario\", \"Presencial y Online\", calificación 4.8 (210)\n  - \"Camila P.\": \"Química\", \"Buenos Aires\", \"Online\", calificación 4.9 (185)\n  - \"Nicolás G.\": \"Programación\", \"Mendoza\", \"Online\", calificación 4.8 (150)\n\n## Blog\n- **Título**: \"Consejos, guías y recursos en nuestro blog\"\n- **Descripción**: \"Enterate de estrategias para estudiar mejor y aprobar tus materias.\"\n- **Enlace**: \"Ir al blog\"\n- **Artículos destacados**:\n  - \"Cómo aprobar matemáticas en 15 días\"\n  - \"Técnicas de estudio que realmente funcionan\"\n  - \"Todo sobre los ingresos universitarios 2024\"\n\n## Pie de página\n- **Logo y descripción**: \"IntensivaAR - La plataforma líder en clases intensivas de verano e invierno en todo el país.\"\n- **Sección \"Navegación\"**:\n  - \"Cursos\", \"Verano Intensivo\", \"Invierno Intensivo\", \"Profesores\", \"Blog\", \"Cómo funciona\"\n- **Sección \"Categorías\"**:\n  - \"Matemática\", \"Inglés\", \"Ingreso Universitario\", \"Ciencias\", \"Informática\", \"Talleres y cursos cortos\"\n- **Sección \"Información\"**:\n  - \"Preguntas frecuentes\", \"Centro de ayuda\", \"Términos y condiciones\", \"Política de privacidad\", \"Contacto\"\n- **Sección \"Suscríbete al newsletter\"**:\n  - \"Recibí cursos, consejos y novedades directamente en tu correo.\"\n  - Campo de entrada: \"Tu correo electrónico\"\n  - Botón: \"Suscríbete\"\n- **Redes sociales**: Iconos de Instagram, Facebook, Twitter, YouTube\n- **Copyright**: \"© 2024 IntensivaAR. Todos los derechos reservados.\"\n- **Mensaje final**: \"Hecho con ❤️ en Argentina 🇦🇷\"",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1777110694,
+  "id": "20260425175100e9cbd926459f4054",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260425175100e9cbd926459f4054",
+  "usage": {
+    "completion_tokens": 1251,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1440,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 2691
+  }
+}
