@@ -7,6 +7,7 @@
     "catalogo": "Catalog",
     "profesores": "Teachers",
     "historia": "History",
+    "matematicas": "Mathematics",
     "ingles": "English",
     "buscar": "Search courses...",
     "buscador": "Search",
@@ -286,7 +287,8 @@
     "historia": "History",
     "fisica": "Physics",
     "programacion": "Programming",
-    "historia_mundo": "World History"
+    "historia_mundo": "World History",
+    "curso_intensivo": "Intensive Math Course"
   },
   "historia_index": {
     "subtitle": "Explore available history courses",
@@ -317,6 +319,37 @@
       "independencia": "Independence of the Americas",
       "siglo_xix": "19th Century",
       "contemporanea": "Contemporary History"
+    }
+  },
+  "mat_index": {
+    "subtitle": "Explore available mathematics courses",
+    "intensive_desc": "10 units: from the origins of mathematics to the modern era",
+    "units": "units",
+    "activities_count": "activities"
+  },
+  "mat_page": {
+    "title": "Intensive Mathematics Course",
+    "subtitle_before": "A journey through",
+    "subtitle_book": "the history and foundations",
+    "subtitle_after": "of mathematics, from antiquity to the present day",
+    "hint": "Select a unit to view the full information, key topics, and activities.",
+    "description": "Description",
+    "key_topics": "Key topics",
+    "activity": "Activity",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "periods": {
+      "origenes": "Origins of Mathematics",
+      "grecia": "Classical Greece",
+      "oriente": "The Eastern World",
+      "medieval": "Middle Ages and Renaissance",
+      "revolucion": "The Scientific Revolution",
+      "aritmetica": "Arithmetic and Numbers",
+      "algebra": "Algebra",
+      "geometria": "Geometry",
+      "calculo": "Calculus",
+      "moderna": "Modern Mathematics"
     }
   },
   "auth": {

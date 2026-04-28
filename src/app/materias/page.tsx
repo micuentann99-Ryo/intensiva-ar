@@ -29,7 +29,8 @@ export default function MateriasPage() {
       borderColor: 'border-l-purple-500',
       iconBg: 'bg-purple-50',
       iconColor: 'text-purple-600',
-      href: '/materias',
+      href: null,
+      expandable: true,
     },
     {
       id: 'lenguaje',
@@ -184,7 +185,7 @@ export default function MateriasPage() {
                       )}
                     </div>
 
-                    {/* Expandable sub-items for Historia */}
+                    {/* Expandable sub-items */}
                     <AnimatePresence>
                       {isExpandable && isExpanded && (
                         <motion.div
@@ -195,18 +196,34 @@ export default function MateriasPage() {
                           className="overflow-hidden"
                         >
                           <div className="px-5 pb-4 pt-1">
-                            <Link
-                              href="/materias/historia"
-                              className="flex items-center justify-between py-3 px-4 rounded-lg bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors group"
-                            >
-                              <div className="flex items-center gap-3">
-                                <Landmark className="size-4 text-emerald-600" />
-                                <span className="text-sm font-medium text-foreground group-hover:text-emerald-700 transition-colors">
-                                  {t('materias_page.historia_mundo')}
-                                </span>
-                              </div>
-                              <ChevronRight className="size-4 text-emerald-600" />
-                            </Link>
+                            {subject.id === 'historia' && (
+                              <Link
+                                href="/materias/historia"
+                                className="flex items-center justify-between py-3 px-4 rounded-lg bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors group"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <Landmark className="size-4 text-emerald-600" />
+                                  <span className="text-sm font-medium text-foreground group-hover:text-emerald-700 transition-colors">
+                                    {t('materias_page.historia_mundo')}
+                                  </span>
+                                </div>
+                                <ChevronRight className="size-4 text-emerald-600" />
+                              </Link>
+                            )}
+                            {subject.id === 'matematicas' && (
+                              <Link
+                                href="/materias/matematicas"
+                                className="flex items-center justify-between py-3 px-4 rounded-lg bg-white dark:bg-gray-800 border border-purple-100 dark:border-purple-900 hover:bg-purple-50 dark:hover:bg-purple-950/50 hover:border-purple-200 dark:hover:border-purple-800 transition-colors group"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <Calculator className="size-4 text-purple-600" />
+                                  <span className="text-sm font-medium text-foreground group-hover:text-purple-700 transition-colors">
+                                    {t('materias_page.curso_intensivo')}
+                                  </span>
+                                </div>
+                                <ChevronRight className="size-4 text-purple-600" />
+                              </Link>
+                            )}
                           </div>
                         </motion.div>
                       )}

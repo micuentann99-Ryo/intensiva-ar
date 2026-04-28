@@ -7,6 +7,7 @@
     "catalogo": "Catálogo",
     "profesores": "Profesores",
     "historia": "Historia",
+    "matematicas": "Matemáticas",
     "ingles": "Inglés",
     "buscar": "Buscar cursos...",
     "buscador": "Buscador",
@@ -286,7 +287,8 @@
     "historia": "Historia",
     "fisica": "Física",
     "programacion": "Programación",
-    "historia_mundo": "Historia del Mundo"
+    "historia_mundo": "Historia del Mundo",
+    "curso_intensivo": "Curso Intensivo de Matemática"
   },
   "historia_index": {
     "subtitle": "Explorá los cursos de historia disponibles",
@@ -317,6 +319,37 @@
       "independencia": "Independencia de América",
       "siglo_xix": "Siglo XIX",
       "contemporanea": "Historia Contemporánea"
+    }
+  },
+  "mat_index": {
+    "subtitle": "Explorá los cursos de matemáticas disponibles",
+    "intensive_desc": "10 unidades: desde los orígenes de la matemática hasta la era moderna",
+    "units": "unidades",
+    "activities_count": "actividades"
+  },
+  "mat_page": {
+    "title": "Curso Intensivo de Matemática",
+    "subtitle_before": "Un recorrido por",
+    "subtitle_book": "la historia y los fundamentos",
+    "subtitle_after": "de la matemática, desde la antigüedad hasta la actualidad",
+    "hint": "Seleccioná una unidad para ver la información completa, temas clave y actividades.",
+    "description": "Descripción",
+    "key_topics": "Temas clave",
+    "activity": "Actividad",
+    "easy": "Fácil",
+    "medium": "Medio",
+    "hard": "Difícil",
+    "periods": {
+      "origenes": "Orígenes de la Matemática",
+      "grecia": "Grecia Clásica",
+      "oriente": "El Mundo Oriental",
+      "medieval": "Edad Media y Renacimiento",
+      "revolucion": "La Revolución Científica",
+      "aritmetica": "Aritmética y Números",
+      "algebra": "Álgebra",
+      "geometria": "Geometría",
+      "calculo": "Cálculo",
+      "moderna": "Matemática Moderna"
     }
   },
   "auth": {

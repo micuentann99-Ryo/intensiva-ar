@@ -1,254 +1,68 @@
-# Worklog — IntensivaAR
+# Worklog - Curso Intensivo de Matemática
 
-## Descripción General del Proyecto
+## Date: 2024
 
-**IntensivaAR** es una plataforma argentina de clases intensivas de verano e invierno. Es un sitio web Next.js 16 con Tailwind CSS 4 + shadcn/ui, con modo claro/oscuro, diseño responsive y animaciones con Framer Motion.
+## Summary
+Created the complete "Curso Intensivo de Matemática" for the IntensivaAR platform, mirroring the existing Historia Universal course structure.
 
----
+## Files Created
 
-## Rutas del Sitio
+### 1. `src/app/materias/matematicas/page.tsx`
+- Index page for Matemáticas subject
+- Purple gradient header with Calculator icon
+- Breadcrumb: Inicio > Materias > Matemáticas
+- Lists "Curso Intensivo de Matemática" with 10 units, 10 activities
+- Links to `/materias/matematicas/curso-intensivo`
 
-| Ruta | Descripción |
-|------|-------------|
-| `/` | Landing page principal (estilo SaaS premium Wix Studio) |
-| `/explorar` | Explorador de categorías (3 columnas: Ciencias Exactas, Sociales, Idiomas) |
-| `/materias` | Listado de materias con tarjetas de colores |
-| `/materias/historia` | Línea de tiempo de Historia Universal (10 períodos expandibles) |
+### 2. `src/app/materias/matematicas/curso-intensivo/page.tsx`
+- Main timeline page with 10 expandable accordion units
+- Breadcrumb: Inicio > Materias > Matemáticas > Curso Intensivo de Matemática
+- 10 color variants: purple, blue, indigo, violet, fuchsia, pink, rose, orange, amber, emerald
+- Each unit has substantial description (150+ words), 9 topics, and a real activity
+- Icons: Landmark, Compass, Globe, BookOpen, Sparkles, Hash, Sigma, Triangle, TrendingUp, Brain
+- Difficulty badges (Easy/Medium/Hard) and time estimates
 
----
+### 3. `src/app/materias/matematicas/curso-intensivo/actividades/page.tsx`
+- Activities page with submission system
+- Fetches from `/api/activities?subject=matematicas&course=curso-intensivo`
+- Auth checks for student/professor/admin roles
+- Purple color theme throughout
 
-## Stack Tecnológico
+## Files Updated
 
-- **Framework**: Next.js 16.1.3 (App Router, Turbopack)
-- **UI**: Tailwind CSS 4 + shadcn/ui (Radix primitives)
-- **Animaciones**: Framer Motion
-- **Iconos**: lucide-react
-- **Tipografía**: Inter (Google Fonts)
-- **Modo oscuro**: class strategy (`@custom-variant dark (&:is(.dark *))`)
-- **Tema hook**: `src/hooks/use-theme.ts` (localStorage key: `intensiva-theme`)
+### 4. `src/app/materias/page.tsx`
+- Changed Matemáticas from static link to expandable card
+- Added sub-item linking to `/materias/matematicas` with Calculator icon and purple theme
+- Supports both Historia and Matemáticas expandable sections
 
----
+### 5. `src/app/page.tsx`
+- Added `navigateTo: 'matematicas'` to catalog book entry
+- Added `navigateToSubject` case for 'matematicas' -> `/materias/matematicas/curso-intensivo`
+- Added `categorias` click handler for matematicas category
+- Added purple ring hover effect for matematicas catalog card
 
-## Archivos Clave
+### 6. `src/i18n/es.json`
+- Added `common.matematicas` key
+- Added `materias_page.curso_intensivo` key
+- Added `mat_index.*` section (subtitle, intensive_desc, units, activities_count)
+- Added `mat_page.*` section (title, subtitles, hint, description, key_topics, activity, difficulties, periods)
 
-### Páginas
-- `src/app/page.tsx` — Landing page principal (~700+ líneas, estilo premium SaaS)
-- `src/app/explorar/page.tsx` — Explorador de categorías (3 acordeones)
-- `src/app/materias/page.tsx` — Tarjetas de materias (6 materias con bordes de colores)
-- `src/app/materias/historia/page.tsx` — Línea de tiempo (10 períodos expandibles con contenido rico)
+### 7. `src/i18n/en.json`
+- Same structure as es.json with English translations
 
-### Componentes compartidos
-- `src/components/site-navbar.tsx` — Navbar con: logo, links, buscador, toggle dark/light, menú mobile (Sheet)
-- `src/components/site-footer.tsx` — Footer con 3 columnas + redes sociales
+## Build Result
+- PASS - All 32 static pages generated successfully
+- New routes visible: `/materias/matematicas`, `/materias/matematicas/curso-intensivo`, `/materias/matematicas/curso-intensivo/actividades`
+- No new lint errors introduced (all 11 lint errors are pre-existing in other files)
 
-### Estilos y config
-- `src/app/globals.css` — Variables CSS (oklch), tema claro y oscuro
-- `src/app/layout.tsx` — Layout raíz con Inter font, metadata SEO
-- `tailwind.config.ts` — Configuración de Tailwind con dark mode class strategy
-- `src/hooks/use-theme.ts` — Hook custom para dark/light toggle con localStorage
-
-### Componentes shadcn/ui utilizados
-Accordion, Badge, Button, Card, Input, Select, Avatar, Sheet, Toaster
-
----
-
-## Historial de Tareas Completadas
-
-### Task 1 — Landing page inicial
-- 10 secciones: navbar, hero, search, nichos, categorías, cómo funciona, profesores, blog, newsletter, footer
-- Paleta verde esmeralda, animaciones fade-in-on-scroll
-
-### Task 2 — Sección Historia Universal
-- Contenido extraído del PDF "Toda la Historia del mundo" de Barreau & Bigot
-- 10 regiones, 8 categorías de actividad, 6 eras con barra de progreso
-
-### Task 3 — Navegación interactiva
-- Client-side routing con useRouter
-- Catálogo digital con 12 materiales
-- Vista de detalle de materia (Historia)
-- Breadcrumbs y navegación entre vistas
-
-### Task 4 — 3 nuevas rutas
-- `/explorar` — Explorador 3 columnas con acordeones
-- `/materias` — Tarjetas de materias con bordes de colores
-- `/materias/historia` — Timeline con 10 períodos
-- Navbar y footer extraídos como componentes compartidos
-
-### Task 5 — Barra de búsqueda y toggle dark/light
-- Buscador funcional en navbar (redirige a /materias o /materias/historia según query)
-- Botón sol/luna en navbar para alternar modo oscuro
-- Fix de navegación: eliminado conflicto entre goHome() + setTimeout
-
-### Task 6 — Dark mode completo y responsive
-- `dark:` variants en TODOS los componentes de TODAS las páginas
-- Cambio de `bg-white` a `bg-background` en sub-páginas
-- Fix de iconos, badges, breadcrumbs, avatares, tarjetas en modo oscuro
-- Verificación responsive mobile/tablet/desktop
-
-### Task 7 — Rediseño premium SaaS (Wix Studio style)
-- **Landing page completamente rediseñada** con estilo corporativo moderno:
-  - Header sticky (80px) con logo centrado, menú centrado, selector de idioma, CTA
-  - Mega menú desplegable (full-width, multi-columna, animación fade+slide)
-  - Hero: H1 gigante, subtítulo, 2 CTAs, layout 2 columnas, mockup de laptop
-  - Secciones: Beneficios, Categorías, Testimonios, Pricing, FAQ
-  - Footer profesional multi-columna
-  - Animaciones de hover, micro-interacciones, glassmorphism
-- Tipografía: Inter (no Poppins/Manrope todavía)
-
-### Task 8 — Fixes de la página de Historia
-- **Acordeón roto**: Reemplazado Radix Accordion por sistema manual con useState + AnimatePresence de Framer Motion
-- **Contenido enriquecido**: Cada período pasó de ~5 a ~9 temas clave + descripción ampliada
-- **Dark mode puro negro**: Cambiados todos los `dark:bg-gray-950` a `dark:bg-black`
-- Colores dark mode: fondo `oklch(0.02 0 0)` (negro puro), texto `oklch(0.98 0 0)` (blanco puro)
-
----
-
-## Estado Actual del Tema (globals.css)
-
-### Modo Claro
-- `--background`: oklch(0.995 0.001 160) — casi blanco con tinte verde sutíl
-- `--foreground`: oklch(0.13 0.015 260) — casi negro
-- `--primary`: oklch(0.596 0.145 163.225) — verde esmeralda
-- `--card`: oklch(1 0 0) — blanco puro
-- `--border`: oklch(0.92 0.005 260) — gris claro
-
-### Modo Oscuro
-- `--background`: oklch(0.02 0 0) — **negro puro** (corregido de gris)
-- `--foreground`: oklch(0.98 0 0) — **blanco puro** (sin opacidad)
-- `--card`: oklch(0.07 0 0) — negro profundo
-- `--muted`: oklch(0.14 0 0) — gris muy oscuro
-- `--border`: oklch(1 0 0 / 10%) — blanco con 10% opacidad
-- `--primary`: oklch(0.65 0.17 163.225) — verde esmeralda claro
-
----
-
-## Contenido de /materias/historia — 10 Períodos
-
-1. **Prehistoria y Orígenes** (~3.000.000 – 3.000 a.C.) — Lucy, Homo erectus, fuego, neolítico
-2. **Pangea y Primeras Civilizaciones** (~3.500 – 500 a.C.) — Sumeria, Egipto, valle del Indo
-3. **Mundo Antiguo** (~800 a.C. – 476 d.C.) — Grecia, Roma, Alejandro Magno
-4. **Edad Media** (476 – 1453 d.C.) — Cruzadas, Islam, Peste Negra, Juana de Arco
-5. **Renacimiento y Reformas** (1453 – 1648 d.C.) — Colón, Carlos V, Lutero, Gutenberg
-6. **América Precolombina** (~2.000 a.C. – 1492 d.C.) — Olmecas, mayas, aztecas, incas
-7. **Conquista y Colonia** (1492 – 1810 d.C.) — Cortés, Pizarro, virreinatos
-8. **Independencia de América** (1810 – 1825 d.C.) — San Martín, Bolívar
-9. **Siglo XIX** (1815 – 1914 d.C.) — Revolución Industrial, unificaciones
-10. **Historia Contemporánea** (1914 – actualidad) — Guerras Mundiales, Guerra Fría, globalización
-
-Cada período tiene: descripción (200+ palabras), 8-9 temas clave, actividad propuesta con tipo/dificultad/tiempo.
-
----
-
-## Funcionalidades Implementadas
-
-- ✅ Dark/light mode con persistencia en localStorage
-- ✅ Navegación con router Next.js (client-side)
-- ✅ Breadcrumbs en todas las sub-páginas
-- ✅ Buscador funcional en navbar
-- ✅ Mega menú desplegable en landing
-- ✅ Acordeones expandibles (manual, con AnimatePresence)
-- ✅ Animaciones de entrada con Framer Motion (fade-in-on-scroll)
-- ✅ Responsive mobile/tablet/desktop
-- ✅ SEO metadata en español
-
----
-
-## Task 9 — Internacionalización (ES ↔ EN) ✅
-
-**Estado**: Completado
-
-### Solución implementada
-- **Enfoque**: i18n client-side simple con React Context (sin cambios de URL)
-- **Archivos creados**:
-  - `src/i18n/context.tsx` — I18nProvider, useT(), useLocale(), useSetLocale()
-  - `src/i18n/es.json` — Traducciones en español (~200 keys)
-  - `src/i18n/en.json` — Traducciones en inglés (~200 keys)
-  - `src/components/language-toggle.tsx` — Botón ES/EN pill toggle
-- **Archivos modificados**: layout.tsx, page.tsx, site-navbar.tsx, site-footer.tsx, explorar/page.tsx, materias/page.tsx, materias/historia/page.tsx
-- **Persistencia**: localStorage key `intensiva-locale`
-- **Botón toggle**: Aparece en navbar de landing page + navbar compartido (desktop + mobile)
-- **Historia**: Nombres de períodos traducidos, descripciones largas quedan en español (contenido del libro)
-- **Build**: Pasa limpio
-
----
-
-## Pendientes / Mejoras Futuras
-
-1. **Landing page**: Incorporar tipografías Poppins/Manrope (solo se usa Inter actualmente)
-3. **Pricing real**: Las secciones de pricing y testimonios tienen contenido placeholder
-4. **Páginas de detalle**: Crear páginas individuales para cada materia (no solo Historia)
-5. **Blog**: Crear páginas de blog reales
-6. **Auth**: Implementar login/registro (botones "Ingresa"/"Regístrate" son placeholder)
-7. **Perfil de profesor**: Crear página para "¿Sos profesor?"
-8. **Logo personalizado**: El usuario mencionó un logo "P10 文/日" pero aún no lo describió
-9. **Contenido de materias**: Agregar más materias con contenido detallado (Matemática, Inglés, etc.)
-10. **FAQ**: Contenido real de preguntas frecuentes
-11. **Newsletter**: Formulario funcional de newsletter
-
----
-
-## Task 10 — Sistema de Autenticación, Roles, Admin Dashboard, Actividades y Bug Reports
-
-**Estado**: Completado
-
-### Base de Datos (Prisma Schema actualizado)
-- **Modelos**: User, Session, Activity, ActivitySubmission, ActivityLog, BugReport
-- **Roles**: STUDENT, PROFESSOR, ADMIN
-- **Profesor**: requiere aprobación del admin (PENDING → APPROVED/REJECTED)
-- **Seed**: Admin creado (admin@intensiva.ar) + 10 actividades de Historia Universal
-- **Contraseñas**: bcryptjs con 12 rounds de salt
-
-### Sistema de Autenticación
-- **Session-based**: cookie httpOnly con token aleatorio, expira en 7 días
-- **API Routes**: /api/auth/login, /api/auth/register, /api/auth/logout, /api/auth/me
-- **Auth Context**: `src/lib/auth-context.tsx` — useAuth() con login, register, logout, refreshUser
-- **Server helpers**: `src/lib/auth-server.ts` — getSessionUser(), userFullData()
-
-### Páginas creadas
-- `/login` — Login con email/contraseña, maneja estado pending de profesores
-- `/registro` — Registro de alumnos (nombre, email, pass, universidad, año)
-- `/registro/profesor` — Registro de profesores (especialización, bio, teléfono)
-- `/admin` — Dashboard con 6 tarjetas de estadísticas + feed de actividad reciente
-- `/admin/usuarios` — Tabla de todos los usuarios con filtro por rol
-- `/admin/profesores` — Gestión de solicitudes de profesores (aprobar/rechazar)
-- `/admin/actividades` — Corrección de actividades (nota 1-10 + feedback)
-- `/admin/logs` — Bitácora de auditoría con paginación y filtros
-- `/admin/reportes` — Gestión de reportes de problemas
-
-### Sistema de Actividades
-- `/materias/historia/historia-universal/actividades` — Vista de actividades agrupadas por período
-- Alumnos pueden enviar respuestas, ver notas y feedback
-- Profesores y admin ven todas las respuestas de cada actividad
-
-### Botón "Reportar un problema"
-- Componente flotante (FAB) en esquina inferior derecha de TODAS las páginas
-- Formulario: asunto, descripción, URL auto-completada
-- Reportes visibles en admin panel
-
-### Reorganización de archivos
-- `/materias/historia` → Índice de cursos de Historia (lista cursos disponibles)
-- `/materias/historia/historia-universal` → Timeline con 10 períodos (contenido original)
-- `/materias/historia/historia-universal/actividades` → Actividades del curso
-
-### Navbar actualizado
-- Botones "Ingresa" → `/login`, "Regístrate" → `/registro`
-- "¿Sos profesor?" → `/registro/profesor`
-- Usuario logueado: muestra avatar, nombre, rol badge, menú desplegable
-- Menú incluye: Panel Admin (solo admin), Mi perfil, Cerrar sesión
-- Mobile: mismo comportamiento en Sheet
-
-### Credenciales Admin
-- Email: admin@intensiva.ar
-- Contraseña: Admin123456788!
-
----
-
-## Notas Importantes
-
-- Todos los textos están en **español argentino** (vos, sabés, etc.)
-- No se usan emojis en el código (reemplazados por iconos lucide-react)
-- La paleta principal es **verde esmeralda** (emerald-600: oklch 0.596 0.145 163.225)
-- El modo oscuro usa **negro puro** (oklch 0.02) NO gris
-- Los builds siempre deben pasar limpios (`npm run build`)
-- Proyecto ubicado en `/home/z/my-project/`
-- Archivos generados para usuario van a `/home/z/my-project/download/`
+## The 10 Units
+1. Orígenes de la Matemática (~3.000 a.C. - 300 a.C.)
+2. Grecia Clásica (600 a.C. - 300 a.C.)
+3. El Mundo Oriental (200 a.C. - 1200 d.C.)
+4. Edad Media y Renacimiento (1200 - 1600)
+5. La Revolución Científica (1600 - 1800)
+6. Aritmética y Números (Fundamentos)
+7. Álgebra (Ecuaciones y Funciones)
+8. Geometría (Formas y Espacio)
+9. Cálculo (Cambio y Movimiento)
+10. Matemática Moderna (1900 - Actualidad)

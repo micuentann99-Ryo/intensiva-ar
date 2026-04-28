@@ -197,6 +197,7 @@ export default function HomePage() {
 
   const navigateToSubject = (subject: string) => {
     if (subject === 'historia') router.push('/materias/historia');
+    if (subject === 'matematicas') router.push('/materias/matematicas/curso-intensivo');
   };
 
   const handleNavClick = (href: string, navigate?: boolean) => {
@@ -223,7 +224,7 @@ export default function HomePage() {
   /* ── Dynamic data (uses t()) ── */
   const catalogBooks = [
     { title: 'Toda la Historia del mundo', subject: t('common.historia'), author: 'Barreau & Bigot', desc: t('catalog.subtitle'), icon: <Globe className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
-    { title: 'Curso Intensivo de Matemática', subject: t('categories.matematicas'), author: 'IntensivaAR', desc: t('mega_menu.matematica_desc'), icon: <Calculator className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Curso Intensivo de Matemática', subject: t('categories.matematicas'), author: 'IntensivaAR', desc: t('mega_menu.matematica_desc'), icon: <Calculator className="size-5 text-purple-600" />, navigateTo: 'matematicas' as const },
     { title: 'Inglés para Profesionales', subject: t('common.ingles'), author: 'IntensivaAR', desc: t('mega_menu.ingles_desc'), icon: <BookOpen className="size-5 text-emerald-600" />, navigateTo: null },
     { title: 'Física Universitaria', subject: t('mega_menu.fisica'), author: 'IntensivaAR', desc: t('mega_menu.fisica_desc'), icon: <Atom className="size-5 text-emerald-600" />, navigateTo: null },
     { title: 'Química Orgánica', subject: t('mega_menu.quimica'), author: 'IntensivaAR', desc: t('mega_menu.quimica_desc'), icon: <FlaskConical className="size-5 text-emerald-600" />, navigateTo: null },
@@ -724,6 +725,7 @@ export default function HomePage() {
                 className="group cursor-pointer hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 hover:-translate-y-0.5 h-full"
                 onClick={() => {
                   if (cat.name === t('categories.historia')) router.push('/materias/historia');
+                  if (cat.name === t('categories.matematicas')) router.push('/materias/matematicas/curso-intensivo');
                 }}
               >
                 <CardContent className="p-5 flex flex-col gap-3">
@@ -931,7 +933,7 @@ export default function HomePage() {
             <FadeIn key={book.title} delay={i * 0.04}>
               <Card
                 className={`group cursor-pointer hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 hover:-translate-y-0.5 h-full ${
-                  book.navigateTo === 'historia' ? 'hover:ring-1 hover:ring-emerald-400/50' : ''
+                  book.navigateTo === 'historia' ? 'hover:ring-1 hover:ring-emerald-400/50' : book.navigateTo === 'matematicas' ? 'hover:ring-1 hover:ring-purple-400/50' : ''
                 }`}
                 onClick={() => {
                   if (book.navigateTo) navigateToSubject(book.navigateTo);
