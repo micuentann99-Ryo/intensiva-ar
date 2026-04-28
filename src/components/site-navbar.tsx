@@ -19,22 +19,25 @@ import {
   Moon,
 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
-
-const navLinks = [
-  { label: 'Cursos', href: '/' },
-  { label: 'Explorar', href: '/explorar' },
-  { label: 'Materias', href: '/materias' },
-  { label: 'Historia', href: '/materias/historia' },
-  { label: 'Profesores', href: '/#profesores' },
-  { label: 'Catálogo', href: '/#catalogo' },
-];
+import { useT } from '@/i18n/context';
+import LanguageToggle from '@/components/language-toggle';
 
 export default function SiteNavbar() {
+  const t = useT();
   const pathname = usePathname();
   const { isDark, toggle: toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const navLinks = [
+    { label: t('common.cursos'), href: '/' },
+    { label: t('common.explorar'), href: '/explorar' },
+    { label: t('common.materias'), href: '/materias' },
+    { label: t('common.historia'), href: '/materias/historia' },
+    { label: t('common.profesores'), href: '/#profesores' },
+    { label: t('common.catalogo'), href: '/#catalogo' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -71,7 +74,7 @@ export default function SiteNavbar() {
                 IntensivaAR
               </span>
               <span className="text-[10px] text-muted-foreground hidden sm:block">
-                Clases intensivas Argentina
+                {t('navbar.subtitle')}
               </span>
             </div>
           </Link>
@@ -85,17 +88,19 @@ export default function SiteNavbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscador"
+                placeholder={t('common.buscador')}
                 className="w-full h-9 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
               />
             </form>
+
+            <LanguageToggle />
 
             {/* Theme Toggle: Sun / Moon */}
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
-              aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-              title={isDark ? 'Modo claro' : 'Modo oscuro'}
+              aria-label={isDark ? t('navbar.modo_claro') : t('navbar.modo_oscuro')}
+              title={isDark ? t('navbar.modo_claro') : t('navbar.modo_oscuro')}
             >
               {isDark ? (
                 <Sun className="size-[18px] text-amber-400" />
@@ -128,22 +133,22 @@ export default function SiteNavbar() {
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
             <Button variant="outline" size="sm" className="text-sm">
-              ¿Sos profesor?
+              {t('navbar.sos_profesor')}
             </Button>
             <Button variant="ghost" size="sm" className="text-sm">
-              Ingresa
+              {t('navbar.ingresa')}
             </Button>
             <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-              Regístrate
+              {t('navbar.registrate')}
             </Button>
           </div>
 
-          {/* Mobile: Theme Toggle + Menu */}
+          {/* Mobile: Theme Toggle + Language + Menu */}
           <div className="flex lg:hidden items-center gap-2">
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
-              aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              aria-label={isDark ? t('navbar.modo_claro') : t('navbar.modo_oscuro')}
             >
               {isDark ? (
                 <Sun className="size-[18px] text-amber-400" />
@@ -151,11 +156,12 @@ export default function SiteNavbar() {
                 <Moon className="size-[18px] text-slate-600" />
               )}
             </button>
+            <LanguageToggle />
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Menu className="size-5" />
-                  <span className="sr-only">Abrir menú</span>
+                  <span className="sr-only">{t('navbar.abrir_menu')}</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
@@ -175,7 +181,7 @@ export default function SiteNavbar() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Buscador"
+                    placeholder={t('common.buscador')}
                     className="w-full h-10 pl-9 pr-3 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all"
                   />
                 </form>
@@ -199,9 +205,9 @@ export default function SiteNavbar() {
                   })}
                 </nav>
                 <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
-                  <Button variant="outline" className="w-full">¿Sos profesor?</Button>
-                  <Button variant="ghost" className="w-full">Ingresa</Button>
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Regístrate</Button>
+                  <Button variant="outline" className="w-full">{t('navbar.sos_profesor')}</Button>
+                  <Button variant="ghost" className="w-full">{t('navbar.ingresa')}</Button>
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">{t('navbar.registrate')}</Button>
                 </div>
               </SheetContent>
             </Sheet>

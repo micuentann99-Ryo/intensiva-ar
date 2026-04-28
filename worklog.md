@@ -153,33 +153,28 @@ Cada período tiene: descripción (200+ palabras), 8-9 temas clave, actividad pr
 
 ---
 
-## PRÓXIMA TAREA — Botón de cambio de idioma (ES ↔ EN) ⏳
+## Task 9 — Internacionalización (ES ↔ EN) ✅
 
-**Estado**: Confirmado por el usuario. Listo para implementar cuando vuelva.
+**Estado**: Completado
 
-### Plan de implementación
-- **Librería recomendada**: `next-intl` (la mejor para Next.js 16 App Router)
-- **Idiomas**: Español (por defecto) ↔ Inglés
-- **Estructura**: Crear archivos `es.json` y `en.json` con todas las traducciones
-- **Funcionamiento**: Botón en navbar que alterna locale, URLs tipo `/en/explorar`, `/en/materias/historia`
-- **Componentes afectados**: TODAS las páginas y componentes con texto estático
-- **No implementar hasta que el usuario lo pida explícitamente**
-
-### Pasos concretos cuando se implemente
-1. Instalar `next-intl`
-2. Crear `messages/es.json` y `messages/en.json` con todo el texto del sitio
-3. Configurar middleware para redirección de locales
-4. Crear layout con `NextIntlClientProvider`
-5. Reemplazar todos los strings hardcodeados por `t('clave')`
-6. Agregar botón ES/EN en navbar
-7. Probar todas las rutas en ambos idiomas
+### Solución implementada
+- **Enfoque**: i18n client-side simple con React Context (sin cambios de URL)
+- **Archivos creados**:
+  - `src/i18n/context.tsx` — I18nProvider, useT(), useLocale(), useSetLocale()
+  - `src/i18n/es.json` — Traducciones en español (~200 keys)
+  - `src/i18n/en.json` — Traducciones en inglés (~200 keys)
+  - `src/components/language-toggle.tsx` — Botón ES/EN pill toggle
+- **Archivos modificados**: layout.tsx, page.tsx, site-navbar.tsx, site-footer.tsx, explorar/page.tsx, materias/page.tsx, materias/historia/page.tsx
+- **Persistencia**: localStorage key `intensiva-locale`
+- **Botón toggle**: Aparece en navbar de landing page + navbar compartido (desktop + mobile)
+- **Historia**: Nombres de períodos traducidos, descripciones largas quedan en español (contenido del libro)
+- **Build**: Pasa limpio
 
 ---
 
 ## Pendientes / Mejoras Futuras
 
-1. ⏳ **Botón de idioma ES ↔ EN** ← PRÓXIMA TAREA (plan confirmado, pendiente implementación)
-2. **Landing page**: Incorporar tipografías Poppins/Manrope (solo se usa Inter actualmente)
+1. **Landing page**: Incorporar tipografías Poppins/Manrope (solo se usa Inter actualmente)
 3. **Pricing real**: Las secciones de pricing y testimonios tienen contenido placeholder
 4. **Páginas de detalle**: Crear páginas individuales para cada materia (no solo Historia)
 5. **Blog**: Crear páginas de blog reales

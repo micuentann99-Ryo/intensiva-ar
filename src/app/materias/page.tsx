@@ -15,67 +15,69 @@ import {
 } from 'lucide-react';
 import SiteNavbar from '@/components/site-navbar';
 import SiteFooter from '@/components/site-footer';
-
-const subjects = [
-  {
-    id: 'matematicas',
-    name: 'Matemáticas',
-    icon: Calculator,
-    borderColor: 'border-l-purple-500',
-    iconBg: 'bg-purple-50',
-    iconColor: 'text-purple-600',
-    href: '/materias',
-  },
-  {
-    id: 'lenguaje',
-    name: 'Lenguaje y Comunicación',
-    icon: PenTool,
-    borderColor: 'border-l-amber-500',
-    iconBg: 'bg-amber-50',
-    iconColor: 'text-amber-600',
-    href: '/materias',
-  },
-  {
-    id: 'ciencias-naturales',
-    name: 'Ciencias Naturales',
-    icon: FlaskConical,
-    borderColor: 'border-l-teal-500',
-    iconBg: 'bg-teal-50',
-    iconColor: 'text-teal-600',
-    href: '/materias',
-  },
-  {
-    id: 'historia',
-    name: 'Historia',
-    icon: Landmark,
-    borderColor: 'border-l-emerald-500',
-    iconBg: 'bg-emerald-50',
-    iconColor: 'text-emerald-600',
-    href: null,
-    expandable: true,
-  },
-  {
-    id: 'fisica',
-    name: 'Física',
-    icon: Atom,
-    borderColor: 'border-l-sky-500',
-    iconBg: 'bg-sky-50',
-    iconColor: 'text-sky-600',
-    href: '/materias',
-  },
-  {
-    id: 'programacion',
-    name: 'Programación',
-    icon: Code,
-    borderColor: 'border-l-rose-500',
-    iconBg: 'bg-rose-50',
-    iconColor: 'text-rose-600',
-    href: '/materias',
-  },
-];
+import { useT } from '@/i18n/context';
 
 export default function MateriasPage() {
+  const t = useT();
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const subjects = [
+    {
+      id: 'matematicas',
+      name: t('materias_page.matematicas'),
+      icon: Calculator,
+      borderColor: 'border-l-purple-500',
+      iconBg: 'bg-purple-50',
+      iconColor: 'text-purple-600',
+      href: '/materias',
+    },
+    {
+      id: 'lenguaje',
+      name: t('materias_page.lenguaje'),
+      icon: PenTool,
+      borderColor: 'border-l-amber-500',
+      iconBg: 'bg-amber-50',
+      iconColor: 'text-amber-600',
+      href: '/materias',
+    },
+    {
+      id: 'ciencias-naturales',
+      name: t('materias_page.ciencias_naturales'),
+      icon: FlaskConical,
+      borderColor: 'border-l-teal-500',
+      iconBg: 'bg-teal-50',
+      iconColor: 'text-teal-600',
+      href: '/materias',
+    },
+    {
+      id: 'historia',
+      name: t('materias_page.historia'),
+      icon: Landmark,
+      borderColor: 'border-l-emerald-500',
+      iconBg: 'bg-emerald-50',
+      iconColor: 'text-emerald-600',
+      href: null,
+      expandable: true,
+    },
+    {
+      id: 'fisica',
+      name: t('materias_page.fisica'),
+      icon: Atom,
+      borderColor: 'border-l-sky-500',
+      iconBg: 'bg-sky-50',
+      iconColor: 'text-sky-600',
+      href: '/materias',
+    },
+    {
+      id: 'programacion',
+      name: t('materias_page.programacion'),
+      icon: Code,
+      borderColor: 'border-l-rose-500',
+      iconBg: 'bg-rose-50',
+      iconColor: 'text-rose-600',
+      href: '/materias',
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -90,10 +92,10 @@ export default function MateriasPage() {
                 href="/"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                Inicio
+                {t('common.inicio')}
               </Link>
               <ChevronRight className="size-3.5 text-muted-foreground" />
-              <span className="text-emerald-700 dark:text-emerald-400 font-medium">Materias</span>
+              <span className="text-emerald-700 dark:text-emerald-400 font-medium">{t('materias_page.title')}</span>
             </nav>
           </div>
         </div>
@@ -112,10 +114,10 @@ export default function MateriasPage() {
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
-                  Materias
+                  {t('materias_page.title')}
                 </h1>
                 <p className="mt-1 text-emerald-100 text-base md:text-lg">
-                  Explorá todas las materias disponibles en nuestra plataforma
+                  {t('materias_page.subtitle')}
                 </p>
               </div>
             </motion.div>
@@ -200,7 +202,7 @@ export default function MateriasPage() {
                               <div className="flex items-center gap-3">
                                 <Landmark className="size-4 text-emerald-600" />
                                 <span className="text-sm font-medium text-foreground group-hover:text-emerald-700 transition-colors">
-                                  Historia del Mundo
+                                  {t('materias_page.historia_mundo')}
                                 </span>
                               </div>
                               <ChevronRight className="size-4 text-emerald-600" />

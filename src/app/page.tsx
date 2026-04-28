@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n/context';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +23,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import LanguageToggle from '@/components/language-toggle';
 import {
   Menu,
   Search,
@@ -158,160 +160,11 @@ function SectionHeading({
 }
 
 /* ═══════════════════════════════════════════════════════════
-   DATA
-   ═══════════════════════════════════════════════════════════ */
-
-const catalogBooks = [
-  { title: 'Toda la Historia del mundo', subject: 'Historia', author: 'Barreau & Bigot', desc: 'De la prehistoria a la actualidad en 37 capítulos', icon: <Globe className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
-  { title: 'Curso Intensivo de Matemática', subject: 'Matemática', author: 'IntensivaAR', desc: 'Álgebra, geometría, trigonometría y cálculo', icon: <Calculator className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Inglés para Profesionales', subject: 'Inglés', author: 'IntensivaAR', desc: 'Gramática avanzada y conversación', icon: <BookOpen className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Física Universitaria', subject: 'Física', author: 'IntensivaAR', desc: 'Mecánica, termodinámica y electromagnetismo', icon: <Atom className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Química Orgánica', subject: 'Química', author: 'IntensivaAR', desc: 'Estudio completo de compuestos del carbono', icon: <FlaskConical className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Programación desde Cero', subject: 'Programación', author: 'IntensivaAR', desc: 'Python, JavaScript y algoritmos', icon: <Code className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Preparación Ingreso UBA/CBC', subject: 'Ingreso Universitario', author: 'IntensivaAR', desc: 'Matemática, lengua y ciencias', icon: <GraduationCap className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Ingreso a Medicina', subject: 'Ingreso Universitario', author: 'IntensivaAR', desc: 'Biología, química y razonamiento', icon: <Heart className="size-5 text-emerald-600" />, navigateTo: null },
-  { title: 'Historia Argentina Contemporánea', subject: 'Historia', author: 'IntensivaAR', desc: 'Desde la independencia hasta la actualidad', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
-  { title: 'Historia de las Civilizaciones', subject: 'Historia', author: 'IntensivaAR', desc: 'Egipto, Grecia, Roma y el mundo antiguo', icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
-  { title: 'El Mundo en la Edad Media', subject: 'Historia', author: 'IntensivaAR', desc: 'Imperios, cruzadas y nacimiento de naciones', icon: <Castle className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
-  { title: 'Guerras del Siglo XX', subject: 'Historia', author: 'IntensivaAR', desc: 'Primera y Segunda Guerra Mundial', icon: <Flag className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
-];
-
-const profesores = [
-  { name: 'Martin T.', subject: 'Matemáticas', location: 'Buenos Aires', rating: 4.9, reviews: 320, modality: 'Presencial', initials: 'MT' },
-  { name: 'Sofia R.', subject: 'Inglés', location: 'Córdoba', rating: 4.9, reviews: 280, modality: 'Online', initials: 'SR' },
-  { name: 'Facundo L.', subject: 'Física', location: 'Rosario', rating: 4.8, reviews: 210, modality: 'Presencial', initials: 'FL' },
-  { name: 'Camila P.', subject: 'Química', location: 'Buenos Aires', rating: 4.9, reviews: 185, modality: 'Online', initials: 'CP' },
-  { name: 'Nicolás G.', subject: 'Programación', location: 'Mendoza', rating: 4.8, reviews: 150, modality: 'Online', initials: 'NG' },
-  { name: 'Lucía M.', subject: 'Historia', location: 'La Plata', rating: 4.9, reviews: 195, modality: 'Presencial', initials: 'LM' },
-];
-
-const testimonials = [
-  {
-    quote: 'Las clases intensivas de verano me salvaron. Aprobé Análisis Matemático con 9 y sin estrés. Los profesores son increíbles.',
-    name: 'Valentina S.',
-    course: 'Matemática – Ingreso Ingeniería',
-    rating: 5,
-    initials: 'VS',
-  },
-  {
-    quote: 'La mejor plataforma para prepararse para el CBC. El material de estudio es completo y las clases en vivo son muy interactivas.',
-    name: 'Tomás R.',
-    course: 'Ingreso UBA/CBC',
-    rating: 5,
-    initials: 'TR',
-  },
-  {
-    quote: 'Empecé el curso de inglés desde cero y en 6 semanas ya podía mantener una conversación básica. 100% recomendado.',
-    name: 'Camila A.',
-    course: 'Inglés para Profesionales',
-    rating: 5,
-    initials: 'CA',
-  },
-];
-
-const faqItems = [
-  {
-    q: '¿Qué es un curso intensivo?',
-    a: 'Un curso intensivo es un programa académico concentrado que te permite aprender una materia en un período corto (generalmente 2 a 6 semanas). Las clases tienen mayor carga horaria diaria y están diseñadas para un aprendizaje rápido y efectivo.',
-  },
-  {
-    q: '¿Las clases son en vivo o grabadas?',
-    a: 'Ambas modalidades están disponibles. Las clases en vivo se dictan por Zoom con profesores expertos, y quedan grabadas para que puedas verlas cuando quieras. También ofrecemos cursos 100% asincrónicos.',
-  },
-  {
-    q: '¿Necesito conocimientos previos?',
-    a: 'No. La mayoría de nuestros cursos están diseñados para empezar desde cero. Cada curso indica el nivel requerido en su descripción. Para cursos avanzados, se especifican los prerrequisitos.',
-  },
-  {
-    q: '¿Cómo funciona la certificación?',
-    a: 'Al completar un curso y aprobar la evaluación final, recibís un certificado digital verificado de IntensivaAR. Los cursos Premium incluyen certificación incluida en el precio.',
-  },
-  {
-    q: '¿Puedo cancelar mi suscripción?',
-    a: 'Sí, podés cancelar tu suscripción Premium en cualquier momento desde tu perfil. No hay penalías ni costos de cancelación. Seguirás teniendo acceso hasta el fin del período facturado.',
-  },
-  {
-    q: '¿Hay descuentos para grupos?',
-    a: 'Sí, ofrecemos descuentos especiales para grupos de 3 o más estudiantes, y para instituciones educativas. Contactanos por email para obtener una cotización personalizada.',
-  },
-];
-
-const megaMenuData = [
-  {
-    title: 'Ciencias Exactas',
-    items: [
-      { icon: <Calculator className="size-5" />, title: 'Matemática', desc: 'Álgebra, cálculo, geometría' },
-      { icon: <Atom className="size-5" />, title: 'Física', desc: 'Mecánica, termodinámica, electromagnetismo' },
-      { icon: <FlaskConical className="size-5" />, title: 'Química', desc: 'Orgánica, inorgánica, analítica' },
-      { icon: <Code className="size-5" />, title: 'Programación', desc: 'Python, JavaScript, algoritmos' },
-    ],
-  },
-  {
-    title: 'Ciencias Sociales',
-    items: [
-      { icon: <Landmark className="size-5" />, title: 'Historia', desc: 'Universal, Argentina, contemporánea' },
-      { icon: <Globe2 className="size-5" />, title: 'Geografía', desc: 'Física, humana, argentina' },
-      { icon: <BarChart3 className="size-5" />, title: 'Economía', desc: 'Micro, macro, finanzas' },
-    ],
-  },
-  {
-    title: 'Idiomas',
-    items: [
-      { icon: <Globe className="size-5" />, title: 'Inglés', desc: 'Todos los niveles, conversación' },
-      { icon: <BookOpen className="size-5" />, title: 'Literatura', desc: 'Análisis literario, escritura' },
-      { icon: <PenTool className="size-5" />, title: 'Filosofía', desc: 'Ética, lógica, estética' },
-    ],
-  },
-  {
-    title: 'Ingreso',
-    items: [
-      { icon: <GraduationCap className="size-5" />, title: 'UBA / CBC', desc: 'Preparación completa' },
-      { icon: <Heart className="size-5" />, title: 'Medicina', desc: 'Biología, química, razonamiento' },
-      { icon: <Monitor className="size-5" />, title: 'Ingeniería', desc: 'Matemática, física, dibujo' },
-    ],
-  },
-];
-
-const categorias = [
-  { icon: <Calculator className="size-7" />, name: 'Matemáticas', count: 245, color: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400' },
-  { icon: <BookOpen className="size-7" />, name: 'Inglés', count: 167, color: 'bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400' },
-  { icon: <Landmark className="size-7" />, name: 'Historia', count: 48, color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400' },
-  { icon: <GraduationCap className="size-7" />, name: 'Ingreso Universitario', count: 189, color: 'bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400' },
-  { icon: <FlaskConical className="size-7" />, name: 'Ciencias', count: 134, color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' },
-  { icon: <Code className="size-7" />, name: 'Programación', count: 98, color: 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400' },
-  { icon: <Wrench className="size-7" />, name: 'Talleres', count: 76, color: 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400' },
-];
-
-const benefits = [
-  { icon: <Monitor className="size-6" />, title: 'Clases en vivo con profesores expertos', desc: 'Aprendé en tiempo real con los mejores profesores de Argentina. Preguntá, participá y resolvé dudas al instante.' },
-  { icon: <BookMarked className="size-6" />, title: 'Material de estudio incluido', desc: 'Accedé a PDFs, guías de estudio, ejercicios prácticos y exámenes modelo para cada curso.' },
-  { icon: <Clock className="size-6" />, title: 'Horarios flexibles (verano/invierno)', desc: 'Elegí entre cursos de verano o invierno, con horarios que se adaptan a tu agenda.' },
-  { icon: <Trophy className="size-6" />, title: 'Certificación al finalizar', desc: 'Obtené un certificado digital verificado al completar cada curso y aprobar la evaluación.' },
-];
-
-const navItems = [
-  { label: 'Inicio', href: '#' },
-  { label: 'Cursos', href: '#cursos', hasMega: true },
-  { label: 'Explorar', href: '/explorar', navigate: true },
-  { label: 'Materias', href: '/materias', navigate: true },
-  { label: 'Catálogo', href: '#catalogo' },
-  { label: 'Profesores', href: '#profesores' },
-];
-
-const universities = [
-  'Universidad de Buenos Aires (UBA)',
-  'Universidad Nacional de Córdoba',
-  'Universidad Tecnológica Nacional',
-  'UBA – Facultad de Derecho',
-  'Universidad Nacional de La Plata',
-  'Universidad de Rosario',
-];
-
-/* ═══════════════════════════════════════════════════════════
    MAIN PAGE
    ═══════════════════════════════════════════════════════════ */
 
 export default function HomePage() {
+  const t = useT();
   const router = useRouter();
   const { isDark, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
@@ -362,6 +215,108 @@ export default function HomePage() {
   const megaLeave = () => {
     megaTimeoutRef.current = setTimeout(() => setMegaOpen(false), 200);
   };
+
+  /* ── Dynamic data (uses t()) ── */
+  const catalogBooks = [
+    { title: 'Toda la Historia del mundo', subject: t('common.historia'), author: 'Barreau & Bigot', desc: t('catalog.subtitle'), icon: <Globe className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+    { title: 'Curso Intensivo de Matemática', subject: t('categories.matematicas'), author: 'IntensivaAR', desc: t('mega_menu.matematica_desc'), icon: <Calculator className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Inglés para Profesionales', subject: t('common.ingles'), author: 'IntensivaAR', desc: t('mega_menu.ingles_desc'), icon: <BookOpen className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Física Universitaria', subject: t('mega_menu.fisica'), author: 'IntensivaAR', desc: t('mega_menu.fisica_desc'), icon: <Atom className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Química Orgánica', subject: t('mega_menu.quimica'), author: 'IntensivaAR', desc: t('mega_menu.quimica_desc'), icon: <FlaskConical className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Programación desde Cero', subject: t('categories.programacion'), author: 'IntensivaAR', desc: t('mega_menu.programacion_desc'), icon: <Code className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Preparación Ingreso UBA/CBC', subject: t('categories.ingreso_universitario'), author: 'IntensivaAR', desc: t('mega_menu.matematica_desc'), icon: <GraduationCap className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Ingreso a Medicina', subject: t('categories.ingreso_universitario'), author: 'IntensivaAR', desc: t('mega_menu.medicina_desc'), icon: <Heart className="size-5 text-emerald-600" />, navigateTo: null },
+    { title: 'Historia Argentina Contemporánea', subject: t('common.historia'), author: 'IntensivaAR', desc: t('mega_menu.historia_desc'), icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+    { title: 'Historia de las Civilizaciones', subject: t('common.historia'), author: 'IntensivaAR', desc: t('mega_menu.historia_desc'), icon: <Landmark className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+    { title: 'El Mundo en la Edad Media', subject: t('common.historia'), author: 'IntensivaAR', desc: t('mega_menu.historia_desc'), icon: <Castle className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+    { title: 'Guerras del Siglo XX', subject: t('common.historia'), author: 'IntensivaAR', desc: t('mega_menu.historia_desc'), icon: <Flag className="size-5 text-emerald-600" />, navigateTo: 'historia' as const },
+  ];
+
+  const profesores = [
+    { name: 'Martin T.', subject: t('categories.matematicas'), location: 'Buenos Aires', rating: 4.9, reviews: 320, modality: t('common.presencial'), initials: 'MT' },
+    { name: 'Sofia R.', subject: t('common.ingles'), location: 'Córdoba', rating: 4.9, reviews: 280, modality: 'Online', initials: 'SR' },
+    { name: 'Facundo L.', subject: t('mega_menu.fisica'), location: 'Rosario', rating: 4.8, reviews: 210, modality: t('common.presencial'), initials: 'FL' },
+    { name: 'Camila P.', subject: t('mega_menu.quimica'), location: 'Buenos Aires', rating: 4.9, reviews: 185, modality: 'Online', initials: 'CP' },
+    { name: 'Nicolás G.', subject: t('categories.programacion'), location: 'Mendoza', rating: 4.8, reviews: 150, modality: 'Online', initials: 'NG' },
+    { name: 'Lucía M.', subject: t('common.historia'), location: 'La Plata', rating: 4.9, reviews: 195, modality: t('common.presencial'), initials: 'LM' },
+  ];
+
+  const testimonials = [
+    { quote: t('testimonials.t1_quote'), name: 'Valentina S.', course: t('testimonials.t1_course'), rating: 5, initials: 'VS' },
+    { quote: t('testimonials.t2_quote'), name: 'Tomás R.', course: t('testimonials.t2_course'), rating: 5, initials: 'TR' },
+    { quote: t('testimonials.t3_quote'), name: 'Camila A.', course: t('testimonials.t3_course'), rating: 5, initials: 'CA' },
+  ];
+
+  const faqItems = [
+    { q: t('faq.q1'), a: t('faq.a1') },
+    { q: t('faq.q2'), a: t('faq.a2') },
+    { q: t('faq.q3'), a: t('faq.a3') },
+    { q: t('faq.q4'), a: t('faq.a4') },
+    { q: t('faq.q5'), a: t('faq.a5') },
+    { q: t('faq.q6'), a: t('faq.a6') },
+  ];
+
+  const megaMenuData = [
+    {
+      title: t('mega_menu.ciencias_exactas'),
+      items: [
+        { icon: <Calculator className="size-5" />, title: t('mega_menu.matematica'), desc: t('mega_menu.matematica_desc') },
+        { icon: <Atom className="size-5" />, title: t('mega_menu.fisica'), desc: t('mega_menu.fisica_desc') },
+        { icon: <FlaskConical className="size-5" />, title: t('mega_menu.quimica'), desc: t('mega_menu.quimica_desc') },
+        { icon: <Code className="size-5" />, title: t('mega_menu.programacion'), desc: t('mega_menu.programacion_desc') },
+      ],
+    },
+    {
+      title: t('mega_menu.ciencias_sociales'),
+      items: [
+        { icon: <Landmark className="size-5" />, title: t('mega_menu.historia_mega'), desc: t('mega_menu.historia_desc') },
+        { icon: <Globe2 className="size-5" />, title: t('mega_menu.geografia'), desc: t('mega_menu.geografia_desc') },
+        { icon: <BarChart3 className="size-5" />, title: t('mega_menu.economia'), desc: t('mega_menu.economia_desc') },
+      ],
+    },
+    {
+      title: t('mega_menu.idiomas'),
+      items: [
+        { icon: <Globe className="size-5" />, title: t('mega_menu.ingles_mega'), desc: t('mega_menu.ingles_desc') },
+        { icon: <BookOpen className="size-5" />, title: t('mega_menu.literatura'), desc: t('mega_menu.literatura_desc') },
+        { icon: <PenTool className="size-5" />, title: t('mega_menu.filosofia'), desc: t('mega_menu.filosofia_desc') },
+      ],
+    },
+    {
+      title: t('mega_menu.ingreso'),
+      items: [
+        { icon: <GraduationCap className="size-5" />, title: t('mega_menu.uba_cbc'), desc: t('mega_menu.uba_cbc_desc') },
+        { icon: <Heart className="size-5" />, title: t('mega_menu.medicina'), desc: t('mega_menu.medicina_desc') },
+        { icon: <Monitor className="size-5" />, title: t('mega_menu.ingenieria'), desc: t('mega_menu.ingenieria_desc') },
+      ],
+    },
+  ];
+
+  const categorias = [
+    { icon: <Calculator className="size-7" />, name: t('categories.matematicas'), count: 245, color: 'bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400' },
+    { icon: <BookOpen className="size-7" />, name: t('categories.ingles'), count: 167, color: 'bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400' },
+    { icon: <Landmark className="size-7" />, name: t('categories.historia'), count: 48, color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400' },
+    { icon: <GraduationCap className="size-7" />, name: t('categories.ingreso_universitario'), count: 189, color: 'bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400' },
+    { icon: <FlaskConical className="size-7" />, name: t('categories.ciencias'), count: 134, color: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400' },
+    { icon: <Code className="size-7" />, name: t('categories.programacion'), count: 98, color: 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400' },
+    { icon: <Wrench className="size-7" />, name: t('categories.talleres'), count: 76, color: 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400' },
+  ];
+
+  const benefits = [
+    { icon: <Monitor className="size-6" />, title: t('benefits.b1_title'), desc: t('benefits.b1_desc') },
+    { icon: <BookMarked className="size-6" />, title: t('benefits.b2_title'), desc: t('benefits.b2_desc') },
+    { icon: <Clock className="size-6" />, title: t('benefits.b3_title'), desc: t('benefits.b3_desc') },
+    { icon: <Trophy className="size-6" />, title: t('benefits.b4_title'), desc: t('benefits.b4_desc') },
+  ];
+
+  const navItems = [
+    { label: t('common.inicio'), href: '#' },
+    { label: t('common.cursos'), href: '#cursos', hasMega: true },
+    { label: t('common.explorar'), href: '/explorar', navigate: true },
+    { label: t('common.materias'), href: '/materias', navigate: true },
+    { label: t('common.catalogo'), href: '#catalogo' },
+    { label: t('common.profesores'), href: '#profesores' },
+  ];
 
   /* ── STAR RATING ── */
   const Stars = ({ count }: { count: number }) => (
@@ -449,7 +404,7 @@ export default function HomePage() {
                                     key={item.title}
                                     onClick={() => {
                                       setMegaOpen(false);
-                                      if (item.title === 'Historia') {
+                                      if (item.title === t('common.historia') || item.title === t('mega_menu.historia_mega')) {
                                         router.push('/materias/historia');
                                       }
                                     }}
@@ -490,6 +445,7 @@ export default function HomePage() {
 
           {/* Right side */}
           <div className="flex items-center gap-2 shrink-0">
+            <LanguageToggle />
             <button
               onClick={toggle}
               className="flex items-center justify-center size-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
@@ -502,14 +458,14 @@ export default function HomePage() {
               className="hidden md:inline-flex px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => {}}
             >
-              Iniciar sesión
+              {t('landing_nav.iniciar_sesion')}
             </button>
 
             <Button
               className="hidden sm:inline-flex bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm shadow-emerald-600/20 hover:shadow-emerald-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
               onClick={() => {}}
             >
-              Empieza ahora
+              {t('landing_nav.empieza_ahora')}
             </Button>
 
             {/* Mobile hamburger */}
@@ -517,7 +473,7 @@ export default function HomePage() {
               <SheetTrigger asChild>
                 <button
                   className="lg:hidden flex items-center justify-center size-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
-                  aria-label="Menú"
+                  aria-label={t('navbar.menu')}
                 >
                   <Menu className="size-5" />
                 </button>
@@ -538,7 +494,7 @@ export default function HomePage() {
                   <div className="relative mb-3">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input
-                      placeholder="Buscar cursos..."
+                      placeholder={t('common.buscar')}
                       className="pl-9 h-10 rounded-lg bg-muted/50 border-0 focus-visible:ring-1"
                     />
                   </div>
@@ -557,7 +513,7 @@ export default function HomePage() {
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg mt-1"
                     onClick={() => {}}
                   >
-                    Empieza ahora
+                    {t('landing_nav.empieza_ahora')}
                   </Button>
                 </div>
               </SheetContent>
@@ -587,19 +543,18 @@ export default function HomePage() {
             >
               <Badge className="mb-6 px-4 py-1.5 text-sm font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0 gap-1.5">
                 <Sparkles className="size-3.5" />
-                Plataforma #1 de clases intensivas en Argentina
+                {t('hero.badge')}
               </Badge>
 
               <h1 className="text-4xl sm:text-5xl md:text-[3.4rem] font-extrabold tracking-tight text-foreground leading-[1.1] mb-6">
-                Aprendé cualquier materia{' '}
+                {t('hero.title_before')}{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
-                  desde cero
+                  {t('hero.title_accent')}
                 </span>
               </h1>
 
               <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-md">
-                Cursos intensivos de verano e invierno con los mejores profesores de Argentina.
-                Aprendé más rápido, certifícate y alcanzá tus objetivos académicos.
+                {t('hero.subtitle')}
               </p>
 
               <div className="flex flex-wrap items-center gap-3 mb-10">
@@ -607,7 +562,7 @@ export default function HomePage() {
                   size="lg"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-7 py-6 text-base font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/35 hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
-                  Comenzar Gratis
+                  {t('hero.cta_primary')}
                   <ArrowRight className="size-4 ml-2" />
                 </Button>
                 <Button
@@ -619,25 +574,25 @@ export default function HomePage() {
                     el?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  Ver Cursos
+                  {t('hero.cta_secondary')}
                 </Button>
               </div>
 
               <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold text-foreground">10k+</span>
-                  <span className="text-sm text-muted-foreground">Alumnos activos</span>
+                  <span className="text-sm text-muted-foreground">{t('hero.stat_students')}</span>
                 </div>
                 <div className="w-px h-8 bg-border hidden sm:block" />
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold text-foreground">500+</span>
-                  <span className="text-sm text-muted-foreground">Cursos disponibles</span>
+                  <span className="text-sm text-muted-foreground">{t('hero.stat_courses')}</span>
                 </div>
                 <div className="w-px h-8 bg-border hidden sm:block" />
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold text-foreground">4.9</span>
                   <Star className="size-5 text-amber-400 fill-amber-400" />
-                  <span className="text-sm text-muted-foreground">Rating promedio</span>
+                  <span className="text-sm text-muted-foreground">{t('hero.stat_rating')}</span>
                 </div>
               </div>
             </motion.div>
@@ -653,7 +608,7 @@ export default function HomePage() {
                 <div className="absolute -inset-4 bg-gradient-to-br from-emerald-200 to-teal-200 dark:from-emerald-800/30 dark:to-teal-800/30 rounded-3xl blur-2xl opacity-60" />
                 <img
                   src="/hero-dashboard.png"
-                  alt="Dashboard de IntensivaAR"
+                  alt="IntensivaAR Dashboard"
                   className="relative w-full rounded-2xl shadow-2xl shadow-emerald-900/10 dark:shadow-emerald-900/30 border border-border/40"
                 />
               </div>
@@ -668,8 +623,8 @@ export default function HomePage() {
                   <Users className="size-4 text-emerald-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Conectados ahora</p>
-                  <p className="text-sm font-semibold text-foreground">1,247 alumnos</p>
+                  <p className="text-xs text-muted-foreground">{t('hero.connected_now')}</p>
+                  <p className="text-sm font-semibold text-foreground">{t('hero.connected_students')}</p>
                 </div>
               </motion.div>
               <motion.div
@@ -682,8 +637,8 @@ export default function HomePage() {
                   <Star className="size-4 text-amber-500" />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Satisfacción</p>
-                  <p className="text-sm font-semibold text-foreground">98.5% positivas</p>
+                  <p className="text-xs text-muted-foreground">{t('hero.satisfaction')}</p>
+                  <p className="text-sm font-semibold text-foreground">{t('hero.positive')}</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -698,12 +653,12 @@ export default function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-center text-sm text-muted-foreground mb-8 tracking-wide uppercase font-medium">
-              Utilizado por estudiantes de las mejores universidades
+              {t('trust_bar.text')}
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
             <div className="flex items-center justify-center gap-3 md:gap-5 flex-wrap">
-              {universities.map((uni) => (
+              {['Universidad de Buenos Aires (UBA)', 'Universidad Nacional de Córdoba', 'Universidad Tecnológica Nacional', 'UBA – Facultad de Derecho', 'Universidad Nacional de La Plata', 'Universidad de Rosario'].map((uni) => (
                 <div
                   key={uni}
                   className="px-4 py-2 rounded-full bg-white dark:bg-[#0a0a0a] border border-border/60 text-xs sm:text-sm font-medium text-muted-foreground hover:border-emerald-300 dark:hover:border-emerald-700 hover:text-foreground transition-colors"
@@ -721,9 +676,9 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="beneficios">
         <SectionHeading
-          badge="Ventajas"
-          title="¿Por qué elegir IntensivaAR?"
-          subtitle="Todo lo que necesitás para alcanzar tus objetivos académicos, en un solo lugar."
+          badge={t('benefits.badge')}
+          title={t('benefits.title')}
+          subtitle={t('benefits.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {benefits.map((b, i) => (
@@ -747,9 +702,9 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="cursos" dark>
         <SectionHeading
-          badge="Categorías"
-          title="Explorá por categoría"
-          subtitle="Encontrá el curso perfecto entre más de 500 opciones organizadas por área de estudio."
+          badge={t('categories.badge')}
+          title={t('categories.title')}
+          subtitle={t('categories.subtitle')}
         />
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
           {categorias.map((cat, i) => (
@@ -757,7 +712,7 @@ export default function HomePage() {
               <Card
                 className="group cursor-pointer hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 hover:-translate-y-0.5 h-full"
                 onClick={() => {
-                  if (cat.name === 'Historia') router.push('/materias/historia');
+                  if (cat.name === t('categories.historia')) router.push('/materias/historia');
                 }}
               >
                 <CardContent className="p-5 flex flex-col gap-3">
@@ -770,10 +725,10 @@ export default function HomePage() {
                     <h3 className="font-semibold text-foreground text-sm sm:text-base group-hover:text-emerald-600 transition-colors">
                       {cat.name}
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">{cat.count} cursos</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{cat.count} {t('common.cursos_disponibles')}</p>
                   </div>
                   <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-auto">
-                    Explorar
+                    {t('common.explorar')}
                     <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </CardContent>
@@ -796,21 +751,21 @@ export default function HomePage() {
                 <div className="flex items-center gap-2 mb-3">
                   <Flame className="size-6" />
                   <span className="text-sm font-semibold uppercase tracking-widest opacity-90">
-                    Verano 2025
+                    {t('seasons.verano_label')}
                   </span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                  Aproveitá las vacaciones
+                  {t('seasons.verano_title')}
                 </h3>
                 <p className="text-sm opacity-90 max-w-sm leading-relaxed">
-                  Cursos intensivos de enero y febrero. Aprobá materias pendientes o adelantate con el cuatrimestre.
+                  {t('seasons.verano_desc')}
                 </p>
               </div>
               <Button
                 variant="secondary"
                 className="relative z-10 w-fit bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border-0 rounded-xl mt-4"
               >
-                Ver cursos de verano
+                {t('seasons.verano_cta')}
                 <ArrowRight className="size-4 ml-2" />
               </Button>
             </div>
@@ -823,21 +778,21 @@ export default function HomePage() {
                 <div className="flex items-center gap-2 mb-3">
                   <Snowflake className="size-6" />
                   <span className="text-sm font-semibold uppercase tracking-widest opacity-90">
-                    Invierno 2025
+                    {t('seasons.invierno_label')}
                   </span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                  Mantené tu ritmo
+                  {t('seasons.invierno_title')}
                 </h3>
                 <p className="text-sm opacity-90 max-w-sm leading-relaxed">
-                  Durante el receso de invierno, profundizá en materias difíciles con cursos de alta intensidad.
+                  {t('seasons.invierno_desc')}
                 </p>
               </div>
               <Button
                 variant="secondary"
                 className="relative z-10 w-fit bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border-0 rounded-xl mt-4"
               >
-                Ver cursos de invierno
+                {t('seasons.invierno_cta')}
                 <ArrowRight className="size-4 ml-2" />
               </Button>
             </div>
@@ -850,29 +805,29 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="como-funciona" dark>
         <SectionHeading
-          badge="Proceso simple"
-          title="¿Cómo funciona?"
-          subtitle="Empezá a aprender en 3 simples pasos. Sin complicaciones."
+          badge={t('how_it_works.badge')}
+          title={t('how_it_works.title')}
+          subtitle={t('how_it_works.subtitle')}
         />
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {[
             {
               step: '01',
               icon: <Search className="size-7" />,
-              title: 'Buscá tu curso',
-              desc: 'Explorá nuestro catálogo y filtrá por materia, modalidad, ubicación y fecha.',
+              title: t('how_it_works.s1_title'),
+              desc: t('how_it_works.s1_desc'),
             },
             {
               step: '02',
               icon: <BarChart3 className="size-7" />,
-              title: 'Compará opciones',
-              desc: 'Revisá profesores, opiniones de alumnos, programas y precios para elegir el mejor.',
+              title: t('how_it_works.s2_title'),
+              desc: t('how_it_works.s2_desc'),
             },
             {
               step: '03',
               icon: <CheckCircle2 className="size-7" />,
-              title: 'Inscribite y empezá',
-              desc: 'Completá tu inscripción en minutos y empezá a aprender de inmediato.',
+              title: t('how_it_works.s3_title'),
+              desc: t('how_it_works.s3_desc'),
             },
           ].map((item, i) => (
             <FadeIn key={item.step} delay={i * 0.1}>
@@ -881,7 +836,7 @@ export default function HomePage() {
                   {item.icon}
                 </div>
                 <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-2 block">
-                  Paso {item.step}
+                  {t('how_it_works.step_label')} {item.step}
                 </span>
                 <h3 className="text-xl font-semibold text-foreground mb-3">{item.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
@@ -898,9 +853,9 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="profesores">
         <SectionHeading
-          badge="Docentes"
-          title="Profesores destacados"
-          subtitle="Aprendé con los mejores profesionales de cada área, seleccionados por su experiencia y dedicación."
+          badge={t('professors_section.badge')}
+          title={t('professors_section.title')}
+          subtitle={t('professors_section.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {profesores.map((prof, i) => (
@@ -956,9 +911,9 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="catalogo" dark>
         <SectionHeading
-          badge="Recursos"
-          title="Catálogo Digital"
-          subtitle="Accedé a material de estudio, libros y guías preparadas por nuestros profesores."
+          badge={t('catalog.badge')}
+          title={t('catalog.title')}
+          subtitle={t('catalog.subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {catalogBooks.map((book, i) => (
@@ -989,7 +944,7 @@ export default function HomePage() {
                   <p className="text-xs text-muted-foreground">{book.author}</p>
                   {book.navigateTo && (
                     <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 pt-2 border-t border-border/50">
-                      Ver material
+                      {t('common.ver_material')}
                       <ArrowRight className="size-3 group-hover:translate-x-1 transition-transform" />
                     </div>
                   )}
@@ -1005,30 +960,30 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="testimonios">
         <SectionHeading
-          badge="Testimonios"
-          title="Lo que dicen nuestros alumnos"
-          subtitle="Miles de estudiantes ya confían en IntensivaAR para alcanzar sus metas académicas."
+          badge={t('testimonials.badge')}
+          title={t('testimonials.title')}
+          subtitle={t('testimonials.subtitle')}
         />
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {testimonials.map((t, i) => (
-            <FadeIn key={t.name} delay={i * 0.1}>
+          {testimonials.map((tItem, i) => (
+            <FadeIn key={tItem.name} delay={i * 0.1}>
               <Card className="h-full hover:shadow-lg transition-shadow duration-300">
                 <CardContent className="p-6 flex flex-col gap-4">
                   <div className="flex items-center gap-1 mb-1">
-                    <Stars count={t.rating} />
+                    <Stars count={tItem.rating} />
                   </div>
                   <p className="text-sm text-foreground leading-relaxed flex-1 italic">
-                    &ldquo;{t.quote}&rdquo;
+                    &ldquo;{tItem.quote}&rdquo;
                   </p>
                   <div className="flex items-center gap-3 pt-3 border-t border-border/60">
                     <Avatar className="size-9">
                       <AvatarFallback className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-semibold text-xs">
-                        {t.initials}
+                        {tItem.initials}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.course}</p>
+                      <p className="text-sm font-semibold text-foreground">{tItem.name}</p>
+                      <p className="text-xs text-muted-foreground">{tItem.course}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -1043,55 +998,55 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="precios" dark>
         <SectionHeading
-          badge="Planes"
-          title="Planes y precios"
-          subtitle="Elegí el plan que mejor se adapte a tus necesidades. Sin costos ocultos."
+          badge={t('pricing.badge')}
+          title={t('pricing.title')}
+          subtitle={t('pricing.subtitle')}
         />
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {[
             {
-              name: 'Básico',
-              price: 'Gratis',
+              name: t('pricing.basico_name'),
+              price: t('pricing.basico_price'),
               period: '',
-              desc: 'Ideal para explorar la plataforma',
+              desc: t('pricing.basico_desc'),
               features: [
-                'Explorar todos los cursos',
-                'Ver perfiles de profesores',
-                'Leer opiniones de alumnos',
-                'Acceso al catálogo digital',
+                t('pricing.basico_f1'),
+                t('pricing.basico_f2'),
+                t('pricing.basico_f3'),
+                t('pricing.basico_f4'),
               ],
-              cta: 'Comenzar gratis',
+              cta: t('pricing.basico_cta'),
               featured: false,
             },
             {
-              name: 'Premium',
-              price: '$9.900',
-              period: '/mes',
-              desc: 'La experiencia completa de aprendizaje',
+              name: t('pricing.premium_name'),
+              price: t('pricing.premium_price'),
+              period: t('pricing.premium_period'),
+              desc: t('pricing.premium_desc'),
               features: [
-                'Todo lo del plan Básico',
-                'Acceso a todos los cursos',
-                'Clases en vivo ilimitadas',
-                'Certificación incluida',
-                'Material de estudio descargable',
-                'Soporte prioritario',
+                t('pricing.premium_f1'),
+                t('pricing.premium_f2'),
+                t('pricing.premium_f3'),
+                t('pricing.premium_f4'),
+                t('pricing.premium_f5'),
+                t('pricing.premium_f6'),
               ],
-              cta: 'Comenzar Premium',
+              cta: t('pricing.premium_cta'),
               featured: true,
             },
             {
-              name: 'Profesores',
-              price: 'Contactanos',
+              name: t('pricing.teachers_name'),
+              price: t('pricing.teachers_price'),
               period: '',
-              desc: 'Publicá tus cursos en la plataforma',
+              desc: t('pricing.teachers_desc'),
               features: [
-                'Crear cursos ilimitados',
-                'Gestionar alumnos',
-                'Estadísticas y analytics',
-                'Perfil verificado',
-                'Soporte dedicado',
+                t('pricing.teachers_f1'),
+                t('pricing.teachers_f2'),
+                t('pricing.teachers_f3'),
+                t('pricing.teachers_f4'),
+                t('pricing.teachers_f5'),
               ],
-              cta: 'Soy profesor',
+              cta: t('pricing.teachers_cta'),
               featured: false,
             },
           ].map((plan, i) => (
@@ -1106,7 +1061,7 @@ export default function HomePage() {
                 {plan.featured && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <Badge className="bg-emerald-600 text-white border-0 px-4 py-1 text-xs font-semibold shadow-sm">
-                      Más popular
+                      {t('pricing.popular')}
                     </Badge>
                   </div>
                 )}
@@ -1152,9 +1107,9 @@ export default function HomePage() {
          ─────────────────────────────────────────────── */}
       <SectionWrap id="faq">
         <SectionHeading
-          badge="FAQ"
-          title="Preguntas frecuentes"
-          subtitle="Encontrá respuestas a las consultas más comunes sobre nuestros cursos y la plataforma."
+          badge={t('faq.badge')}
+          title={t('faq.title')}
+          subtitle={t('faq.subtitle')}
         />
         <div className="max-w-3xl mx-auto">
           <FadeIn>
@@ -1190,24 +1145,24 @@ export default function HomePage() {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/5 rounded-full" />
               <div className="relative z-10 max-w-xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
-                  Empezá hoy mismo
+                  {t('newsletter.title')}
                 </h2>
                 <p className="text-emerald-100 text-base sm:text-lg mb-8 leading-relaxed">
-                  Suscribite a nuestro newsletter y recibí novedades, descuentos exclusivos y tips de estudio directo en tu email.
+                  {t('newsletter.subtitle')}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                   <Input
                     type="email"
-                    placeholder="tu@email.com"
+                    placeholder={t('newsletter.placeholder')}
                     className="h-12 bg-white/20 backdrop-blur-sm border-white/30 text-white placeholder:text-emerald-200/60 rounded-xl focus-visible:ring-2 focus-visible:ring-white/50"
                   />
                   <Button className="h-12 bg-white text-emerald-700 hover:bg-emerald-50 font-semibold rounded-xl px-6 shadow-lg shadow-black/10 shrink-0 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                    Suscribirme
+                    {t('newsletter.cta')}
                     <ArrowRight className="size-4 ml-2" />
                   </Button>
                 </div>
                 <p className="text-xs text-emerald-200/60 mt-4">
-                  Sin spam. Cancelá cuando quieras.
+                  {t('newsletter.no_spam')}
                 </p>
               </div>
             </div>
@@ -1232,7 +1187,7 @@ export default function HomePage() {
                 </span>
               </div>
               <p className="text-sm leading-relaxed mb-5 max-w-xs">
-                La plataforma líder en clases intensivas de Argentina. Aprendé más rápido con los mejores profesores.
+                {t('landing_footer.desc')}
               </p>
               <div className="flex items-center gap-2">
                 {[
@@ -1254,14 +1209,14 @@ export default function HomePage() {
             {/* Producto */}
             <div>
               <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
-                Producto
+                {t('landing_footer.producto')}
               </h4>
               <ul className="space-y-2.5">
                 {[
-                  { label: 'Cursos', href: '#cursos' },
-                  { label: 'Explorar', href: '/explorar', nav: true },
-                  { label: 'Materias', href: '/materias', nav: true },
-                  { label: 'Catálogo', href: '#catalogo' },
+                  { label: t('common.cursos'), href: '#cursos' },
+                  { label: t('common.explorar'), href: '/explorar', nav: true },
+                  { label: t('common.materias'), href: '/materias', nav: true },
+                  { label: t('common.catalogo'), href: '#catalogo' },
                 ].map((link) => (
                   <li key={link.label}>
                     <button
@@ -1278,10 +1233,10 @@ export default function HomePage() {
             {/* Empresa */}
             <div>
               <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
-                Empresa
+                {t('landing_footer.empresa')}
               </h4>
               <ul className="space-y-2.5">
-                {['Sobre nosotros', 'Contacto', 'Blog', 'Trabajá con nosotros'].map((item) => (
+                {[t('landing_footer.sobre_nosotros'), t('landing_footer.contacto_link'), t('landing_footer.blog'), t('landing_footer.trabaja_con_nosotros')].map((item) => (
                   <li key={item}>
                     <button className="text-sm text-gray-400 hover:text-white transition-colors">
                       {item}
@@ -1294,10 +1249,10 @@ export default function HomePage() {
             {/* Legal */}
             <div>
               <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
-                Legal
+                {t('landing_footer.legal')}
               </h4>
               <ul className="space-y-2.5">
-                {['Términos y condiciones', 'Política de privacidad', 'Preguntas frecuentes'].map(
+                {[t('landing_footer.terminos'), t('landing_footer.privacidad'), t('landing_footer.preguntas_frecuentes')].map(
                   (item) => (
                     <li key={item}>
                       <button className="text-sm text-gray-400 hover:text-white transition-colors">
@@ -1312,7 +1267,7 @@ export default function HomePage() {
             {/* Contacto */}
             <div className="col-span-2 md:col-span-1">
               <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">
-                Contacto
+                {t('landing_footer.contacto')}
               </h4>
               <ul className="space-y-2.5">
                 <li className="flex items-center gap-2 text-sm text-gray-400">
@@ -1336,12 +1291,12 @@ export default function HomePage() {
         <div className="border-t border-white/10">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-gray-500">
-              © {new Date().getFullYear()} IntensivaAR. Todos los derechos reservados.
+              &copy; {new Date().getFullYear()} IntensivaAR. {t('common.todos_derechos')}
             </p>
             <div className="flex items-center gap-1.5 text-xs text-gray-500">
-              <span>Hecho con</span>
+              <span>{t('common.hecho_con')}</span>
               <Heart className="size-3 text-emerald-500 fill-emerald-500" />
-              <span>en Argentina</span>
+              <span>{t('common.en_argentina')}</span>
             </div>
           </div>
         </div>

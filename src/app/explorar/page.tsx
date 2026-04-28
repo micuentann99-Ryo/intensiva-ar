@@ -25,50 +25,53 @@ import {
 } from 'lucide-react';
 import SiteNavbar from '@/components/site-navbar';
 import SiteFooter from '@/components/site-footer';
-
-const categories = [
-  {
-    id: 'ciencias-exactas',
-    title: 'Ciencias Exactas',
-    icon: Calculator,
-    iconBg: 'bg-emerald-600',
-    iconColor: 'text-white',
-    subcategories: [
-      { name: 'Matemáticas', href: '/materias', icon: Calculator },
-      { name: 'Física', href: '/materias', icon: Atom },
-      { name: 'Química', href: '/materias', icon: FlaskConical },
-      { name: 'Programación', href: '/materias', icon: Code },
-    ],
-  },
-  {
-    id: 'ciencias-sociales',
-    title: 'Ciencias Sociales',
-    icon: Globe,
-    iconBg: 'bg-teal-600',
-    iconColor: 'text-white',
-    subcategories: [
-      { name: 'Historia', href: '/materias/historia', icon: Landmark },
-      { name: 'Geografía', href: '/materias', icon: Globe },
-      { name: 'Economía', href: '/materias', icon: BookOpen },
-      { name: 'Ciencias Políticas', href: '/materias', icon: GraduationCap },
-    ],
-  },
-  {
-    id: 'idiomas-humanidades',
-    title: 'Idiomas y Humanidades',
-    icon: Languages,
-    iconBg: 'bg-emerald-700',
-    iconColor: 'text-white',
-    subcategories: [
-      { name: 'Inglés', href: '/materias', icon: Languages },
-      { name: 'Literatura', href: '/materias', icon: PenTool },
-      { name: 'Filosofía', href: '/materias', icon: BookHeart },
-      { name: 'Arte y Cultura', href: '/materias', icon: Library },
-    ],
-  },
-];
+import { useT } from '@/i18n/context';
 
 export default function ExplorarPage() {
+  const t = useT();
+
+  const categories = [
+    {
+      id: 'ciencias-exactas',
+      title: t('explorar.ciencias_exactas'),
+      icon: Calculator,
+      iconBg: 'bg-emerald-600',
+      iconColor: 'text-white',
+      subcategories: [
+        { name: t('categories.matematicas'), href: '/materias', icon: Calculator },
+        { name: t('explorar.fisica'), href: '/materias', icon: Atom },
+        { name: t('explorar.quimica'), href: '/materias', icon: FlaskConical },
+        { name: t('categories.programacion'), href: '/materias', icon: Code },
+      ],
+    },
+    {
+      id: 'ciencias-sociales',
+      title: t('explorar.ciencias_sociales'),
+      icon: Globe,
+      iconBg: 'bg-teal-600',
+      iconColor: 'text-white',
+      subcategories: [
+        { name: t('common.historia'), href: '/materias/historia', icon: Landmark },
+        { name: t('explorar.geografia'), href: '/materias', icon: Globe },
+        { name: t('explorar.economia'), href: '/materias', icon: BookOpen },
+        { name: t('explorar.ciencias_politicas'), href: '/materias', icon: GraduationCap },
+      ],
+    },
+    {
+      id: 'idiomas-humanidades',
+      title: t('explorar.idiomas_humanidades'),
+      icon: Languages,
+      iconBg: 'bg-emerald-700',
+      iconColor: 'text-white',
+      subcategories: [
+        { name: t('common.ingles'), href: '/materias', icon: Languages },
+        { name: t('explorar.literatura'), href: '/materias', icon: PenTool },
+        { name: t('explorar.filosofia'), href: '/materias', icon: BookHeart },
+        { name: t('explorar.arte_cultura'), href: '/materias', icon: Library },
+      ],
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SiteNavbar />
@@ -82,10 +85,10 @@ export default function ExplorarPage() {
                 href="/"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                Inicio
+                {t('common.inicio')}
               </Link>
               <ChevronRight className="size-3.5 text-muted-foreground" />
-              <span className="text-emerald-700 dark:text-emerald-400 font-medium">Explorar</span>
+              <span className="text-emerald-700 dark:text-emerald-400 font-medium">{t('explorar.title')}</span>
             </nav>
           </div>
         </div>
@@ -99,10 +102,10 @@ export default function ExplorarPage() {
               transition={{ duration: 0.5 }}
             >
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                Explorar
+                {t('explorar.title')}
               </h1>
               <p className="mt-3 text-muted-foreground text-lg max-w-2xl">
-                Encontrá la materia ideal para tu aprendizaje. Explorá nuestras categorías y descubrí todos los cursos disponibles.
+                {t('explorar.subtitle')}
               </p>
             </motion.div>
           </div>
