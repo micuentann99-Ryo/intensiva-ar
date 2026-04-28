@@ -167,11 +167,15 @@ export default function HomePage() {
   const t = useT();
   const router = useRouter();
   const { isDark, toggle } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const megaRef = useRef<HTMLDivElement>(null);
   const megaTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* mount guard — prevents hydration mismatch from theme/locale */
+  useEffect(() => { setMounted(true); }, []);
 
   /* scroll listener */
   useEffect(() => {
@@ -451,19 +455,19 @@ export default function HomePage() {
               className="flex items-center justify-center size-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
               aria-label="Toggle theme"
             >
-              {isDark ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
+              {mounted && (isDark ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />)}
             </button>
 
             <button
               className="hidden md:inline-flex px-3.5 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              onClick={() => {}}
+              onClick={() => router.push('/login')}
             >
               {t('landing_nav.iniciar_sesion')}
             </button>
 
             <Button
               className="hidden sm:inline-flex bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-2.5 text-sm font-semibold shadow-sm shadow-emerald-600/20 hover:shadow-emerald-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
-              onClick={() => {}}
+              onClick={() => router.push('/registro')}
             >
               {t('landing_nav.empieza_ahora')}
             </Button>
@@ -509,9 +513,15 @@ export default function HomePage() {
                     </button>
                   ))}
                   <div className="border-t border-border my-3" />
+                  <button
+                    onClick={() => { setMobileOpen(false); router.push('/login'); }}
+                    className="w-full px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted/60 rounded-lg transition-colors text-left"
+                  >
+                    {t('landing_nav.iniciar_sesion')}
+                  </button>
                   <Button
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg mt-1"
-                    onClick={() => {}}
+                    onClick={() => { setMobileOpen(false); router.push('/registro'); }}
                   >
                     {t('landing_nav.empieza_ahora')}
                   </Button>
@@ -561,6 +571,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-7 py-6 text-base font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/35 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  onClick={() => router.push('/registro')}
                 >
                   {t('hero.cta_primary')}
                   <ArrowRight className="size-4 ml-2" />

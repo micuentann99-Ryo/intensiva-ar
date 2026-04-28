@@ -1,10 +1,25 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useLocale, useSetLocale } from '@/i18n/context';
 
 export default function LanguageToggle({ className = '' }: { className?: string }) {
   const locale = useLocale();
   const setLocale = useSetLocale();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) {
+    return (
+      <button
+        className={`flex items-center justify-center size-9 rounded-lg text-xs font-bold border border-border bg-background text-muted-foreground ${className}`}
+        aria-label="Language toggle"
+      >
+        ES
+      </button>
+    );
+  }
 
   return (
     <button

@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useState,
+  useEffect,
   useCallback,
   useMemo,
   type ReactNode,
@@ -49,7 +50,14 @@ function readInitialLocale(): Locale {
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(readInitialLocale);
+  const [locale, setLocaleState] = useState<Locale>('es');
+
+  // On mount, read the saved locale from localStorage
+  // This avoids hydration mismatch since SSR always renders 'es'
+  useEffect(() => {
+    const saved = readInitialLocale();
+    if (saved !== 'es') setLocaleState(saved);
+  }, []);
 
   const setLocale = useCallback((newLocale: Locale) => {
     setLocaleState(newLocale);
