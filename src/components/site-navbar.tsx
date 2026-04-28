@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -17,18 +17,26 @@ import {
   Search,
   Sun,
   Moon,
+  LogOut,
+  User,
+  Shield,
+  ChevronDown,
 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n/context';
+import { useAuth } from '@/lib/auth-context';
 import LanguageToggle from '@/components/language-toggle';
 
 export default function SiteNavbar() {
   const t = useT();
   const pathname = usePathname();
+  const router = useRouter();
   const { isDark, toggle: toggleTheme } = useTheme();
+  const { user, loading, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const navLinks = [
     { label: t('common.cursos'), href: '/' },
@@ -45,14 +53,38 @@ export default function SiteNavbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const handle = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-user-menu]')) setUserMenuOpen(false);
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [userMenuOpen]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim().toLowerCase().includes('historia')) {
-      window.location.href = '/materias/historia';
+      router.push('/materias/historia');
     } else if (searchQuery.trim()) {
-      window.location.href = '/materias';
+      router.push('/materias');
     }
   };
+
+  const handleLogout = async () => {
+    await logout();
+    setUserMenuOpen(false);
+  };
+
+  const roleBadgeColor = user?.role === 'ADMIN'
+    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
+    : user?.role === 'PROFESSOR'
+    ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+    : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300';
+
+  const roleLabel = user?.role === 'ADMIN' ? 'Admin' : user?.role === 'PROFESSOR' ? t('navbar.profesor') : t('navbar.alumno');
 
   return (
     <header
@@ -81,7 +113,6 @@ export default function SiteNavbar() {
 
           {/* Desktop: Search Bar + Theme Toggle + Nav Links */}
           <div className="hidden lg:flex items-center gap-3 flex-1 ml-6 max-w-2xl">
-            {/* Search Bar */}
             <form onSubmit={handleSearch} className="relative flex-1 max-w-xs">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
               <input
@@ -95,7 +126,6 @@ export default function SiteNavbar() {
 
             <LanguageToggle />
 
-            {/* Theme Toggle: Sun / Moon */}
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
@@ -109,7 +139,6 @@ export default function SiteNavbar() {
               )}
             </button>
 
-            {/* Nav Links */}
             <nav className="flex items-center gap-1">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
@@ -132,15 +161,74 @@ export default function SiteNavbar() {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="outline" size="sm" className="text-sm">
-              {t('navbar.sos_profesor')}
-            </Button>
-            <Button variant="ghost" size="sm" className="text-sm">
-              {t('navbar.ingresa')}
-            </Button>
-            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-              {t('navbar.registrate')}
-            </Button>
+            {!loading && user ? (
+              <div className="relative" data-user-menu>
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border hover:bg-muted/60 transition-colors"
+                >
+                  <div className="flex items-center justify-center size-7 rounded-full bg-emerald-600 text-white text-xs font-bold">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
+                    {user.name}
+                  </span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${roleBadgeColor}`}>
+                    {roleLabel}
+                  </span>
+                  <ChevronDown className={`size-3.5 text-muted-foreground transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {userMenuOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-black border border-border rounded-xl shadow-lg py-1 z-50">
+                    {user.role === 'ADMIN' && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-colors"
+                      >
+                        <Shield className="size-4 text-emerald-600" />
+                        {t('navbar.admin_panel')}
+                      </Link>
+                    )}
+                    <Link
+                      href="/materias/historia/historia-universal/actividades"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-colors"
+                    >
+                      <User className="size-4 text-muted-foreground" />
+                      {t('navbar.mi_perfil')}
+                    </Link>
+                    <div className="border-t border-border my-1" />
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors w-full text-left"
+                    >
+                      <LogOut className="size-4" />
+                      {t('navbar.cerrar_sesion')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link href="/registro/profesor">
+                  <Button variant="outline" size="sm" className="text-sm">
+                    {t('navbar.sos_profesor')}
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-sm">
+                    {t('navbar.ingresa')}
+                  </Button>
+                </Link>
+                <Link href="/registro">
+                  <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                    {t('navbar.registrate')}
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile: Theme Toggle + Language + Menu */}
@@ -174,7 +262,6 @@ export default function SiteNavbar() {
                   </SheetTitle>
                 </SheetHeader>
 
-                {/* Mobile Search */}
                 <form onSubmit={handleSearch} className="mt-4 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
                   <input
@@ -193,6 +280,7 @@ export default function SiteNavbar() {
                       <Link
                         key={link.label}
                         href={link.href}
+                        onClick={() => setMobileOpen(false)}
                         className={`px-3 py-3 text-sm font-medium transition-colors rounded-md hover:bg-muted/60 text-left ${
                           isActive
                             ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50'
@@ -205,9 +293,55 @@ export default function SiteNavbar() {
                   })}
                 </nav>
                 <div className="flex flex-col gap-2 mt-6 pt-6 border-t">
-                  <Button variant="outline" className="w-full">{t('navbar.sos_profesor')}</Button>
-                  <Button variant="ghost" className="w-full">{t('navbar.ingresa')}</Button>
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">{t('navbar.registrate')}</Button>
+                  {!loading && user ? (
+                    <>
+                      <div className="flex items-center gap-3 px-3 py-2">
+                        <div className="flex items-center justify-center size-9 rounded-full bg-emerald-600 text-white text-sm font-bold">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{user.name}</p>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${roleBadgeColor}`}>
+                            {roleLabel}
+                          </span>
+                        </div>
+                      </div>
+                      {user.role === 'ADMIN' && (
+                        <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                          <Button variant="outline" className="w-full gap-2">
+                            <Shield className="size-4" />
+                            {t('navbar.admin_panel')}
+                          </Button>
+                        </Link>
+                      )}
+                      <Link href="/materias/historia/historia-universal/actividades" onClick={() => setMobileOpen(false)}>
+                        <Button variant="ghost" className="w-full gap-2">
+                          <User className="size-4" />
+                          {t('navbar.mi_perfil')}
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        className="w-full text-red-600 dark:text-red-400 gap-2"
+                        onClick={() => { handleLogout(); setMobileOpen(false); }}
+                      >
+                        <LogOut className="size-4" />
+                        {t('navbar.cerrar_sesion')}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/registro/profesor" onClick={() => setMobileOpen(false)}>
+                        <Button variant="outline" className="w-full">{t('navbar.sos_profesor')}</Button>
+                      </Link>
+                      <Link href="/login" onClick={() => setMobileOpen(false)}>
+                        <Button variant="ghost" className="w-full">{t('navbar.ingresa')}</Button>
+                      </Link>
+                      <Link href="/registro" onClick={() => setMobileOpen(false)}>
+                        <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">{t('navbar.registrate')}</Button>
+                      </Link>
+                    </>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>

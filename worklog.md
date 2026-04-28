@@ -187,6 +187,62 @@ Cada período tiene: descripción (200+ palabras), 8-9 temas clave, actividad pr
 
 ---
 
+## Task 10 — Sistema de Autenticación, Roles, Admin Dashboard, Actividades y Bug Reports
+
+**Estado**: Completado
+
+### Base de Datos (Prisma Schema actualizado)
+- **Modelos**: User, Session, Activity, ActivitySubmission, ActivityLog, BugReport
+- **Roles**: STUDENT, PROFESSOR, ADMIN
+- **Profesor**: requiere aprobación del admin (PENDING → APPROVED/REJECTED)
+- **Seed**: Admin creado (admin@intensiva.ar) + 10 actividades de Historia Universal
+- **Contraseñas**: bcryptjs con 12 rounds de salt
+
+### Sistema de Autenticación
+- **Session-based**: cookie httpOnly con token aleatorio, expira en 7 días
+- **API Routes**: /api/auth/login, /api/auth/register, /api/auth/logout, /api/auth/me
+- **Auth Context**: `src/lib/auth-context.tsx` — useAuth() con login, register, logout, refreshUser
+- **Server helpers**: `src/lib/auth-server.ts` — getSessionUser(), userFullData()
+
+### Páginas creadas
+- `/login` — Login con email/contraseña, maneja estado pending de profesores
+- `/registro` — Registro de alumnos (nombre, email, pass, universidad, año)
+- `/registro/profesor` — Registro de profesores (especialización, bio, teléfono)
+- `/admin` — Dashboard con 6 tarjetas de estadísticas + feed de actividad reciente
+- `/admin/usuarios` — Tabla de todos los usuarios con filtro por rol
+- `/admin/profesores` — Gestión de solicitudes de profesores (aprobar/rechazar)
+- `/admin/actividades` — Corrección de actividades (nota 1-10 + feedback)
+- `/admin/logs` — Bitácora de auditoría con paginación y filtros
+- `/admin/reportes` — Gestión de reportes de problemas
+
+### Sistema de Actividades
+- `/materias/historia/historia-universal/actividades` — Vista de actividades agrupadas por período
+- Alumnos pueden enviar respuestas, ver notas y feedback
+- Profesores y admin ven todas las respuestas de cada actividad
+
+### Botón "Reportar un problema"
+- Componente flotante (FAB) en esquina inferior derecha de TODAS las páginas
+- Formulario: asunto, descripción, URL auto-completada
+- Reportes visibles en admin panel
+
+### Reorganización de archivos
+- `/materias/historia` → Índice de cursos de Historia (lista cursos disponibles)
+- `/materias/historia/historia-universal` → Timeline con 10 períodos (contenido original)
+- `/materias/historia/historia-universal/actividades` → Actividades del curso
+
+### Navbar actualizado
+- Botones "Ingresa" → `/login`, "Regístrate" → `/registro`
+- "¿Sos profesor?" → `/registro/profesor`
+- Usuario logueado: muestra avatar, nombre, rol badge, menú desplegable
+- Menú incluye: Panel Admin (solo admin), Mi perfil, Cerrar sesión
+- Mobile: mismo comportamiento en Sheet
+
+### Credenciales Admin
+- Email: admin@intensiva.ar
+- Contraseña: Admin123456788!
+
+---
+
 ## Notas Importantes
 
 - Todos los textos están en **español argentino** (vos, sabés, etc.)
