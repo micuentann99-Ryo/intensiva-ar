@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificado de Aprobacion - IntensivaAR</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: 1100px 780px;
+    margin: 0;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 1100px;
+    min-height: 780px;
+    background: #f5f0e8;
+  }
+
+  @media screen {
+    html {
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #f5f0e8;
+    }
+    body {
+      transform-origin: top center;
+      scale: min(1, calc(100vh / 780));
+      margin: 0 auto;
+    }
+  }
+
+  .certificate {
+    position: relative;
+    width: 1100px;
+    height: 780px;
+    overflow: hidden;
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    background: #fdfbf5;
+  }
+
+  /* Landscape background */
+  .bg-landscape {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.12;
+    z-index: 0;
+  }
+
+  .bg-landscape img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Decorative double border */
+  .border-outer {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    border: 2.5px solid #8B7355;
+    z-index: 1;
+  }
+
+  .border-inner {
+    position: absolute;
+    top: 26px;
+    left: 26px;
+    right: 26px;
+    bottom: 26px;
+    border: 1px solid #C4A882;
+    z-index: 1;
+  }
+
+  /* Corner ornaments */
+  .corner {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    z-index: 2;
+  }
+
+  .corner svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .corner-tl { top: 22px; left: 22px; }
+  .corner-tr { top: 22px; right: 22px; transform: scaleX(-1); }
+  .corner-bl { bottom: 22px; left: 22px; transform: scaleY(-1); }
+  .corner-br { bottom: 22px; right: 22px; transform: scale(-1, -1); }
+
+  /* Content */
+  .content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 55px 80px 40px;
+  }
+
+  /* Top branding */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .brand-logo {
+    font-family: 'Cinzel', serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #5C4A32;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .brand-line {
+    width: 60px;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, #8B7355, transparent);
+  }
+
+  .brand-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    color: #9B8B70;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  /* Title */
+  .cert-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 42px;
+    color: #3D2E1E;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 4px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  .cert-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .cert-divider .line {
+    width: 100px;
+    height: 1px;
+    background: #C4A882;
+  }
+
+  .cert-divider .diamond {
+    width: 8px;
+    height: 8px;
+    background: #8B7355;
+    transform: rotate(45deg);
+  }
+
+  /* Course name */
+  .course-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #6B5744;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  /* Body text */
+  .cert-body {
+    text-align: center;
+    max-width: 720px;
+    line-height: 1.9;
+  }
+
+  .cert-body .intro {
+    font-size: 17px;
+    color: #5A4A3A;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .cert-body .student-name {
+    font-family: 'Cinzel', serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #3D2E1E;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid #C4A882;
+    display: inline-block;
+    padding: 0 20px 6px;
+  }
+
+  .cert-body .description {
+    font-size: 16px;
+    color: #6B5744;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.7;
+  }
+
+  /* Bottom section */
+  .bottom-section {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: auto;
+    padding: 0 20px;
+  }
+
+  /* Seal */
+  .seal-container {
+    position: relative;
+    width: 130px;
+    height: 130px;
+  }
+
+  .seal-container img {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    opacity: 0.85;
+  }
+
+  .seal-label {
+    text-align: center;
+    font-size: 10px;
+    color: #9B8B70;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  /* Signature section */
+  .signature-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 220px;
+  }
+
+  .signature-image {
+    height: 60px;
+    margin-bottom: 4px;
+  }
+
+  .signature-image img {
+    height: 60px;
+    width: auto;
+  }
+
+  .signature-line {
+    width: 220px;
+    height: 1px;
+    background: #5A4A3A;
+    margin-bottom: 8px;
+  }
+
+  .signature-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3D2E1E;
+    letter-spacing: 1.5px;
+    text-align: center;
+  }
+
+  .signature-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    color: #8B7355;
+    font-style: italic;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  /* Date section */
+  .date-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 180px;
+  }
+
+  .date-value {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #3D2E1E;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .date-line {
+    width: 180px;
+    height: 1px;
+    background: #5A4A3A;
+    margin-bottom: 6px;
+  }
+
+  .date-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    color: #8B7355;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* Subtle texture overlay */
+  .texture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(139, 115, 85, 0.01) 3px,
+      rgba(139, 115, 85, 0.01) 4px
+    );
+  }
+
+  /* Official seal watermark */
+  .watermark {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    width: 160px;
+    height: 160px;
+    opacity: 0.06;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+<div class="certificate">
+  <!-- Background landscape -->
+  <div class="bg-landscape">
+    <img src="../sellos/paisaje_historia_humahuaca.png" alt="Quebrada de Humahuaca">
+  </div>
+
+  <!-- Texture -->
+  <div class="texture-overlay"></div>
+
+  <!-- Decorative borders -->
+  <div class="border-outer"></div>
+  <div class="border-inner"></div>
+
+  <!-- Corner ornaments -->
+  <div class="corner corner-tl">
+    <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 45 L5 12 Q5 5 12 5 L45 5" stroke="#8B7355" stroke-width="1.5" fill="none"/>
+      <path d="M10 40 L10 16 Q10 10 16 10 L40 10" stroke="#C4A882" stroke-width="0.8" fill="none"/>
+      <circle cx="5" cy="5" r="3" fill="#8B7355" opacity="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-tr">
+    <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 45 L5 12 Q5 5 12 5 L45 5" stroke="#8B7355" stroke-width="1.5" fill="none"/>
+      <path d="M10 40 L10 16 Q10 10 16 10 L40 10" stroke="#C4A882" stroke-width="0.8" fill="none"/>
+      <circle cx="5" cy="5" r="3" fill="#8B7355" opacity="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-bl">
+    <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 45 L5 12 Q5 5 12 5 L45 5" stroke="#8B7355" stroke-width="1.5" fill="none"/>
+      <path d="M10 40 L10 16 Q10 10 16 10 L40 10" stroke="#C4A882" stroke-width="0.8" fill="none"/>
+      <circle cx="5" cy="5" r="3" fill="#8B7355" opacity="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-br">
+    <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 45 L5 12 Q5 5 12 5 L45 5" stroke="#8B7355" stroke-width="1.5" fill="none"/>
+      <path d="M10 40 L10 16 Q10 10 16 10 L40 10" stroke="#C4A882" stroke-width="0.8" fill="none"/>
+      <circle cx="5" cy="5" r="3" fill="#8B7355" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-line"></div>
+      <div class="brand-logo">IntensivaAR</div>
+      <div class="brand-line"></div>
+    </div>
+    <div class="brand-sub">Educacion Intensiva Argentina</div>
+
+    <!-- Title -->
+    <div class="cert-title">Certificado de Aprobacion</div>
+
+    <div class="cert-divider">
+      <div class="line"></div>
+      <div class="diamond"></div>
+      <div class="line"></div>
+    </div>
+
+    <!-- Course -->
+    <div class="course-name">Curso de Historia</div>
+
+    <!-- Body -->
+    <div class="cert-body">
+      <p class="intro">Se certifica que</p>
+      <div class="student-name">Melany Ojeda</div>
+      <p class="description">
+        ha aprobado satisfactoriamente el Curso Intensivo de Historia,
+        cumpliendo con los requisitos academicos establecidos por el programa
+        de IntensivaAR, demostrando dedicacion, compromiso y excelencia
+        en su desempeno a lo largo de todas las unidades del curso.
+      </p>
+    </div>
+
+    <!-- Bottom section: Seal, Date, Signature -->
+    <div class="bottom-section">
+      <!-- Seal stamp -->
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="seal-container">
+          <img src="../sellos/sello_ceibo_intensivaar.png" alt="Sello IntensivaAR">
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="date-section">
+        <div class="date-value">29 de abril de 2025</div>
+        <div class="date-line"></div>
+        <div class="date-label">Fecha de emision</div>
+      </div>
+
+      <!-- Signature -->
+      <div class="signature-section">
+        <div class="signature-image">
+          <img src="../sellos/firma_profesor.png" alt="Firma del profesor">
+        </div>
+        <div class="signature-line"></div>
+        <div class="signature-name">Ambar Melisa Maldonado</div>
+        <div class="signature-role">Profesora - Curso de Historia</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
