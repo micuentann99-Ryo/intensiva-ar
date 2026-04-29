@@ -66,3 +66,35 @@ Created the complete "Curso Intensivo de Matemática" for the IntensivaAR platfo
 8. Geometría (Formas y Espacio)
 9. Cálculo (Cambio y Movimiento)
 10. Matemática Moderna (1900 - Actualidad)
+
+---
+Task ID: 1
+Agent: main
+Task: Agregar boton "Resolver Actividad" con chat estilo iMessage
+
+Work Log:
+- Reviewed existing chat system (iMessage-style bubbles, conversations, file uploads)
+- Reviewed both Historia and Matemáticas activities pages
+- Created API endpoint GET/POST at /api/activities/[id] to fetch and submit activities
+- Created API endpoint GET at /api/activities/[id]/submission to fetch user's submission status
+- Built full "Resolver Actividad" page at /actividades/[id]/resolver with:
+  - Apple iMessage-style chat UI (bubbles, grouped messages, timestamps)
+  - Activity context header (student name, period/topic, activity type, description)
+  - Expandable context panel showing all activity details
+  - File upload support (images, PDFs, docs) with multi-file selection
+  - "Enviar actividad" button to officially submit the answer
+  - "Preguntar al profesor" button integrated
+  - Status badge showing pending/graded state
+  - Color-coded per subject (emerald for Historia, purple for Matemáticas)
+- Added "Resolver Actividad" button to Historia activities page (emerald color)
+- Added "Resolver Actividad" button to Matemáticas activities page (purple color)
+- Added i18n translations (es/en) for "solve_activity" key
+- Build passed successfully (38 pages generated)
+- Pushed to GitHub (commit e11a198)
+
+Stage Summary:
+- New route: /actividades/[id]/resolver (dynamic)
+- New API routes: /api/activities/[id] (GET/POST), /api/activities/[id]/submission (GET)
+- Modified: Historia activities page, Matemáticas activities page, es.json, en.json
+- 7 files changed, 1013 insertions
+- Deployed to Vercel via GitHub auto-deploy
