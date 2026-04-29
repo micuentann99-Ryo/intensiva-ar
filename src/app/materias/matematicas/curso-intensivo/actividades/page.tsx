@@ -16,6 +16,7 @@ import {
   Check,
   AlertTriangle,
   Loader2,
+  PenLine,
 } from 'lucide-react';
 import SiteNavbar from '@/components/site-navbar';
 import SiteFooter from '@/components/site-footer';
@@ -293,6 +294,17 @@ export default function MatActividadesPage() {
                                         </h4>
                                         <p className="text-sm text-muted-foreground leading-relaxed">{activity.description}</p>
                                       </div>
+
+                                      {/* Resolver actividad button */}
+                                      {user && user.role === 'STUDENT' && (
+                                        <Link
+                                          href={`/actividades/${activity.id}/resolver`}
+                                          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm transition-colors"
+                                        >
+                                          <PenLine className="size-4" />
+                                          {t('activities.solve_activity')}
+                                        </Link>
+                                      )}
 
                                       {/* Student answer area */}
                                       {user && user.role === 'STUDENT' && (
