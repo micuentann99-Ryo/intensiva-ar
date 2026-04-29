@@ -192,7 +192,7 @@ export default function SiteNavbar() {
                       </Link>
                     )}
                     <Link
-                      href="/materias/historia/historia-universal/actividades"
+                      href="/perfil"
                       onClick={() => setUserMenuOpen(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-colors"
                     >
@@ -314,7 +314,7 @@ export default function SiteNavbar() {
                           </Button>
                         </Link>
                       )}
-                      <Link href="/materias/historia/historia-universal/actividades" onClick={() => setMobileOpen(false)}>
+                      <Link href="/perfil" onClick={() => setMobileOpen(false)}>
                         <Button variant="ghost" className="w-full gap-2">
                           <User className="size-4" />
                           {t('navbar.mi_perfil')}

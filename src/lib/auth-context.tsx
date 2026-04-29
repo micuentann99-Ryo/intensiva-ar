@@ -11,7 +11,12 @@ export interface AuthUser {
   professorStatus?: string | null;
   specialization?: string | null;
   university?: string | null;
+  yearOfStudy?: string | null;
+  bio?: string | null;
+  phone?: string | null;
   isActive?: boolean;
+  createdAt?: string | null;
+  lastLoginAt?: string | null;
 }
 
 interface AuthContextType {
