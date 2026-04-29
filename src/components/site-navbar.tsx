@@ -201,7 +201,7 @@ export default function SiteNavbar() {
                         {t('navbar.admin_panel')}
                       </Link>
                     )}
-                    {user.role === 'STUDENT' && (
+                    {(user.role === 'STUDENT' || user.role === 'ADMIN') && (
                       <Link
                         href="/mis-actividades"
                         onClick={() => setUserMenuOpen(false)}
@@ -343,7 +343,7 @@ export default function SiteNavbar() {
                           </Button>
                         </Link>
                       )}
-                      {user.role === 'STUDENT' && (
+                      {(user.role === 'STUDENT' || user.role === 'ADMIN') && (
                         <Link href="/mis-actividades" onClick={() => setMobileOpen(false)}>
                           <Button variant="outline" className="w-full gap-2">
                             <FileText className="size-4" />

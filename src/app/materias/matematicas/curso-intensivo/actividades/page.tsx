@@ -296,7 +296,7 @@ export default function MatActividadesPage() {
                                       </div>
 
                                       {/* Resolver actividad button */}
-                                      {user && user.role === 'STUDENT' && (
+                                      {user && (user.role === 'STUDENT' || user.role === 'ADMIN') && (
                                         <Link
                                           href={`/actividades/${activity.id}/resolver`}
                                           className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm transition-colors"
@@ -307,7 +307,7 @@ export default function MatActividadesPage() {
                                       )}
 
                                       {/* Student answer area */}
-                                      {user && user.role === 'STUDENT' && (
+                                      {user && (user.role === 'STUDENT' || user.role === 'ADMIN') && (
                                         <div className="space-y-3 bg-muted/20 rounded-lg p-4">
                                           <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider">
                                             {t('activities.your_answer')}
