@@ -49,7 +49,26 @@
     "alumno": "Student",
     "admin_panel": "Admin Panel",
     "cerrar_sesion": "Sign out",
-    "mi_perfil": "My profile"
+    "mi_perfil": "My profile",
+    "mis_actividades": "My Activities"
+  },
+  "my_activities": {
+    "title": "My Activities",
+    "subtitle": "Track the status of all your activities and answers",
+    "total": "Total",
+    "delivered": "Submitted",
+    "pending_review": "Pending",
+    "average": "Average",
+    "filter_all": "All",
+    "filter_not_submitted": "Not submitted",
+    "filter_pending": "Pending",
+    "filter_reviewed": "Reviewed",
+    "no_activities_filter": "No activities",
+    "no_activities": "No activities available",
+    "no_reviewed_yet": "No reviewed activities yet",
+    "no_pending_yet": "No activities pending review",
+    "all_submitted": "You've submitted all activities!",
+    "submitted_on": "Submitted on"
   },
   "hero": {
     "badge": "#1 intensive learning platform in Argentina",

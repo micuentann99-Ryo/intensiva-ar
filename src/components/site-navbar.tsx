@@ -201,6 +201,16 @@ export default function SiteNavbar() {
                         {t('navbar.admin_panel')}
                       </Link>
                     )}
+                    {user.role === 'STUDENT' && (
+                      <Link
+                        href="/mis-actividades"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-muted/60 transition-colors"
+                      >
+                        <FileText className="size-4 text-emerald-600" />
+                        {t('navbar.mis_actividades')}
+                      </Link>
+                    )}
                     <Link
                       href="/perfil"
                       onClick={() => setUserMenuOpen(false)}
@@ -330,6 +340,14 @@ export default function SiteNavbar() {
                           <Button variant="outline" className="w-full gap-2">
                             <Shield className="size-4" />
                             {t('navbar.admin_panel')}
+                          </Button>
+                        </Link>
+                      )}
+                      {user.role === 'STUDENT' && (
+                        <Link href="/mis-actividades" onClick={() => setMobileOpen(false)}>
+                          <Button variant="outline" className="w-full gap-2">
+                            <FileText className="size-4" />
+                            {t('navbar.mis_actividades')}
                           </Button>
                         </Link>
                       )}

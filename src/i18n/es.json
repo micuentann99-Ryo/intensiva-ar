@@ -49,7 +49,26 @@
     "alumno": "Alumno",
     "admin_panel": "Panel de Admin",
     "cerrar_sesion": "Cerrar sesión",
-    "mi_perfil": "Mi perfil"
+    "mi_perfil": "Mi perfil",
+    "mis_actividades": "Mis Actividades"
+  },
+  "my_activities": {
+    "title": "Mis Actividades",
+    "subtitle": "Seguí el estado de todas tus actividades y respuestas",
+    "total": "Total",
+    "delivered": "Entregadas",
+    "pending_review": "Pendientes",
+    "average": "Promedio",
+    "filter_all": "Todas",
+    "filter_not_submitted": "No entregadas",
+    "filter_pending": "Pendientes",
+    "filter_reviewed": "Corregidas",
+    "no_activities_filter": "Sin actividades",
+    "no_activities": "No hay actividades disponibles",
+    "no_reviewed_yet": "Todavía no hay actividades corregidas",
+    "no_pending_yet": "No hay actividades pendientes de revisión",
+    "all_submitted": "¡Entregaste todas las actividades!",
+    "submitted_on": "Entregada el"
   },
   "hero": {
     "badge": "Plataforma #1 de clases intensivas en Argentina",
