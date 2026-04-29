@@ -2,33 +2,36 @@
 
 import Link from 'next/link';
 import { Sparkles, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
-
-const footerNav = {
-  Navegación: [
-    { label: 'Inicio', href: '/' },
-    { label: 'Cursos', href: '/' },
-    { label: 'Profesores', href: '/#profesores' },
-    { label: 'Cómo funciona', href: '/#como-funciona' },
-    { label: 'Blog', href: '/' },
-  ],
-  Categorías: [
-    { label: 'Matemáticas', href: '/materias' },
-    { label: 'Historia', href: '/materias/historia' },
-    { label: 'Ingreso Universitario', href: '/materias' },
-    { label: 'Inglés', href: '/materias' },
-    { label: 'Ciencias', href: '/materias' },
-    { label: 'Programación', href: '/materias' },
-  ],
-  Información: [
-    { label: 'Sobre nosotros', href: '/' },
-    { label: 'Contacto', href: '/' },
-    { label: 'Términos y condiciones', href: '/' },
-    { label: 'Política de privacidad', href: '/' },
-    { label: 'Preguntas frecuentes', href: '/' },
-  ],
-};
+import { useT } from '@/i18n/context';
 
 export default function SiteFooter() {
+  const t = useT();
+
+  const footerNav = {
+    [t('footer.navegacion')]: [
+      { label: t('common.inicio'), href: '/' },
+      { label: t('common.cursos'), href: '/' },
+      { label: t('common.profesores'), href: '/#profesores' },
+      { label: t('common.cursos'), href: '/#como-funciona' },
+      { label: t('landing_footer.blog'), href: '/' },
+    ],
+    [t('footer.categorias_col')]: [
+      { label: t('footer.matematicas'), href: '/materias' },
+      { label: t('common.historia'), href: '/materias/historia' },
+      { label: t('footer.ingreso_universitario'), href: '/materias' },
+      { label: t('common.ingles'), href: '/materias' },
+      { label: t('footer.ciencias_col'), href: '/materias' },
+      { label: t('categories.programacion'), href: '/materias' },
+    ],
+    [t('footer.informacion')]: [
+      { label: t('footer.sobre_nosotros'), href: '/' },
+      { label: t('footer.contacto'), href: '/' },
+      { label: t('footer.terminos'), href: '/' },
+      { label: t('footer.privacidad'), href: '/' },
+      { label: t('footer.preguntas_frecuentes'), href: '/' },
+    ],
+  };
+
   return (
     <footer className="bg-slate-900 dark:bg-black text-slate-300 pt-16 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,8 +45,7 @@ export default function SiteFooter() {
               <span className="text-xl font-bold text-white">IntensivaAR</span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed max-w-xs">
-              La plataforma líder en clases intensivas de verano e invierno en todo
-              el país. Conectamos estudiantes con los mejores profesores.
+              {t('footer.desc')}
             </p>
             <div className="flex items-center gap-3 mt-6">
               {[Instagram, Facebook, Twitter, Youtube].map((Icon, i) => (
@@ -79,8 +81,8 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <p>&copy; 2024 IntensivaAR. Todos los derechos reservados.</p>
-          <p>Hecho con 💚 en Argentina</p>
+          <p>&copy; 2024 IntensivaAR. {t('common.todos_derechos')}</p>
+          <p>{t('common.hecho_con')} 💚 {t('common.en_argentina')}</p>
         </div>
       </div>
     </footer>

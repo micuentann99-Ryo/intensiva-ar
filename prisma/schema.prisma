@@ -1,32 +1,111 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+  id              String   @id @default(cuid())
+  email           String   @unique
+  passwordHash    String
+  name            String
+  role            String   @default("STUDENT") // STUDENT, PROFESSOR, ADMIN
+  professorStatus String?  // PENDING, APPROVED, REJECTED
+  specialization  String?
+  bio             String?
+  phone           String?
+  university      String?
+  yearOfStudy     String?
+  isActive        Boolean  @default(true)
+  lastLoginAt     DateTime?
+
+  sessions            Session[]
+  activitySubmissions ActivitySubmission[]
+  activityLogs        ActivityLog[]
+  bugReports          BugReport[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Post {
+model Session {
   id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Activity {
+  id            String   @id @default(cuid())
+  subject       String
+  courseSlug    String
+  periodId      String   @unique
+  periodName    String
+  title         String
+  type          String
+  difficulty    String
+  estimatedTime String
+  description   String
+  sortOrder     Int      @default(0)
+
+  submissions ActivitySubmission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ActivitySubmission {
+  id         String   @id @default(cuid())
+  userId     String
+  activityId String
+  content    String
+  grade      Float?
+  feedback   String?
+  status     String   @default("pending") // pending, reviewed, returned
+
+  user     User     @relation(fields: [userId], references: [id])
+  activity Activity @relation(fields: [activityId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, activityId])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   String?
+  ipAddress String?
+  userAgent String?
+  page      String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model BugReport {
+  id          String   @id @default(cuid())
+  userId      String?
+  subject     String
+  description String
+  page        String?
+  status      String   @default("open") // open, in_progress, resolved, closed
+  priority    String   @default("medium") // low, medium, high
+  resolution  String?
+
+  user User? @relation(fields: [userId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
