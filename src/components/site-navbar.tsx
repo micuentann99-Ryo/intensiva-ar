@@ -21,6 +21,7 @@ import {
   User,
   Shield,
   ChevronDown,
+  MessageCircle,
 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { useT } from '@/i18n/context';
@@ -161,6 +162,15 @@ export default function SiteNavbar() {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
+            {!loading && user && (
+              <Link
+                href="/chat"
+                className="relative flex items-center justify-center size-9 rounded-lg border border-border bg-background text-foreground hover:bg-muted/80 transition-colors"
+                title="Mensajes"
+              >
+                <MessageCircle className="size-[18px]" />
+              </Link>
+            )}
             {!loading && user ? (
               <div className="relative" data-user-menu>
                 <button
@@ -244,7 +254,16 @@ export default function SiteNavbar() {
                 <Moon className="size-[18px] text-slate-600" />
               )}
             </button>
-            <LanguageToggle />
+            {!loading && user && (
+              <Link
+                href="/chat"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2.5 px-3 py-3 text-sm font-medium text-foreground hover:bg-muted/60 transition-colors rounded-md"
+              >
+                <MessageCircle className="size-4" />
+                Mensajes
+              </Link>
+            )}
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">

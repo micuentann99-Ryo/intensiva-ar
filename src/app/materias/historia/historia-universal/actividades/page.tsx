@@ -21,6 +21,7 @@ import SiteNavbar from '@/components/site-navbar';
 import SiteFooter from '@/components/site-footer';
 import { useAuth } from '@/lib/auth-context';
 import { useT } from '@/i18n/context';
+import AskProfessor from '@/components/chat/ask-professor';
 
 const difficultyColors: Record<string, string> = {
   'Fácil': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50',
@@ -308,17 +309,20 @@ export default function ActividadesPage() {
                                             rows={5}
                                           />
                                           <div className="flex items-center justify-between">
-                                            <Button
-                                              size="sm"
-                                              onClick={() => handleSubmitAnswer(activity.id)}
-                                              disabled={submitting === activity.id || !answers[activity.id]?.trim()}
-                                              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                                            >
-                                              {submitting === activity.id ? (
-                                                <Loader2 className="size-4 animate-spin mr-1" />
-                                              ) : null}
-                                              {t('activities.submit_answer')}
-                                            </Button>
+                                            <div className="flex items-center gap-2">
+                                              <Button
+                                                size="sm"
+                                                onClick={() => handleSubmitAnswer(activity.id)}
+                                                disabled={submitting === activity.id || !answers[activity.id]?.trim()}
+                                                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                                              >
+                                                {submitting === activity.id ? (
+                                                  <Loader2 className="size-4 animate-spin mr-1" />
+                                                ) : null}
+                                                {t('activities.submit_answer')}
+                                              </Button>
+                                              <AskProfessor activity={activity} />
+                                            </div>
                                             {submission && (
                                               <span className="text-xs text-muted-foreground">
                                                 {t('activities.submitted_on')}: {new Date(submission.createdAt).toLocaleDateString('es-AR')}
